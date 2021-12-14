@@ -90,47 +90,47 @@ def report():
     return render_template("report.html", my_list=result)
 
 
-@app.route('/wtf_template', methods=('GET', 'POST'))
-def wtf_template():
-    if request.method == 'POST':
-        otd = request.form.get('otd')
-        return redirect(url_for('wtf_template2', otd=otd))
-    result_podr = db.select(sql.sql_podr)
-    form = models.WtfTemplate()
-    #Если метод запроса - POST и если поля формы валидны
-    # if form.validate_on_submit():
-    #     return f'''<h1> Welcome {form.username.data} </h1>'''
-    return render_template('wtf_template.html', result_podr=result_podr,  form=form)
-
-
-@app.route('/wtf_template2', methods=('GET', 'POST'))
-def wtf_template2():
-    otd = request.args.get('otd')
-    if request.method == 'POST':
-        doc = request.form.get('doc')
-        return redirect(url_for('wtf_template3', otd=otd, doc=doc))
-    result_podr = db.select(sql.sql_podr)
-    result_fio = db.select(sql.sql_fio.format(otd=otd))
-    form = models.WtfTemplate2()
-    #Если метод запроса - POST и если поля формы валидны
-    return render_template('wtf_template2.html', result_fio=result_fio, result_podr=result_podr, form=form)
-
-
-@app.route('/wtf_template3', methods=['GET', 'POST'])
-def wtf_template3():
-    otd = request.args.get('otd')
-    doc = request.args.get('doc')
-    if request.method == 'POST':
-        doc = request.form.get('doc')
-        return redirect(url_for('wtf_template3', otd=otd, doc=doc))
-    result_fio = db.select(sql.sql_fio.format(otd=otd))
-    form = models.WtfTemplate3()
-    procedure_name = 'NEW_IBLC'
-    outputParams = db.proc(procedure_name)
-    outputParams = utils.list_to_int(outputParams)
-    #outputParams = list_to_list(outputParams)
-    print("Результат генератора: ", outputParams)
-    return render_template('wtf_template3.html', result_fio=result_fio, form=form)
+# @app.route('/wtf_template', methods=('GET', 'POST'))
+# def wtf_template():
+#     if request.method == 'POST':
+#         otd = request.form.get('otd')
+#         return redirect(url_for('wtf_template2', otd=otd))
+#     result_podr = db.select(sql.sql_podr)
+#     form = models.WtfTemplate()
+#     #Если метод запроса - POST и если поля формы валидны
+#     # if form.validate_on_submit():
+#     #     return f'''<h1> Welcome {form.username.data} </h1>'''
+#     return render_template('wtf_template.html', result_podr=result_podr,  form=form)
+#
+#
+# @app.route('/wtf_template2', methods=('GET', 'POST'))
+# def wtf_template2():
+#     otd = request.args.get('otd')
+#     if request.method == 'POST':
+#         doc = request.form.get('doc')
+#         return redirect(url_for('wtf_template3', otd=otd, doc=doc))
+#     result_podr = db.select(sql.sql_podr)
+#     result_fio = db.select(sql.sql_fio.format(otd=otd))
+#     form = models.WtfTemplate2()
+#     #Если метод запроса - POST и если поля формы валидны
+#     return render_template('wtf_template2.html', result_fio=result_fio, result_podr=result_podr, form=form)
+#
+#
+# @app.route('/wtf_template3', methods=['GET', 'POST'])
+# def wtf_template3():
+#     otd = request.args.get('otd')
+#     doc = request.args.get('doc')
+#     if request.method == 'POST':
+#         doc = request.form.get('doc')
+#         return redirect(url_for('wtf_template3', otd=otd, doc=doc))
+#     result_fio = db.select(sql.sql_fio.format(otd=otd))
+#     form = models.WtfTemplate3()
+#     procedure_name = 'NEW_IBLC'
+#     outputParams = db.proc(procedure_name)
+#     outputParams = utils.list_to_int(outputParams)
+#     #outputParams = list_to_list(outputParams)
+#     print("Результат генератора: ", outputParams)
+#     return render_template('wtf_template3.html', result_fio=result_fio, form=form)
 
 
 if __name__ == '__main__':
