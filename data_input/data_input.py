@@ -1,8 +1,12 @@
-from flask import Blueprint, render_template, abort, redirect, url_for
+from flask import Blueprint, render_template, abort, redirect, url_for, request
 from jinja2 import TemplateNotFound
 # регистрируем схему `Blueprint`
-from data_input.models import SignupForm
+from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
+
 from . import data_input
+import db
+import sql
+import utils
 
 data_input = Blueprint('data_input', __name__)
 
@@ -45,3 +49,46 @@ def signup():
         template="form-template",
         title="Signup Form"
     )
+
+
+@data_input.route('/wtf_template', methods=('GET', 'POST'))
+def wtf_template():
+    if request.method == 'POST':
+        otd = request.form.get('otd')
+        return redirect(url_for('wtf_template2', otd=otd))
+    result_podr = db.select(sql.sql_podr)
+    form = WtfTemplate()
+    #Если метод запроса - POST и если поля формы валидны
+    # if form.validate_on_submit():
+    #     return f'''<h1> Welcome {form.username.data} </h1>'''
+    return render_template('wtf_template.html', result_podr=result_podr,  form=form)
+
+
+@data_input.route('/wtf_template2', methods=('GET', 'POST'))
+def wtf_template2():
+    otd = request.args.get('otd')
+    if request.method == 'POST':
+        doc = request.form.get('doc')
+        return redirect(url_for('wtf_template3', otd=otd, doc=doc))
+    result_podr = db.select(sql.sql_podr)
+    result_fio = db.select(sql.sql_fio.format(otd=otd))
+    form = WtfTemplate2()
+    #Если метод запроса - POST и если поля формы валидны
+    return render_template('wtf_template2.html', result_fio=result_fio, result_podr=result_podr, form=form)
+
+
+@data_input.route('/wtf_template3', methods=['GET', 'POST'])
+def wtf_template3():
+    otd = request.args.get('otd')
+    doc = request.args.get('doc')
+    if request.method == 'POST':
+        doc = request.form.get('doc')
+        return redirect(url_for('wtf_template3', otd=otd, doc=doc))
+    result_fio = db.select(sql.sql_fio.format(otd=otd))
+    form = WtfTemplate3()
+    procedure_name = 'NEW_IBLC'
+    outputParams = db.proc(procedure_name)
+    outputParams = utils.list_to_int(outputParams)
+    #outputParams = list_to_list(outputParams)
+    print("Результат генератора: ", outputParams)
+    return render_template('wtf_template3.html', result_fio=result_fio, form=form)

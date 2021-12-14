@@ -48,3 +48,13 @@ class SignupForm(FlaskForm):
     website = StringField("Website", validators=[URL()])
     birthday = DateField("Your Birthday")
     submit = SubmitField("Submit")
+
+
+class WtfTemplate(FlaskForm):
+    submit = SubmitField(label=('Submit'))
+
+class WtfTemplate2(FlaskForm):
+    submit = SubmitField(label=('Выбрать'))
+
+class WtfTemplate3(FlaskForm):
+    submit = SubmitField(label=('Добавить'))
