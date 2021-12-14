@@ -14,7 +14,8 @@ from wtforms.validators import (
     Email,
     EqualTo,
     Length,
-    URL
+    URL,
+    InputRequired
 )
 
 
@@ -48,3 +49,15 @@ class SignupForm(FlaskForm):
     website = StringField("Website", validators=[URL()])
     birthday = DateField("Your Birthday")
     submit = SubmitField("Submit")
+
+
+class WtfTemplate(FlaskForm):
+
+    submit = SubmitField(label=('Выбрать'))
+
+class WtfTemplate2(FlaskForm):
+    submit = SubmitField(label=('Выбрать'))
+
+class WtfTemplate3(FlaskForm):
+    submit = SubmitField(label=('Добавить'))
+

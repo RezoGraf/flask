@@ -1,6 +1,4 @@
-from flask import Flask, render_template
-from flask import request
-from flask import url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect
 
 import db
 import models
