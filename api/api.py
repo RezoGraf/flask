@@ -78,6 +78,9 @@ def json_example():
         if 'DOC_ID' in request_data:
             doc_id = request_data[" DOC_ID "]
 
+        if 'DOC_ID' in request_data:
+            doc_id = request_data([" DOC_ID "])
+
         if 'DOC_DATE' in request_data:
             doc_date = request_data['DOC_DATE']
 
@@ -125,15 +128,101 @@ def json_example():
                         check_num, kas_kod, kas_fio)
 
 
-@api.route('/post4', methods=['POST'])
-def post4():
+@api.route('/oplata_1c', methods=['POST'])
+def oplata_1c():
+    doc_id = None
+    doc_date = None
+    doc_sum = None
+    doc_nom = None
+    dog_nom = None
+    doc_type_opl = None
+    doc_sum_nal = None
+    doc_sum_bnal = None
+    check_num = None
+    kas_kod = None
+    kas_fio = None
+
+    otvet_list = ([])
     dict = request.json
+
     for firstkey, big_list in dict.items():
-        print('print dict: ' + str(firstkey))
-        for pair in big_list:
-            print('print sets in dict: ' + str(pair))
-            nextdict = pair
-            for nextkey, small_list in nextdict.items():
-                print('print each: ' + str(nextkey) + '->' + str(small_list))
-                # address each one
-                print('pull just data: ' + str(nextdict[nextkey]))
+        # print('print dict: ' + str(firstkey))
+
+        if str(firstkey) == "DOC":
+
+            status = "OK"
+
+            for pair in big_list:
+                # print('print sets in dict: ' + str(pair))
+                # print(type(pair))
+                nextdict = pair
+                for nextkey, small_list in nextdict.items():
+
+                    if str(nextkey) == " DOC_ID ":
+                        doc_id = str(nextdict[nextkey])
+                    else:
+                        doc_id = "Pusto"
+                    if str(nextkey) == " DOC_DATE ":
+                        doc_date = str(nextdict[nextkey])
+                    if str(nextkey) == " DOC_SUM ":
+                        doc_sum = str(nextdict[nextkey])
+                    if str(nextkey) == " DOC_NOM ":
+                        doc_nom = str(nextdict[nextkey])
+                    if str(nextkey) == " DOG_NOM ":
+                        dog_nom = str(nextdict[nextkey])
+                    if str(nextkey) == " DOC_TYPE_OPL ":
+                        doc_type_opl = str(nextdict[nextkey])
+                    if str(nextkey) == " DOC_SUM_NAL ":
+                        doc_sum_nal = str(nextdict[nextkey])
+                    if str(nextkey) == " DOC_SUM_BNAL ":
+                        doc_sum_bnal = str(nextdict[nextkey])
+                    if str(nextkey) == " CHECK_NUM ":
+                        check_num = str(nextdict[nextkey])
+                    if str(nextkey) == " KAS_KOD ":
+                        kas_kod = str(nextdict[nextkey])
+                    if str(nextkey) == " KAS_FIO ":
+                        kas_fio = str(nextdict[nextkey])
+
+                        otvet = ([doc_id, doc_date, doc_sum, doc_nom, dog_nom, doc_type_opl, doc_sum_nal, doc_sum_bnal, check_num, kas_kod, kas_fio])
+                        print(otvet)
+                        otvet_list.append(otvet)
+        else:
+            status = f"Error (Неверная схема данных json, должно быть 'DOC' а получил {str(firstkey)})"
+
+    return str(f"Status = {status}, DataADD: {otvet_list}")
+
+
+@api.route('/oplata_1c2', methods=['POST'])
+def oplata_1c2():
+    dict = request.json
+
+    key_chek = (" DOC_ID ", " DOC_DATE ", " DOC_SUM ", " DOC_NOM ", " DOG_NOM ", " DOC_TYPE_OPL ", " DOC_SUM_NAL ", " DOC_SUM_BNAL ", " CHECK_NUM ", " KAS_KOD ", " KAS_FIO ")
+    key_model = list(key_chek)
+    status = ([])
+    otvet_list = ([])
+    for firstkey, big_list in dict.items():
+
+        for i, pair in enumerate(big_list):
+            print(pair)
+            print(i)
+            keys = list(pair.keys())
+            list_result = ([])
+
+            res = [x for x in key_model + keys if x not in key_model or x not in keys]
+
+            if not res:
+                print("Структура соответствует")
+                status.append(f"{i} - Структура соответствует")
+
+                for i in range(0, len(pair)):
+                    list_result.append(pair[key_model[i]])
+
+            else:
+                print(f"Структура НЕ соответствует по ячейкам {res} у массива: {str(pair)}")
+                status.append(f"{i} - Структура НЕ соответствует по ячейкам {res} у массива: {str(pair)}")
+            otvet_list.append(list_result)
+        print(otvet_list)
+
+    return (f"Status = {status}, DataADD: {otvet_list}")
+
+
