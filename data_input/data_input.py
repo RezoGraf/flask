@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, request
-from jinja2 import TemplateNotFound
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc
