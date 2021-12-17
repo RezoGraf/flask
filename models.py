@@ -17,8 +17,6 @@ from wtforms.validators import (
     URL
 )
 
-
-
 class WtfTemplate(FlaskForm):
     submit = SubmitField(label=('Submit'))
 
@@ -41,6 +39,9 @@ class WtfTemplate2(FlaskForm):
 
 class WtfTemplate3(FlaskForm):
     submit = SubmitField(label=('Добавить'))
+
+class WtfTemplate4(FlaskForm):
+    submit = SubmitField(label=('Сохранить'))
 
 
 class SignupForm(FlaskForm):
