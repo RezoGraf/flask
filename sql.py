@@ -18,3 +18,5 @@ sql_podr = "select otd,notd from np_otd where notd is not null"
 
 # Выборка всех ФИО по номеру подразделения
 sql_fio = """select doc, ndoc from n_doc where pv=1 and otd='{otd}'"""
+
+sql_doctod = """ select doc, ndoc from n_doc where pv=1 and doc='{doc}' and otd='{otd}'"""
