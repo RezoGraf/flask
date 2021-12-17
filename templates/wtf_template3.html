@@ -13,46 +13,103 @@
 </head>
 <body>
 <div class="container">
-
-
     <h2>Внесение дежурства и выходных</h2>
-    {% for field, errors in form.errors.items() %}
-    {{ ', '.join(errors) }}
-    {% endfor %}
-
-    <form class="form-horizontal" method="POST" action="">
+     <form class="form-horizontal" method="POST" action="">
                 {{ form.csrf_token() }}
-    <select name="ndoc" class="form-select" aria-label="Default select example" disabled>
-{% for DOC, NDOC in result_fio %}
-<option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
-{% endfor %}
-</select>
 
-      <table>
+{#        <div class="form-group">#}
+{#            {{ form.submit(class="btn btn-primary")}}#}
+{#        </div>#}
+
+     <table class="table caption-top table table-striped table table-bordered">
+     <caption>Режим работы сотрудника</caption>
+         <thead>
+         <th>№ кабинета</th>
+         <th>Нечетное</th>
+         <th>Четное</th>
+         <th>№ монитора</th>
+         <th>№ страницы</th>
+         <th>Специальность</th>
+         </thead>
+         <tr>
+         {% for NROOM_KR, NOEVEN_DAY, EVEN_DAY, NTV, NLIST, NSPZ in result_rasp %}
             <tr>
-            <td>
-
-	    <label for="datepicker" class="form-label">Дата начала</label>
-        <input type="text" id="datepicker" name="dtn" autocomplete="off">
-
-                </td>
-                <td>
-
-	    <label for="datepicker2" class="form-label">Окончание</label>
-        <input type="text" id="datepicker2" name="dtk" autocomplete="off">
-                </td>
+                <td>{{ NROOM_KR }}</td>
+                <td>{{ NOEVEN_DAY or "" }}</td>
+                <td>{{ EVEN_DAY or ""}}</td>
+                <td>{{ NTV }}</td>
+                <td>{{ NLIST }}</td>
+                <td>{{ NSPZ }}</td>
             </tr>
-            </table>
+         {% endfor %}
 
-        <div class="form-group">
-            {{ form.submit(class="btn btn-primary")}}
-        </div>
+     </table>
+
+     <table class="table caption-top table table-striped table table-bordered" >
+         <caption>Отстуствие на рабочем месте</caption>
+
+         <thead>
+         <th>Дата с</th>
+         <th>по</th>
+         <th>Причина</th>
+         </thead>
+         <tr>
+         {% for iblc, DTN, DTK, NRSN in result_rsp_blc %}
+            <tr>
+                <td><p><input type="date" value={{ DTN }} name="DTN1" onchange="myFunction()" /></p></td>
+                <td><p><input type="date" value={{ DTK }} name="DTK1"> </p> </td>
+                <td>{{ NRSN }}</td>
+                <td><p><input type="button" aria-valuetext="dddd" value={{ iblc }} name="iblc"> </p> </td>
+            </tr>
+         {% endfor %}
+     </table>
+
+     <table class="table caption-top table table-striped table table-bordered">
+     <caption>Работа в праздничные и выходные дни, дежурство по графику</caption>
+         <thead>
+         <th>Дата</th>
+         <th>Время</th>
+         <th>День недели</th>
+
+         </thead>
+         <tr>
+         {% for DATE_DUTY, TIME_DUTY, denNedeli,ID in result_duty %}
+            <tr>
+                <td>{{ DATE_DUTY }}</td>
+                <td>{{ TIME_DUTY }}</td>
+                <td>{{ denNedeli }}</td>
+                <td>{{ ID }}</td>
+            </tr>
+         {% endfor %}
+     </table>
+
+<div class="input-group mb-3">
+  <label class="input-group-text" for="inputGroupSelect01">Options</label>
+  <select class="form-select" id="inputGroupSelect01">
+    <option selected>Choose...</option>
+    <option value="1">One</option>
+    <option value="2">Two</option>
+    <option value="3">Three</option>
+  </select>
+</div>
+
+
+
+
+
     </form>
+
+
+
 </div>
 </body>
 </html>
 
 <script>
+
+    function myFunction() {
+       alert("  ") //document.querySelectorAll("input[type=submit]")[0].click();
+    }
 
 var datepicker = new Datepicker("#datepicker");
 var datepicker2 = new Datepicker('#datepicker2');

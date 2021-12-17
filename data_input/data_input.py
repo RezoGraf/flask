@@ -78,7 +78,6 @@ def wtf_template2():
     otd = request.args.get('otd')
     if request.method == 'POST':
         doc = request.form.get('doc')
-        print(doc)
         return redirect(url_for('data_input.wtf_template3', otd=otd, doc=doc))
     result_podr = db.select(sql.sql_podr)
     result_fio = db.select(sql.sql_fio.format(otd=otd))
@@ -95,15 +94,34 @@ def wtf_template3():
         # doc = request.form.get('doc')
         dtn = request.form.get('dtn')
         dtk = request.form.get('dtk')
+        rsn = request.form.get('rsn')
         procedure_name = 'NEW_IBLC'
         output_params = db.proc(procedure_name)
         output_params = utils.list_to_int(output_params)
-        print(sql_ins_rsp_blc.format(output_params=output_params, doc=doc, dtn=dtn, dtk=dtk))
-        db.write(sql_ins_rsp_blc.format(output_params=output_params, doc=doc, dtn=dtn, dtk=dtk))
+        # print(dtn)
+        # db.write(sql_ins_rsp_blc.format(output_params=output_params,doc=doc,dtn=dtn,dtk=dtk,rsn=rsn))
+        dtn1 = request.form.get('dtn1')
+        print(dtn1)
         return "ok"
         # return redirect(url_for('wtf_template3', otd=otd, doc=doc))
+
+    result_fio = db.select(sql.sql_fio.format(otd=otd))
+    result_rsn = db.select(sql.sql_rsp_rsn)
+    result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
+    result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
+    result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
+
+
+    result_fio = db.select(sql.sql_fio.format(otd=otd))
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
     form = WtfTemplate3()
+
     #outputParams = list_to_list(output_params)
     # print("Результат генератора: ", output_params)
-    return render_template('wtf_template3.html', result_fio=result_doc, form=form)
+    return render_template('wtf_template3.html',
+                           result_fio=result_fio,
+                           result_rsn=result_rsn,
+                           result_rsp_blc=result_rsp_blc,
+                           result_rasp=result_rasp,
+                           result_duty=result_duty,
+                           form=form)
