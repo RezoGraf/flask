@@ -1,13 +1,13 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, request
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
-from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc
-
+from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
 from data_input.sql_data_input import sql_ins_rsp_blc
 from . import data_input
 import db
 import sql
 import utils
+import datetime
 
 data_input = Blueprint('data_input', __name__)
 
@@ -97,23 +97,30 @@ def wtf_template3():
     doc = request.args.get('doc')
     if request.method == 'POST':
         # doc = request.form.get('doc')
-        dtn = request.form.get('dtn')
-        dtk = request.form.get('dtk')
-        rsn = request.form.get('rsn')
-        procedure_name = 'NEW_IBLC'
-        output_params = db.proc(procedure_name)
-        output_params = utils.list_to_int(output_params)
-        # print(dtn)
-        # db.write(sql_ins_rsp_blc.format(output_params=output_params,doc=doc,dtn=dtn,dtk=dtk,rsn=rsn))
         if request.form['btn'] == 'DelRspBlc':
             DelIblc = request.form.get('DelIblc')
             db.write(sql_del_rsp_blc.format(DelIblc=DelIblc))
             return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
-        else:
-            print(' 1')
 
-        # return "ok"
-        # return redirect(url_for('wtf_template3', otd=otd, doc=doc))
+        if request.form['btn'] == 'UpdRspBlc':
+            UpdIblc = request.form.get('UpdIblc')
+            UpdDtn = request.form.get('UpdDtn')
+            UpdDtk = request.form.get('UpdDtk')
+            UpdRsn = request.form.get('UpdRsn')
+            print(UpdRsn, UpdDtk, UpdDtn, UpdIblc)
+            db.write(sql_upd_rsp_blc.format(UpdIblc=UpdIblc, UpdDtn=UpdDtn, UpdDtk=UpdDtk, UpdRsn=UpdRsn))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
+
+        if request.form['btn'] == 'InsRspBlc':
+            InsDtn = request.form.get('InsDtn')
+            InsDtk = request.form.get('InsDtk')
+            InsRsn = request.form.get('InsRsn')
+            procedure_name = 'NEW_IBLC'
+            output_params = db.proc(procedure_name)
+            output_params = utils.list_to_int(output_params)
+            # print(InsDtn, InsDtk, InsRsn)
+            db.write(sql_ins_rsp_blc.format(output_params=output_params, doc=doc, InsDtn=InsDtn, InsDtk=InsDtk, InsRsn=InsRsn))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     result_rsn = db.select(sql.sql_rsp_rsn)
