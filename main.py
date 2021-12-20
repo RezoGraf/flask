@@ -1,10 +1,5 @@
 from flask import Flask, render_template, request, url_for, redirect
 from flask import json
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String
-from sqlalchemy import Integer
-from sqlalchemy import Column
-from sqlalchemy import ForeignKey
 from flask_wtf import Form
 from wtforms import SelectField
 import db
@@ -118,5 +113,6 @@ def report():
                            my_list=result)
 
 
-if __name__ == '__main__':
-    app.run(host="localhost", port=5000)
+if __name__ == "__main__":
+    # app.run(host='192.168.100.142', port=80, debug=True)
+    app.run(host='0.0.0.0')
