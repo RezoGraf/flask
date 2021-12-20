@@ -46,7 +46,8 @@ class SignupForm(FlaskForm):
             ("Pokemon Trainer", "pokemon"),
         ],
     )
-    website = StringField("Website", validators=[URL()])
+    website = StringField("Website",
+                          validators=[URL()])
     birthday = DateField("Your Birthday")
     submit = SubmitField("Submit")
 

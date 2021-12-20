@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, abort, redirect, url_for, request
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc
 
+from data_input.sql_data_input import sql_ins_rsp_blc
 from . import data_input
 import db
 import sql
@@ -77,12 +78,17 @@ def wtf_template2():
     otd = request.args.get('otd')
     if request.method == 'POST':
         doc = request.form.get('doc')
-        return redirect(url_for('data_input.wtf_template3', otd=otd, doc=doc))
+        return redirect(url_for('data_input.wtf_template3',
+                                otd=otd,
+                                doc=doc))
     result_podr = db.select(sql.sql_podr)
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     form = WtfTemplate2()
     #Если метод запроса - POST и если поля формы валидны
-    return render_template('wtf_template2.html', result_fio=result_fio, result_podr=result_podr, form=form)
+    return render_template('wtf_template2.html',
+                           result_fio=result_fio,
+                           result_podr=result_podr,
+                           form=form)
 
 
 @data_input.route('/wtf_template3', methods=['GET', 'POST'])
@@ -114,6 +120,7 @@ def wtf_template3():
     result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
+
 
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))

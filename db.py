@@ -4,7 +4,9 @@ import config
 
 def select(sql):
     con = fdb.connect(dsn=config.dsn,
-                      user=config.user, password=config.password, charset=config.charset)
+                      user=config.user,
+                      password=config.password,
+                      charset=config.charset)
     cur = con.cursor()
     cur.execute(sql)
     result = cur.fetchall()
@@ -15,7 +17,9 @@ def select(sql):
 
 def write(sql):
     con = fdb.connect(dsn=config.dsn,
-                      user=config.user, password=config.password, charset=config.charset)
+                      user=config.user,
+                      password=config.password,
+                      charset=config.charset)
     cur = con.cursor()
     cur.execute(sql)
     con.commit()
@@ -25,7 +29,9 @@ def write(sql):
 
 def proc(proc_name):
     con = fdb.connect(dsn=config.dsn,
-                      user=config.user, password=config.password, charset=config.charset)
+                      user=config.user,
+                      password=config.password,
+                      charset=config.charset)
     cur = con.cursor()
     cur.callproc(proc_name)
     output_params = cur.fetchone()

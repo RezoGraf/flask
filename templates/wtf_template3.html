@@ -134,7 +134,7 @@
             <tr>
                 <td><p><input type="date" value={{ DTN }} name="DTN1" onchange="myFunction()" /></p></td>
 
-                <td>{{ DTK }} </td>
+                <td>{{ DTK.strftime('%d.%m.%Y') }} </td>
 
                 <td>{{ NRSN_ }}</td>
                 <td> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#RspBlcModal{{ iblc }}">
