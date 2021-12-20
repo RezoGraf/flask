@@ -7,24 +7,54 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='datepicker.material.css') }}">
 <script src="{{ url_for('static', filename='datepicker.js') }}"></script>
 
-
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
 
-{% for iblc, DTN, DTK, NRSN in result_rsp_blc %}
+<body>
+{#ОКНО ДЛЯ ВВОДА ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
+{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
  <div class="modal" id="RspBlcModal{{ iblc }}"  tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">ВВЕДИТЕ СВЕДЕНИЯ ОБ ОТСУТСТВИИ СОТРУДНИКА {{ FIO }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <p>Modal body text goes here.{{ iblc }}</p>
+{#      <div class="modal-body">#}
+{#        <p>Modal body text goes here.{{ iblc }}</p>#}
+{#          <p><label>Дата с </label><input type="date" value={{ DTN }} name="DTN1" ></p>#}
+{#          <label>по</label><input type="date" value={{ DTK }} name="DTK1" >#}
+{#          <p><label>Причина </label></p>#}
+{#      </div>#}
+
+       <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Дата с:</label>
+            <input type="date" class="form-control" value={{ DTN }} id="DTN1">
+          </div>
+
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">по:</label>
+            <input type="date" class="form-control" value={{ DTK }} id="DTK1">
+          </div>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01">Причина:</label>
+            <select class="form-select" id="inputGroupSelect01">
+              <option selected>{{ NRSN_ }}</option>
+              {% for RSN, NRSN in result_rsn %}
+                <option value="{{ RSN }}"{% if loop.first %} SELECTED{% endif %}>{{ NRSN }}</option>
+              {% endfor %}
+              <option selected>{{ NRSN_ }}</option>
+            </select>
+          </div>
+
+        </form>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary">Save changes</button>
@@ -34,30 +64,30 @@
 </div>
 {% endfor %}
 
-{#{% for iblc, DTN, DTK, NRSN in result_rsp_blc %}#}
-{# <!-- Modal -->#}
-{#  <div class="modal fade" id="RspBlcModal{{ iblc }}" role="dialog">#}
-{#    <div class="modal-dialog modal-lg">#}
-{##}
-{#      <!-- Modal content-->#}
-{#      <div class="modal-content">#}
-{#        <div class="modal-header">#}
-{#          <button type="button" class="close" data-dismiss="modal">&times;</button>#}
-{#          <h4 class="modal-title">Task Output</h4>#}
-{#        </div>#}
-{#        <div class="modal-body">#}
-{#          <p>{{ DTN }}</p>#}
-{#        </div>#}
-{#        <div class="modal-footer">#}
-{#          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>#}
-{#          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>#}
-{##}
-{#        </div>#}
-{#      </div>#}
-{##}
-{#    </div>#}
-{#  </div>#}
-{#{% endfor %}#}
+{#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
+<form method="post">
+{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+
+<div class="modal" id="DelRspBlcModal{{ iblc }}" tabindex="0">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Удаление информации</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>УДАЛИТЬ ИНФОРМАЦИЮ ОБ ОТСУТСТВИИ СОТРУДНИКА?</p>
+          <input type="text" name="DelIblc" value="{{ iblc }}" class="col-form-label" style="display: none;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary"  name="btn" value="DelRspBlc">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+</form>
 
 <div class="container">
     <h2>Внесение дежурства и выходных</h2>
@@ -94,28 +124,31 @@
 
      <table class="table caption-top table table-striped table table-bordered" >
          <caption>Отстуствие на рабочем месте</caption>
-
          <thead>
          <th>Дата с</th>
          <th>по</th>
          <th>Причина</th>
          </thead>
          <tr>
-         {% for iblc, DTN, DTK, NRSN in result_rsp_blc %}
+         {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
             <tr>
-                <td>{{ iblc }}</td>
                 <td><p><input type="date" value={{ DTN }} name="DTN1" onchange="myFunction()" /></p></td>
-                <td><p><input type="date" value={{ DTK }} name="DTK1"> </p> </td>
-                <td>{{ NRSN }}</td>
-{#                <td><i class="bi bi-pencil"></i>  </td>#}
-                <td> <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#RspBlcModal{{ iblc }}">Output</button>
-{#                <td><button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#RspBlcModal {{ iblc }}">#}
-{#                     data-toggle="modal" data-target="#myOutput{{ history.task_id }}"#}
-{#                  <i class="bi bi-pencil"></i>#}
-{#                  <span class="visually-hidden">Button</span>#}
-{#                  </button>#}
+
+                <td>{{ DTK }} </td>
+
+                <td>{{ NRSN_ }}</td>
+                <td> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#RspBlcModal{{ iblc }}">
+                    <i class="bi bi-pencil"></i>
+                    <span class="visually-hidden">Button</span>
+                </button>
                 </td>
-{#                <td> <button type="button" class="w-100 btn btn-lg btn-primary">Contact us</button> </td>#}
+
+               <td> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#DelRspBlcModal{{ iblc }}">
+                    <i class="bi bi-dash"></i>
+                    <span class="visually-hidden">Button</span>
+                </button>
+                </td>
+
             </tr>
          {% endfor %}
      </table>
@@ -139,16 +172,6 @@
          {% endfor %}
      </table>
 
-
-<div class="input-group mb-3">
-  <label class="input-group-text" for="inputGroupSelect01">Options</label>
-  <select class="form-select" id="inputGroupSelect01">
-    <option selected>Choose...</option>
-    <option value="1">One</option>
-    <option value="2">Two</option>
-    <option value="3">Three</option>
-  </select>
-</div>
 
     </form>
 

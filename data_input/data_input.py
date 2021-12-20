@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, redirect, url_for, request
 from jinja2 import TemplateNotFound
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
-from data_input.sql_data_input import sql_ins_rsp_blc
+from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc
 
 from . import data_input
 import db
@@ -100,9 +100,14 @@ def wtf_template3():
         output_params = utils.list_to_int(output_params)
         # print(dtn)
         # db.write(sql_ins_rsp_blc.format(output_params=output_params,doc=doc,dtn=dtn,dtk=dtk,rsn=rsn))
-        dtn1 = request.form.get('dtn1')
-        print(dtn1)
-        return "ok"
+        if request.form['btn'] == 'DelRspBlc':
+            DelIblc = request.form.get('DelIblc')
+            db.write(sql_del_rsp_blc.format(DelIblc=DelIblc))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
+        else:
+            print(' 1')
+
+        # return "ok"
         # return redirect(url_for('wtf_template3', otd=otd, doc=doc))
 
     result_fio = db.select(sql.sql_fio.format(otd=otd))
@@ -110,7 +115,6 @@ def wtf_template3():
     result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
-
 
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
