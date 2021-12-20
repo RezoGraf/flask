@@ -58,59 +58,46 @@ def login():
 
 @app.route('/report_filter', methods=['GET', 'POST'])
 def report_filter():
-    message2 = ''
     dtn = request.args.get('dtn')  # запрос к данным формы
     dtk = request.args.get('dtk')
     if dtn is None:
-        dtn = '07.12.2021'
+        dtn = '01.12.2021'
     if dtk is None:
         dtk = '07.12.2021'
     if request.method == 'POST':
         dtn = request.form.get('dtn')  # запрос к данным формы
         dtk = request.form.get('dtk')
-        if dtn != '' and dtk != '':
-            message2 = "Корректный период"
-            return redirect(url_for('report',
-                                    dtn=dtn,
-                                    dtk=dtk))
-        else:
-            message2 = "Некорректный период"
-            return redirect(url_for('report',
-                                    message=message2,
-                                    dtn=dtn,
-                                    dtk=dtk))
+        return redirect(url_for('report_filter',
+                                dtn=dtn,
+                                dtk=dtk))
+
     sql_select_filtered = sql.sql_select.format(dtn=dtn,
                                                 dtk=dtk)
     result = db.select(sql_select_filtered)
     return render_template("report_filter.html",
-                           my_list=result,
-                           message=message2)
+                           my_list=result, dtn=dtn, dtk=dtk)
 
 
 @app.route("/report", methods=['GET', 'POST'])
 def report():
-    message3 = ''
     dtn = request.args.get('dtn')  # запрос к данным формы
     dtk = request.args.get('dtk')
+    if dtn is None:
+        dtn = '01.12.2021'
+    if dtk is None:
+        dtk = '07.12.2021'
     if request.method == 'POST':
         dtn = request.form.get('dtn')  # запрос к данным формы
         dtk = request.form.get('dtk')
-        if dtn != '' and dtk != '':
-            message3 = "Корректный период"
-            return redirect(url_for('report_filter',
-                                    dtn=dtn,
-                                    dtk=dtk))
-        else:
-            message3 = "Некорректный период"
-            return redirect(url_for('report_filter',
-                                    message=message3,
-                                    dtn=dtn,
-                                    dtk=dtk))
+        return redirect(url_for('report',
+                                dtn=dtn,
+                                dtk=dtk))
+
     sql_select_filtered = sql.sql_select.format(dtn=dtn,
                                                 dtk=dtk)
     result = db.select(sql_select_filtered)
     return render_template("report.html",
-                           my_list=result)
+                           my_list=result, dtn=dtn, dtk=dtk)
 
 
 if __name__ == "__main__":
