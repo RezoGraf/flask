@@ -26,7 +26,7 @@
                 </td>
                 <td>
 {#                    <label for="exampleDataList" class="form-label">Datalist example</label>#}
-<input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Пишите для поиска...">
+<input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска...">
 <datalist id="datalistOptions">
   <option value="San Francisco">
   <option value="New York">
@@ -75,17 +75,22 @@
     </table>
 
     <script>
-$(document).on('input', '#filter_keyword', function(event){
-    var kw=$(this).val();
-    $('#all_keywords > option').each(function() {
-        if ( kw.length > 0 && this.text.replace(kw, '') == this.text )
-        {
-            $(this).hide();
+function filterTable(event) {
+    var filter = event.target.value.toUpperCase();
+    var rows = document.querySelector("#myTable tbody").rows;
+
+    for (var i = 0; i < rows.length; i++) {
+        var firstCol = rows[i].cells[0].textContent.toUpperCase();
+        var secondCol = rows[i].cells[1].textContent.toUpperCase();
+        if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1) {
+            rows[i].style.display = "";
         } else {
-            $(this).show();
+            rows[i].style.display = "none";
         }
-    });
-});
+    }
+}
+
+document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
     </script>
 
 {% endblock %}

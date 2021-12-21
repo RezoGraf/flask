@@ -127,12 +127,9 @@ def wtf_template3():
     result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
-
-
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
     form = WtfTemplate3()
-
     #outputParams = list_to_list(output_params)
     # print("Результат генератора: ", output_params)
     return render_template('wtf_template3.html',
