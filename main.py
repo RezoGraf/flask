@@ -74,6 +74,7 @@ def report_filter():
     sql_select_filtered = sql.sql_select.format(dtn=dtn,
                                                 dtk=dtk)
     result = db.select(sql_select_filtered)
+    print(type(result))
     return render_template("report_filter.html",
                            my_list=result, dtn=dtn, dtk=dtk)
 
@@ -96,6 +97,7 @@ def report():
     sql_select_filtered = sql.sql_select.format(dtn=dtn,
                                                 dtk=dtk)
     result = db.select(sql_select_filtered)
+    print(type(result))
     return render_template("report.html",
                            my_list=result, dtn=dtn, dtk=dtk)
 

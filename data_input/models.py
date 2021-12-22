@@ -60,5 +60,6 @@ class WtfTemplate2(FlaskForm):
     submit = SubmitField(label=('Выбрать'))
 
 class WtfTemplate3(FlaskForm):
+    # t = DateField('DatePicker', format='%Y-%m-%d')
     submit = SubmitField(label=('Добавить'))
 

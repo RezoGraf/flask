@@ -4,9 +4,6 @@ from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty
 from . import data_input
-from datetime import datetime
-from dateutil import parser
-
 import db
 import sql
 import utils
