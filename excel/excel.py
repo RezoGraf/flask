@@ -15,6 +15,7 @@ date_for_text = date.strftime("%d.%m.%Y")
 date_start_example = '01.01.2021'
 date_finish_example = '31.12.2021'
 
+
 def db_select(sql):
     con = fdb.connect(dsn='192.168.100.9:C:/DB/ARENA.GDB', user='sysdba', password='masterkey', charset="utf-8")
     cur = con.cursor()
@@ -23,6 +24,7 @@ def db_select(sql):
     cur.close()
     del cur
     return result
+
 
 sql_select_template = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
     (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK

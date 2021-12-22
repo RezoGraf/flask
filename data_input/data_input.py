@@ -82,7 +82,7 @@ def wtf_template2():
         return redirect(url_for('data_input.wtf_template3',
                                 otd=otd,
                                 doc=doc))
-    result_podr = db.select(sql.sql_podr)
+    result_podr = db.select(sql.sql_podr_selected.format(otd=otd))
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     form = WtfTemplate2()
     #Если метод запроса - POST и если поля формы валидны

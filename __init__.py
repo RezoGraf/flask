@@ -16,6 +16,7 @@ app.register_blueprint(data_input,
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(excel, url_prefix='/excel')
 
+
 @app.route('/menu')
 def menu():
     return render_template('menu.html')

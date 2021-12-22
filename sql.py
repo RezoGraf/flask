@@ -15,6 +15,9 @@ AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 # Выбор списка подразделений
 sql_podr = "select otd,notd from np_otd where notd is not null"
 
+# Выбор выбранного подразделения
+sql_podr_selected = "select otd, notd from np_otd where otd='{otd}'"
+
 
 # Выборка всех ФИО по номеру подразделения
 sql_fio = """select doc, ndoc from n_doc where pv=1 and otd='{otd}'"""
