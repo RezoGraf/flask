@@ -16,11 +16,6 @@ app.register_blueprint(data_input,
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(excel, url_prefix='/excel')
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
 @app.route('/menu')
 def menu():
     return render_template('menu.html')
@@ -67,7 +62,6 @@ def report_filter():
         return redirect(url_for('report_filter',
                                 dtn=dtn,
                                 dtk=dtk))
-
     sql_select_filtered = sql.sql_select.format(dtn=dtn,
                                                 dtk=dtk)
     result = db.select(sql_select_filtered)
@@ -90,7 +84,6 @@ def report():
         return redirect(url_for('report',
                                 dtn=dtn,
                                 dtk=dtk))
-
     # sql_select_filtered = sql.sql_select.format(dtn=dtn,
     #                                             dtk=dtk)
     result = db.select(sql.sql_select.format(dtn=dtn,
