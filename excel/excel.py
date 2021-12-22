@@ -1,7 +1,7 @@
 import datetime
 from datetime import date
 
-from flask import Blueprint
+from flask import Blueprint, send_file
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
@@ -9,14 +9,16 @@ from openpyxl.workbook import Workbook
 import db
 from excel.excel_sql import sql_select_otsut
 
+
 excel = Blueprint('excel', __name__)
 
-date = datetime.datetime.now()
-date_for_text = date.strftime("%d.%m.%Y")
+# date = datetime.datetime.now()
+# date_for_text = date.strftime("%d.%m.%Y")
 
 
 def book_create(date_start, date_finish):
     data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+    print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     # sql_select = sql_select_template.format(date_start=date_start, date_finish=date_finish)
     # data = db_select(sql_select)
     book = Workbook()
@@ -46,7 +48,7 @@ def book_create(date_start, date_finish):
     sheet.append(["Отчет по отсутствующим сотрудникам"])
     sheet.append([f"с {date_start} по {date_finish}"])
     sheet.append([" "])
-    sheet.append(["ФИО", "Подразделение", "Причина", "Период", " ", f"На {date_for_text}"])
+    # sheet.append(["ФИО", "Подразделение", "Причина", "Период", " ", f"На {date_for_text}"])
     sheet.append([" ", " ", " ", "Начало", "Конец", " "])
     sheet.merge_cells('D5:E5')
     sheet.merge_cells('A5:A6')
@@ -97,7 +99,8 @@ def book_create(date_start, date_finish):
         for s in range(1, 5):
             sheet.cell(row=s, column=i).border = Border(top=side_top, bottom=side_top, left=side_top, right=side_top)
     # ws.cell(row=5, column=i).font = Font(size=14, bold=True)
-    book.save(f"{date}_otchet_po_otsutstviyu.xlsx")
+    # book.save(f"{date}_otchet_po_otsutstviyu.xlsx")
+    book.save("excel/otchet_po_otsutstviyu.xlsx")
 
 
 def convert_data(conv_data):
@@ -108,8 +111,8 @@ def convert_data(conv_data):
         list_data[4] = list_data[4].date()
         list_data[3] = list_data[3].date()
 
-        if list_data[4] >= date and list_data[3] <= date:
-            list_data.append("Отсутствует")
+        # if list_data[4] >= date and list_data[3] <= date:
+        #     list_data.append("Отсутствует")
 
     convert_result = tuple(list_data)
     return convert_result
@@ -162,9 +165,17 @@ def set_column_widths(ws):
 # -----------------------------------------------------------------------------
 
 
-@excel.route('/excel')
+@excel.route('/')
 def excel1():
     date_start_example = '01.01.2021'
     date_finish_example = '31.12.2021'
     book_create(date_start_example, date_finish_example)
-    return "ok"
+
+    return send_file("excel/otchet_po_otsutstviyu.xlsx",
+                     mimetype='xlsx',
+                     attachment_filename='otchet_po_otsutstviyu.xlsx',
+                     as_attachment=True)
+
+    # Delete the zip file if not needed
+    os.remove("excel/otchet_po_otsutstviyu.xlsx")
+    # return "ok"
