@@ -163,7 +163,8 @@ def set_column_widths(ws):
 
 
 @excel.route('/excel')
-def excel():
+def excel1():
     date_start_example = '01.01.2021'
     date_finish_example = '31.12.2021'
     book_create(date_start_example, date_finish_example)
+    return "ok"
