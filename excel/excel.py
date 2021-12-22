@@ -8,91 +8,19 @@ import db
 import datetime
 import json
 
+from excel.excel_sql import sql_select_otsut
+
 excel = Blueprint('excel', __name__)
 
-date = date.today()
+date = datetime.date.now()
 date_for_text = date.strftime("%d.%m.%Y")
-date_start_example = '01.01.2021'
-date_finish_example = '31.12.2021'
 
-
-def db_select(sql):
-    con = fdb.connect(dsn='192.168.100.9:C:/DB/ARENA.GDB', user='sysdba', password='masterkey', charset="utf-8")
-    cur = con.cursor()
-    cur.execute(sql)
-    result = cur.fetchall()
-    cur.close()
-    del cur
-    return result
-
-
-sql_select_template = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
-    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
-from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""
-
-
-def convert_data(conv_data):
-    list_data = list(conv_data)
-    if list_data[4] is None:
-        list_data.append("Отсутствует")
-    else:
-        list_data[4] = list_data[4].date()
-        list_data[3] = list_data[3].date()
-
-        if list_data[4] >= date and list_data[3] <= date:
-            list_data.append("Отсутствует")
-
-    convert_result = tuple(list_data)
-    return convert_result
-
-# сортировка по столбцу 2-----------------------
-def sort_key(people):
-    return people[0]
-# ---------------------------------------------
-
-# Рамки ячеек--------------------------------------------------------------------
-def set_border(ws):
-    side = Side(border_style='thin', color='FF000000')
-
-    for cell in ws._cells.values():
-        cell.border = Border(top=side, bottom=side, left=side, right=side)
-
-# Выравнивание заголовка---------------------------------------------------
-def set_border_heading(ws):
-    side_border = Side(border_style='medium', color='FF000000')
-    for i in range(1, (ws.max_column + 1)):
-        ws.cell(row=5, column=i).font = Font(size=14, bold=True)
-        ws.cell(row=5, column=i).alignment = Alignment(horizontal="center", vertical="center")
-        ws.cell(row=6, column=i).font = Font(size=14, bold=True)
-        ws.cell(row=6, column=i).alignment = Alignment(horizontal="center", vertical="center")
-        ws.cell(row=2, column=i).font = Font(size=14, bold=True)
-        ws.cell(row=2, column=i).alignment = Alignment(horizontal="center", vertical="center")
-        ws.cell(row=3, column=i).font = Font(size=14, bold=True)
-        ws.cell(row=3, column=i).alignment = Alignment(horizontal="center", vertical="center")
-        ws.cell(row=5, column=i).border = Border(top=side_border, bottom=side_border, left=side_border, right=side_border)
-        ws.cell(row=6, column=i).border = Border(top=side_border, bottom=side_border, left=side_border, right=side_border)
-
-# Подгон размера столбцов--------------------------------------------------------
-def set_column_widths(ws):
-    column_widths = []
-    for row in ws.iter_rows():
-        for i, cell in enumerate(row):
-            try:
-                column_widths[i] = max(column_widths[i], len(str(cell.value))+3)
-
-            except IndexError:
-                column_widths.append(len(str(cell.value)))
-
-    for i, column_width in enumerate(column_widths):
-        ws.column_dimensions[get_column_letter(i + 1)].width = column_width
-
-# -----------------------------------------------------------------------------
 def book_create(date_start, date_finish):
 
-    sql_select = sql_select_template.format(date_start=date_start, date_finish=date_finish)
-    data = db_select(sql_select)
+    data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+
+    # sql_select = sql_select_template.format(date_start=date_start, date_finish=date_finish)
+    # data = db_select(sql_select)
 
     book = Workbook()
     sheet = book.active
@@ -201,10 +129,72 @@ def book_create(date_start, date_finish):
 
     book.save(f"{date}_otchet_po_otsutstviyu.xlsx")
 
+def convert_data(conv_data):
+    list_data = list(conv_data)
+    if list_data[4] is None:
+        list_data.append("Отсутствует")
+    else:
+        list_data[4] = list_data[4].date()
+        list_data[3] = list_data[3].date()
+
+        if list_data[4] >= date and list_data[3] <= date:
+            list_data.append("Отсутствует")
+
+    convert_result = tuple(list_data)
+    return convert_result
+
+# сортировка по столбцу 2-----------------------
+def sort_key(people):
+    return people[0]
+# ---------------------------------------------
+
+# Рамки ячеек--------------------------------------------------------------------
+def set_border(ws):
+    side = Side(border_style='thin', color='FF000000')
+
+    for cell in ws._cells.values():
+        cell.border = Border(top=side, bottom=side, left=side, right=side)
+
+# Выравнивание заголовка---------------------------------------------------
+def set_border_heading(ws):
+    side_border = Side(border_style='medium', color='FF000000')
+    for i in range(1, (ws.max_column + 1)):
+        ws.cell(row=5, column=i).font = Font(size=14, bold=True)
+        ws.cell(row=5, column=i).alignment = Alignment(horizontal="center", vertical="center")
+        ws.cell(row=6, column=i).font = Font(size=14, bold=True)
+        ws.cell(row=6, column=i).alignment = Alignment(horizontal="center", vertical="center")
+        ws.cell(row=2, column=i).font = Font(size=14, bold=True)
+        ws.cell(row=2, column=i).alignment = Alignment(horizontal="center", vertical="center")
+        ws.cell(row=3, column=i).font = Font(size=14, bold=True)
+        ws.cell(row=3, column=i).alignment = Alignment(horizontal="center", vertical="center")
+        ws.cell(row=5, column=i).border = Border(top=side_border, bottom=side_border, left=side_border, right=side_border)
+        ws.cell(row=6, column=i).border = Border(top=side_border, bottom=side_border, left=side_border, right=side_border)
+
+# Подгон размера столбцов--------------------------------------------------------
+def set_column_widths(ws):
+    column_widths = []
+    for row in ws.iter_rows():
+        for i, cell in enumerate(row):
+            try:
+                column_widths[i] = max(column_widths[i], len(str(cell.value))+3)
+
+            except IndexError:
+                column_widths.append(len(str(cell.value)))
+
+    for i, column_width in enumerate(column_widths):
+        ws.column_dimensions[get_column_letter(i + 1)].width = column_width
+
+# -----------------------------------------------------------------------------
 
 
 
 
+
+@excel.route('/excel')
+def excel():
+    date_start_example = '01.01.2021'
+    date_finish_example = '31.12.2021'
+    book_create(date_start_example, date_finish_example)
 
 
 
