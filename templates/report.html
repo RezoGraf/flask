@@ -25,6 +25,13 @@
                     		<button type="button submit" class="btn btn-primary">Сформировать</button>
                 </td>
                 <td>
+                        <select name="otd" class="form-select" aria-label="Default select example">
+{% for OTD, NOTD in result_podr %}
+<option value="{{ OTD }}"{% if loop.first %} SELECTED{% endif %}>{{ NOTD }}</option>
+{% endfor %}
+</select>
+                </td>
+                <td>
 {#                    <label for="exampleDataList" class="form-label">Datalist example</label>#}
 <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска...">
 <datalist id="datalistOptions">
