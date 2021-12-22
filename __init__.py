@@ -13,7 +13,9 @@ app.register_blueprint(data_input,
                        url_prefix='/data_input',
                        static_folder='/static',
                        template_folder='/templates')
+
 app.register_blueprint(api, url_prefix='/api')
+
 app.register_blueprint(excel, url_prefix='/excel')
 
 
