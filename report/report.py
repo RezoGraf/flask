@@ -17,8 +17,6 @@ import utils
 import calendar
 
 
-
-
 report = Blueprint('report', __name__)
 
 
@@ -36,8 +34,6 @@ def main():
         return redirect(url_for('report',
                                 dtn=dtn,
                                 dtk=dtk))
-    # sql_select_filtered = sql.sql_select.format(dtn=dtn,
-    #                                             dtk=dtk)
     result = db.select(sql.sql_select.format(dtn=dtn,
                                                 dtk=dtk))
     print(type(result))
