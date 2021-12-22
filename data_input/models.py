@@ -46,7 +46,8 @@ class SignupForm(FlaskForm):
             ("Pokemon Trainer", "pokemon"),
         ],
     )
-    website = StringField("Website", validators=[URL()])
+    website = StringField("Website",
+                          validators=[URL()])
     birthday = DateField("Your Birthday")
     submit = SubmitField("Submit")
 
@@ -59,5 +60,6 @@ class WtfTemplate2(FlaskForm):
     submit = SubmitField(label=('Выбрать'))
 
 class WtfTemplate3(FlaskForm):
+    # t = DateField('DatePicker', format='%Y-%m-%d')
     submit = SubmitField(label=('Добавить'))
 

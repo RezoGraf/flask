@@ -29,7 +29,7 @@ sql_it_rasp = """Select NROOM_KR,(select interval_time from it_rasp_time where i
                  where (it_rasp.room=room.id) and (it_rasp.spz=n_spz.spz) and doc='{doc}'"""
 
 # Информация об отсутствии на работе
-sql_rsp_blc = """Select iblc, dtn, dtk, (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) from rsp_blc where doc='{doc}' order by dtn"""
+sql_rsp_blc = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ from rsp_blc where doc='{doc}' order by dtn,dtk"""
 
 # Информация о дежурстве
 sql_it_rasp_duty = """Select ID,DATE_DUTY, 
@@ -45,5 +45,8 @@ sql_it_rasp_duty = """Select ID,DATE_DUTY,
                  END as denNedeli
                  from IT_RASP_DUTY 
                  where doc='{doc}' order by DATE_DUTY"""
+
+# Время работы
+sql_interval_time = """select id, interval_time from it_rasp_time order by id"""
 
 sql_doctod = """ select doc, ndoc from n_doc where pv=1 and doc='{doc}' and otd='{otd}'"""
