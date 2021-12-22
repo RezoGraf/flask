@@ -1,15 +1,10 @@
-from flask import Flask, render_template, request, url_for, redirect
-from flask import json
-from flask_wtf import Form
-from wtforms import SelectField
 import db
 import models
 import sql
-import utils
-from data_input.data_input import data_input
 from api.api import api
+from data_input.data_input import data_input
 from excel.excel import excel
-
+from flask import Flask, render_template, request, url_for, redirect
 
 app = Flask(__name__, static_folder="static",
             template_folder='templates')
@@ -20,11 +15,6 @@ app.register_blueprint(data_input,
                        template_folder='/templates')
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(excel, url_prefix='/excel')
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
 
 @app.route('/menu')
 def menu():
@@ -72,7 +62,6 @@ def report_filter():
         return redirect(url_for('report_filter',
                                 dtn=dtn,
                                 dtk=dtk))
-
     sql_select_filtered = sql.sql_select.format(dtn=dtn,
                                                 dtk=dtk)
     result = db.select(sql_select_filtered)
@@ -95,10 +84,10 @@ def report():
         return redirect(url_for('report',
                                 dtn=dtn,
                                 dtk=dtk))
-
-    sql_select_filtered = sql.sql_select.format(dtn=dtn,
-                                                dtk=dtk)
-    result = db.select(sql_select_filtered)
+    # sql_select_filtered = sql.sql_select.format(dtn=dtn,
+    #                                             dtk=dtk)
+    result = db.select(sql.sql_select.format(dtn=dtn,
+                                                dtk=dtk))
     print(type(result))
     return render_template("report.html",
                            my_list=result, dtn=dtn, dtk=dtk)
@@ -106,4 +95,4 @@ def report():
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run(host='0.0.0.0')
+    app.run('0.0.0.0')
