@@ -12,7 +12,7 @@ from excel.excel_sql import sql_select_otsut
 
 excel = Blueprint('excel', __name__)
 
-date = datetime.date.now()
+date = datetime.datetime.now()
 date_for_text = date.strftime("%d.%m.%Y")
 
 def book_create(date_start, date_finish):
