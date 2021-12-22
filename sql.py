@@ -46,4 +46,7 @@ sql_it_rasp_duty = """Select ID,DATE_DUTY,
                  from IT_RASP_DUTY 
                  where doc='{doc}' order by DATE_DUTY"""
 
+# Время работы
+sql_interval_time = """select id, interval_time from it_rasp_time order by id"""
+
 sql_doctod = """ select doc, ndoc from n_doc where pv=1 and doc='{doc}' and otd='{otd}'"""

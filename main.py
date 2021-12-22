@@ -8,6 +8,7 @@ import sql
 import utils
 from data_input.data_input import data_input
 from api.api import api
+from excel.excel import excel
 
 
 app = Flask(__name__, static_folder="static",
@@ -18,6 +19,7 @@ app.register_blueprint(data_input,
                        static_folder='/static',
                        template_folder='/templates')
 app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(excel, url_prefix='/excel')
 
 
 if __name__ == '__main__':

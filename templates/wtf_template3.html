@@ -25,18 +25,18 @@
         <form>
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">Дата с:</label>
-            <input type="date" class="form-control" name="InsDtn">
+            <input type="date" class="form-control" name="InsDtn" required>
 {#             <input type="date" class="form-control" value={{ DTN }} name="InsDtn">#}
           </div>
 
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">по:</label>
-            <input type="date" class="form-control" name="InsDtk">
+            <input type="date" class="form-control" name="InsDtk" required>
           </div>
 
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect01" >Причина:</label>
-            <select class="form-select" id="inputGroupSelect01" name="InsRsn">
+            <select class="form-select" id="inputGroupSelect01" name="InsRsn" required>
               {% for RSN, NRSN in result_rsn %}
                 <option value="{{ RSN }}"{% if loop.first %} SELECTED{% endif %}>{{ NRSN }} </option>
               {% endfor %}
@@ -72,17 +72,17 @@
         <form>
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">Дата с:</label>
-            <input type="date" class="form-control" value={{ DTN }} name="UpdDtn">
+            <input type="date" class="form-control" value={{ DTN }} name="UpdDtn" required>
           </div>
 
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">по:</label>
-            <input type="date" class="form-control" value={{ DTK }} name="UpdDtk">
+            <input type="date" class="form-control" value={{ DTK }} name="UpdDtk" required>
           </div>
 
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelect01" >Причина:</label>
-            <select class="form-select" id="inputGroupSelect01" name="UpdRsn">
+            <select class="form-select" id="inputGroupSelect01" name="UpdRsn" required>
               {% for RSN, NRSN in result_rsn %}
                 <option value="{{ RSN }}"{% if loop.first %} SELECTED{% endif %}>{{ NRSN }} </option>
               {% endfor %}
@@ -125,6 +125,42 @@
 {% endfor %}
 </form>
 
+{#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
+<form method="post">
+ <div class="modal" id="InsRspDutyModal"  tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ВВЕДИТЕ СВЕДЕНИЯ О ДЕЖУРСТВАХ СОТРУДНИКА {{ FIO }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+       <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Дата:</label>
+            <input type="date" class="form-control" name="InsDtnDuty" required>
+          </div>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01" >Время:</label>
+            <select class="form-select" id="inputGroupSelect01" name="InsTimeDuty" required>
+              {% for ID, INTEVAL_TIME in result_time %}
+                <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME }} </option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary" name="btn" value="InsDuty">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
 <div class="container">
     <h2>Внесение дежурства и выходных</h2>
      <form class="form-horizontal" method="POST" action="">
@@ -163,7 +199,7 @@
              <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Добавить запись" data-bs-target="#InsRspBlcModal">
                     <i class="bi bi-calendar-plus"></i>
                     <span class="visually-hidden">Button</span>
-                </button>
+             </button>
          </caption>
          <thead>
          <th>Дата с</th>
@@ -194,7 +230,12 @@
      </table>
 
      <table class="table caption-top table table-striped table table-bordered">
-     <caption>Работа в праздничные и выходные дни, дежурство по графику</caption>
+     <caption>Работа в праздничные и выходные дни, дежурство по графику
+             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Добавить запись" data-bs-target="#InsRspDutyModal">
+                    <i class="bi bi-calendar-plus"></i>
+                    <span class="visually-hidden">Button</span>
+             </button>
+     </caption>
          <thead>
          <th>Дата</th>
          <th>Время</th>
@@ -202,12 +243,12 @@
 
          </thead>
          <tr>
-         {% for DATE_DUTY, TIME_DUTY, denNedeli,ID in result_duty %}
+         {% for ID, DATE_DUTY, TIME_DUTY, denNedeli in result_duty %}
             <tr>
-                <td>{{ DATE_DUTY }}</td>
-                <td>{{ TIME_DUTY }}</td>
-                <td>{{ denNedeli }}</td>
-                <td>{{ ID }}</td>
+                <td>{{ DATE_DUTY.strftime('%d.%m.%Y') or "" }}</td>
+                <td>{{ TIME_DUTY or "" }}</td>
+                <td>{{ denNedeli or ""}}</td>
+{#                <td>{{ ID }}</td>#}
             </tr>
          {% endfor %}
      </table>
