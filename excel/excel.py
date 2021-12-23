@@ -175,8 +175,8 @@ def excel_ots():
 
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
-    date_start_example = '01.01.2021'
-    date_finish_example = '31.12.2021'
+    # date_start_example = '01.01.2021'
+    # date_finish_example = '31.12.2021'
     book_create(dtn, dtk)
 
     return send_file("excel/otchet_po_otsutstviyu.xlsx",
