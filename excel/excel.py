@@ -2,7 +2,7 @@ import datetime
 import os
 from datetime import date
 
-from flask import Blueprint, send_file
+from flask import Blueprint, send_file, request
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
@@ -170,8 +170,9 @@ def set_column_widths(ws):
 
 # -----------------------------------------------------------------------------
 
-@excel.route('/')
+@excel.route('/', methods=['GET', 'POST'])
 def excel_ots():
+
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
     date_start_example = '01.01.2021'
