@@ -10,6 +10,8 @@ from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty
 from . import report
+import pandas as pd
+import datetime
 import db
 import sql
 import utils
@@ -28,14 +30,15 @@ def main():
     if dtk is None:
         dtk = '07.12.2021'
     if request.method == 'POST':
-        dtn = request.form.get('dtn')  # запрос к данным формы
-        dtk = request.form.get('dtk')
-        print(dtn+dtk)
+        # dtn = request.form.get('dtn')
+        dtn = pd.Timestamp(request.form.get('dtn'))  # запрос к данным формы
+        dtk = pd.Timestamp(request.form.get('dtk'))
+        # dtn.strftime("%d.%m.%Y")
+        # dtk.strftime("%d.%m.%Y")
         if request.form['btn'] == 'saveToPdf':
-            dtn = request.form.get('dtn')  # запрос к данным формы
-            dtk = request.form.get('dtk')
-            print(dtn + dtk)
-            return redirect(url_for('excel.excel_ots',  _external=True, dtn=dtn, dtk=dtk))
+            # dtn = request.form.get('dtn')  # запрос к данным формы
+            # dtk = request.form.get('dtk')
+            return redirect(url_for('excel.excel_ots', _external=True, dtn=dtn.strftime("%d.%m.%Y"), dtk=dtk.strftime("%d.%m.%Y")))
         return redirect(url_for('report.main',
                                 dtn=dtn,
                                 dtk=dtk))
