@@ -18,6 +18,8 @@ excel = Blueprint('excel', __name__)
 
 
 def book_create(date_start, date_finish):
+    # date_start = date_start.strftime("%d.%m.%Y")
+    # date_finish = date_finish.strftime("%d.%m.%Y")
     data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     # sql_select = sql_select_template.format(date_start=date_start, date_finish=date_finish)
