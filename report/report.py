@@ -3,7 +3,6 @@ import models
 import sql
 from api.api import api
 from data_input.data_input import data_input
-from excel.excel import excel
 from flask import Flask, render_template, request, url_for, redirect
 from flask import Blueprint, render_template, abort, redirect, url_for, request
 # регистрируем схему `Blueprint`
@@ -32,7 +31,7 @@ def main():
         dtn = request.form.get('dtn')  # запрос к данным формы
         dtk = request.form.get('dtk')
         if request.form['btn'] == 'save_to_pdf':
-            return redirect(url_for("excel.main", dtn=dtn, dtk=dtk))
+            return redirect(url_for("excel.main",  _external=True, dtn=dtn, dtk=dtk))
         return redirect(url_for('report.main',
                                 dtn=dtn,
                                 dtk=dtk))
