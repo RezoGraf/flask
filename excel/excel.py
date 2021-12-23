@@ -170,8 +170,9 @@ def set_column_widths(ws):
 
 # -----------------------------------------------------------------------------
 
-@excel.route('/')
+@excel.route('/', methods=['GET', 'POST'])
 def excel_ots():
+
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
     date_start_example = '01.01.2021'
