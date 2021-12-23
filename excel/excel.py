@@ -18,6 +18,8 @@ excel = Blueprint('excel', __name__)
 
 
 def book_create(date_start, date_finish):
+    # date_start = date_start.strftime("%d.%m.%Y")
+    # date_finish = date_finish.strftime("%d.%m.%Y")
     data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     # sql_select = sql_select_template.format(date_start=date_start, date_finish=date_finish)
@@ -175,8 +177,8 @@ def excel_ots():
 
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
-    date_start_example = '01.01.2021'
-    date_finish_example = '31.12.2021'
+    # date_start_example = '01.01.2021'
+    # date_finish_example = '31.12.2021'
     book_create(dtn, dtk)
 
     return send_file("excel/otchet_po_otsutstviyu.xlsx",
