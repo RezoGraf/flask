@@ -1,63 +1,64 @@
-{% extends 'menu.html' %}
-{% block content %}
+{% extends 'menu.html' %} {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/datepicker.material.css') }}">
-{#<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">#}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/buttons.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/select.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/searchPanes.dataTables.min.css') }}">
-{#<script src="{{ url_for('static', filename='datepicker.js') }}"></script>#}
+<script src="{{ url_for('static', filename='datepicker.js') }}"></script>
 <script src="{{ url_for('static', filename='jquery-3.6.0.min.js') }}"></script>
-{#<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/buttons.html5.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/buttons.print.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/dataTables.buttons.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/dataTables.searchPanes.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/dataTables.select.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/jquery-3.5.1.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/jszip.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/pdfmake.min.js') }}"></script>#}
-{#<script src="{{ url_for('static', filename='js/vfs_fonts.js') }}"></script>#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>Отчет по отсутствующим за период: с {{ dtn.strftime('%d.%m.%Y') or '' }} по {{ dtk.strftime('%d.%m.%Y') or '' }}</title>#}
-{#</head>#}
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/buttons.html5.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/buttons.print.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.searchPanes.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dataTables.select.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.5.1.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jszip.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pdfmake.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vfs_fonts.js') }}"></script>
 
-    <form action="" method="post">
-        <table>
-            <tr>
+<head>#} {#
+    <meta charset="UTF-8">#} {#
+    <title>Отчет по отсутствующим за период: с {{ dtn.strftime('%d.%m.%Y') or '' }} по {{ dtk.strftime('%d.%m.%Y') or '' }}</title>#} {#
+</head>#}
+
+<form action="" method="post">
+    <table>
+        <tr>
             <td>
 
-	    <label for="datepicker" class="form-label">Дата начала</label>
-                <input type="date" value="{{ dtn }}" name="dtn" />
-{#        <input type="text" id="datepicker" name="dtn" autocomplete="off">#}
+                <label for="datepicker" class="form-label">Дата начала</label>
+                <input type="date" value="{{ dtn }}" name="dtn" /> {# <input type="text" id="datepicker" name="dtn" autocomplete="off">#}
 
-                </td>
-                <td>
+            </td>
+            <td>
 
-	    <label for="datepicker2" class="form-label">Окончание</label>
-                    <input type="date" value="{{ dtk }}" name="dtk" />
-{#        <input type="text" id="datepicker2" name="dtk" autocomplete="off">#}
+                <label for="datepicker2" class="form-label">Окончание</label>
+                <input type="date" value="{{ dtk }}" name="dtk" /> {# <input type="text" id="datepicker2" name="dtk" autocomplete="off">#}
 
 
 
-                </td>
-                <td>
-                    		<button type="button submit" class="btn btn-primary">Сформировать</button>
-                </td>
-            </tr>
+            </td>
+            <td>
+                <button type="button submit" class="btn btn-primary">Сформировать</button>
+            </td>
+        </tr>
 
-            </table>
-    </form>
+    </table>
+</form>
 
-{#<script>#}
-{#var datepicker = new Datepicker("#datepicker");#}
-{#var datepicker2 = new Datepicker('#datepicker2');#}
-{#</script>#}
+{#
+<script>
+    #} {#
+        var datepicker = new Datepicker("#datepicker");#
+    } {#
+        var datepicker2 = new Datepicker('#datepicker2');#
+    } {#
+</script>#} {#
 
 
-{#<script src="https://code.jquery.com/jquery-3.5.1.js"></script>#}
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>#}
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.1.0/js/dataTables.buttons.min.js"></script>
@@ -71,29 +72,29 @@
 
 
 <table id="myTable" class="table table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th>Отделение</th>
-                <th>ФИО</th>
-                <th>Причина</th>
-                <th>Отстутствует с</th>
-                <th>Отсутствует по</th>
-            </tr>
-        </thead>
-        <tbody>
+    <thead>
+        <tr>
+            <th>Отделение</th>
+            <th>ФИО</th>
+            <th>Причина</th>
+            <th>Отстутствует с</th>
+            <th>Отсутствует по</th>
+        </tr>
+    </thead>
+    <tbody>
 
 
 
         {% for SNLPU, NDOC, NRSN, DTN, DTK in my_list %}
-            <tr>
-                <td>{{ SNLPU }}</td>
-                <td>{{ NDOC }}</td>
-                <td>{{ NRSN }}</td>
-                <td>{{ DTN }}</td>
-                <td>{{ DTK }}</td>
-            </tr>
+        <tr>
+            <td>{{ SNLPU }}</td>
+            <td>{{ NDOC }}</td>
+            <td>{{ NRSN }}</td>
+            <td>{{ DTN }}</td>
+            <td>{{ DTK }}</td>
+        </tr>
         {% endfor %}
- <tfoot>
+        <tfoot>
             <tr>
                 <th>Отделение</th>
                 <th>ФИО</th>
@@ -102,40 +103,36 @@
                 <th>Отсутствует по</th>
             </tr>
         </tfoot>
-    </table>
+</table>
 
 <script>
-
-
-
-$(document).ready(function() {
-    $('#myTable').DataTable( {
-        scrollCollapse: true,
-        paging:         true,
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            scrollCollapse: true,
+            paging: true,
             autoFill: true,
-        "pageLength": 18,
-        dom: 'Bfrtip',
-        buttons: [
-            'copy',
-            'excel',
-            'pdf',
-            {
-                extend: 'print',
-                text: 'Напечатать все',
-                exportOptions: {
-                    modifier: {
-                        selected: null
+            "pageLength": 18,
+            dom: 'Bfrtip',
+            buttons: [
+                'copy',
+                'excel',
+                'pdf', {
+                    extend: 'print',
+                    text: 'Напечатать все',
+                    exportOptions: {
+                        modifier: {
+                            selected: null
+                        }
                     }
                 }
-            }
-        ],
-        select: true,
-    } );
+            ],
+            select: true,
+        });
 
 
 
 
 
-} );
+    });
 </script>
 {% endblock %}

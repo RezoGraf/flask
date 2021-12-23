@@ -17,28 +17,6 @@ data_input = Blueprint('data_input', __name__)
 # Связываем URL со схемой `data_input`
 
 
-@data_input.route('/2')
-def index():
-    return "This is an example app"
-
-
-# @data_input.route('/1', methods=['GET', 'POST'])
-# def signup():
-#     try:
-#         """User sign-up form for account creation."""
-#         form = models.SignupForm()
-#         if form.validate_on_submit():
-#             return redirect(url_for("success"))
-#         return render_template(
-#             "signup.jinja2",
-#             form=form,
-#             template="form-template",
-#             title="Signup Form"
-#         )
-#     except TemplateNotFound:
-#         abort(404)
-
-
 @data_input.route('/signup', methods=['GET', 'POST'])
 def signup():
     """User sign-up form for account creation."""
@@ -82,7 +60,7 @@ def wtf_template2():
         return redirect(url_for('data_input.wtf_template3',
                                 otd=otd,
                                 doc=doc))
-    result_podr = db.select(sql.sql_podr)
+    result_podr = db.select(sql.sql_podr_selected.format(otd=otd))
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     form = WtfTemplate2()
     #Если метод запроса - POST и если поля формы валидны

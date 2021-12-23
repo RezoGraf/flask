@@ -1,69 +1,87 @@
-{% extends 'menu.html' %}
-{% block content %}
+{% extends 'menu.html' %} {% block content %}
 
 
 <head>
     <meta charset="UTF-8">
     <title>Отчет по отсутствующим</title>
 </head>
+
 <body>
-    <form action="" method="post">
+    <form method="post">
         <table>
             <tr>
-            <td>
+                <td>
 
-	    <label for="datepicker" class="form-label">Дата начала</label>
-       <input type="date" value="{{ dtn }}" name="dtn" />
+                    <label for="datepicker" class="form-label">Дата начала</label>
+                    <input type="date" value="{{ dtn }}" name="dtn" />
 
                 </td>
                 <td>
 
-	    <label for="datepicker2" class="form-label">Окончание</label>
-       <input type="date" value="{{ dtk }}" name="dtk" />
+                    <label for="datepicker2" class="form-label">Окончание</label>
+                    <input type="date" value="{{ dtk }}" name="dtk" />
                 </td>
                 <td>
-                    		<button type="button submit" class="btn btn-primary">Сформировать</button>
+                    <button type="button submit" class="btn btn-primary">Сформировать</button>
+                </td>
+                <!-- <td>
+                    <select name="reason" class="form-select" aria-label="Default select example">
+                        {% for DOC, NDOC in result_fio %}
+                        <option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
+                        {% endfor %}
+                        </select>
                 </td>
                 <td>
-{#                    <label for="exampleDataList" class="form-label">Datalist example</label>#}
-<input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска...">
-<datalist id="datalistOptions">
+                    <select name="reason" class="form-select" aria-label="Default select example">
+                        {% for DOC, NDOC in result_fio %}
+                        <option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
+                        {% endfor %}
+                        </select>
+                </td> -->
+                <td>
+                    {# <label for="exampleDataList" class="form-label">Поиск по ФИО</label>#}
+                    <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска...">
+                    <!-- <datalist id="datalistOptions">
   <option value="San Francisco">
   <option value="New York">
   <option value="Seattle">
   <option value="Los Angeles">
   <option value="Chicago">
-</datalist>
+</datalist> -->
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary" name="btn" value="saveToPdf">PDF</button>
                 </td>
             </tr>
-            </table>
+        </table>
     </form>
 </body>
+
 </html>
 <table id="myTable" class="table table-striped" style="width:100%">
-        <thead>
-            <tr>
-                <th>Отделение</th>
-                <th>ФИО</th>
-                <th>Причина</th>
-                <th>Отстутствует с</th>
-                <th>Отсутствует по</th>
-            </tr>
-        </thead>
-        <tbody>
+    <thead>
+        <tr>
+            <th>Отделение</th>
+            <th>ФИО</th>
+            <th>Причина</th>
+            <th>Отстутствует с</th>
+            <th>Отсутствует по</th>
+        </tr>
+    </thead>
+    <tbody>
 
 
 
         {% for SNLPU, NDOC, NRSN, DTN, DTK in my_list %}
-            <tr>
-                <td>{{ SNLPU }}</td>
-                <td>{{ NDOC }}</td>
-                <td>{{ NRSN }}</td>
-                <td>{{ DTN }}</td>
-                <td>{{ DTK }}</td>
-            </tr>
+        <tr>
+            <td>{{ SNLPU }}</td>
+            <td>{{ NDOC }}</td>
+            <td>{{ NRSN }}</td>
+            <td>{{ DTN }}</td>
+            <td>{{ DTK }}</td>
+        </tr>
         {% endfor %}
- <tfoot>
+        <tfoot>
             <tr>
                 <th>Отделение</th>
                 <th>ФИО</th>
@@ -72,25 +90,43 @@
                 <th>Отсутствует по</th>
             </tr>
         </tfoot>
-    </table>
+</table>
 
-    <script>
-function filterTable(event) {
-    var filter = event.target.value.toUpperCase();
-    var rows = document.querySelector("#myTable tbody").rows;
+<script>
+    function filterTable(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
 
-    for (var i = 0; i < rows.length; i++) {
-        var firstCol = rows[i].cells[0].textContent.toUpperCase();
-        var secondCol = rows[i].cells[1].textContent.toUpperCase();
-        if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1) {
-            rows[i].style.display = "";
-        } else {
-            rows[i].style.display = "none";
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[1].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
         }
     }
-}
 
-document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
-    </script>
+    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+</script>
+
+<!-- <script>
+    function filterTable(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[0].textContent.toUpperCase();
+            var secondCol = rows[i].cells[1].textContent.toUpperCase();
+            if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+</script> -->
 
 {% endblock %}

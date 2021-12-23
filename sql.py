@@ -15,6 +15,9 @@ AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 # Выбор списка подразделений
 sql_podr = "select otd,notd from np_otd where notd is not null order by ps"
 
+# Выбор выбранного подразделения
+sql_podr_selected = "select otd, notd from np_otd where otd='{otd}'"
+
 
 # Выборка всех ФИО по номеру подразделения
 sql_fio = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """
