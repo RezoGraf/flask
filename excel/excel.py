@@ -170,19 +170,16 @@ def set_column_widths(ws):
 
 # -----------------------------------------------------------------------------
 
-def osn():
+@excel.route('/')
+def excel_ots():
+    dtn = request.args.get('dtn')
+    dtk = request.args.get('dtk')
     date_start_example = '01.01.2021'
     date_finish_example = '31.12.2021'
-    book_create(date_start_example, date_finish_example)
+    book_create(dtn, dtk)
 
     return send_file("excel/otchet_po_otsutstviyu.xlsx",
                      mimetype='xlsx',
                      attachment_filename='otchet_po_otsutstviyu.xlsx',
                      as_attachment=True)
-
-@excel.route('/')
-def excel1():
-    osn()
-    # remove_ex()
-    return osn()
 
