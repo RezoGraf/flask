@@ -30,8 +30,12 @@ def main():
     if request.method == 'POST':
         dtn = request.form.get('dtn')  # запрос к данным формы
         dtk = request.form.get('dtk')
-        if request.form['btn'] == 'save_to_pdf':
-            return redirect(url_for("excel.main",  _external=True, dtn=dtn, dtk=dtk))
+        print(dtn+dtk)
+        if request.form['btn'] == 'saveToPdf':
+            dtn = request.form.get('dtn')  # запрос к данным формы
+            dtk = request.form.get('dtk')
+            print(dtn + dtk)
+            return redirect(url_for('excel.excel_ots',  _external=True, dtn=dtn, dtk=dtk))
         return redirect(url_for('report.main',
                                 dtn=dtn,
                                 dtk=dtk))
