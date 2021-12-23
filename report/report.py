@@ -11,7 +11,7 @@ from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty
 from . import report
 import pandas as pd
-import datetime
+from datetime import datetime
 import db
 import sql
 import utils
@@ -26,9 +26,12 @@ def main():
     dtn = request.args.get('dtn')  # запрос к данным формы
     dtk = request.args.get('dtk')
     if dtn is None:
-        dtn = '01.12.2021'
+        dtn = datetime.today().strftime('%d.%m.%Y')
+        # dtn = datetime.today()
+        # dtn = '01.12.2021'
     if dtk is None:
-        dtk = '07.12.2021'
+        # dtk = '07.12.2021'
+        dtk = datetime.today().strftime('%d.%m.%Y')
     if request.method == 'POST':
         # dtn = request.form.get('dtn')
         dtn = pd.Timestamp(request.form.get('dtn'))  # запрос к данным формы
