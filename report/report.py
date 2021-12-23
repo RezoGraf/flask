@@ -31,7 +31,7 @@ def main():
     if request.method == 'POST':
         dtn = request.form.get('dtn')  # запрос к данным формы
         dtk = request.form.get('dtk')
-        return redirect(url_for('report',
+        return redirect(url_for('report.main',
                                 dtn=dtn,
                                 dtk=dtk))
     result = db.select(sql.sql_select.format(dtn=dtn,

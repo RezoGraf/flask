@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datepicker.material.css') }}">
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/datepicker.js') }}"></script>
+<title>
+    {% block title %}{% endblock %}
+</title>
+
+<head>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>
+
+{% block scripts %}{% endblock %}
+
+</html>
