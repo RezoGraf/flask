@@ -49,15 +49,16 @@ def book_create(date_start, date_finish):
     sheet.append(["Отчет по отсутствующим сотрудникам"])
     sheet.append([f"с {date_start} по {date_finish}"])
     sheet.append([" "])
-    sheet.append(["ФИО", "Подразделение", "Причина", "Период"])
-    sheet.append([" ", " ", " ", "Начало", "Конец"])
+    # sheet.append(["ФИО", "Подразделение", "Причина", "Период", " ", f"На {date_for_text}"])
+    sheet.append(["ФИО", "Подразделение", "Причина", "Период", " "])
+    sheet.append([" ", " ", " ", "Начало", "Конец", " "])
     sheet.merge_cells('D5:E5')
     sheet.merge_cells('A5:A6')
     sheet.merge_cells('B5:B6')
     sheet.merge_cells('C5:C6')
-    # sheet.merge_cells('F5:E6')
-    sheet.merge_cells('A2:E2')
-    sheet.merge_cells('A3:E3')
+    sheet.merge_cells('F5:F6')
+    sheet.merge_cells('A2:F2')
+    sheet.merge_cells('A3:F3')
     list_result = []
     # Построчно передача данных для разбора в функцию, после запись в СПИСОК result
     for a in data:
@@ -67,18 +68,14 @@ def book_create(date_start, date_finish):
     # ---------------------------------------------
     for row in list_result:
         sheet.append(row)
-    # 1 стобец заливка, Шрифт жирный-----------------------------------------------------
     color_fill = PatternFill(start_color='dce6f1', end_color='dce6f1', fill_type='solid')
     for i in range(7, (sheet.max_row + 1)):
         x = "A" + str(i)
         sheet[f'{x}'].fill = color_fill
         sheet[f'{x}'].font = Font(bold=True)
-    # Заливка и шрифт шапки-------------------------------------------------------------
-    for i in range(1, sheet.max_column):
+    for i in range(1, 7):
         sheet.cell(row=5, column=i).fill = color_fill
         sheet.cell(row=6, column=i).fill = color_fill
-    # КОСТЫЛЬ----------------------------------------------------------------------
-    sheet.cell(row=6, column=5).fill = color_fill
     # переформат даты в dd/mm/yyyy---------------------------------------------------
     for i in range(1, sheet.max_row):
         dateCell = sheet.cell(row=i+1, column=5)
@@ -87,10 +84,10 @@ def book_create(date_start, date_finish):
         dateCell = sheet.cell(row=i+1, column=4)
         dateCell.number_format = 'dd/mm/yyyy;@'
     # -------------------------------------------------------------------------------
-    # for i in range(1, sheet.max_row):
-    #     if sheet.cell(row=i+1, column=6).value == "Отсутствует":
-    #         for s in range(1, sheet.max_column + 1):
-    #             sheet.cell(row=i + 1, column=s).fill = PatternFill(start_color="FFC7CE", fill_type="solid")
+    for i in range(1, sheet.max_row):
+        if sheet.cell(row=i+1, column=6).value == "Отсутствует":
+            for s in range(1, sheet.max_column + 1):
+                sheet.cell(row=i + 1, column=s).fill = PatternFill(start_color="FFC7CE", fill_type="solid")
     fullRange = "A6:" + get_column_letter(sheet.max_column) + str(sheet.max_row)
     sheet.auto_filter.ref = fullRange
     set_column_widths(sheet)
@@ -98,7 +95,7 @@ def book_create(date_start, date_finish):
     set_border_heading(sheet)
     sheet.column_dimensions['D'].width = 15
     sheet.column_dimensions['E'].width = 15
-    # sheet.column_dimensions['F'].width = 20
+    sheet.column_dimensions['F'].width = 20
     side_top = Side(border_style=None, color='FF000000')
     for i in range(1, (sheet.max_column + 1)):
         for s in range(1, 5):
@@ -111,8 +108,7 @@ def book_create(date_start, date_finish):
 def convert_data(conv_data):
     list_data = list(conv_data)
     if list_data[4] is None:
-        list_data[4] = ''
-        # list_data.append("Отсутствует")
+        list_data.append("Отсутствует")
     else:
         list_data[4] = list_data[4].date()
         list_data[3] = list_data[3].date()
@@ -138,7 +134,7 @@ def set_border(ws):
         cell.border = Border(top=side, bottom=side, left=side, right=side)
 
 
-# Выравнивание заголовка и жирная граница---------------------------------------------------
+# Выравнивание заголовка---------------------------------------------------
 def set_border_heading(ws):
     side_border = Side(border_style='medium', color='FF000000')
     for i in range(1, (ws.max_column + 1)):
@@ -169,6 +165,23 @@ def set_column_widths(ws):
         ws.column_dimensions[get_column_letter(i + 1)].width = column_width
 
 # -----------------------------------------------------------------------------
+# def remove_ex():
+#     # try:
+#     #     os.remove("excel/otchet_po_otsutstviyu.xlsx")
+#     #     print('1')
+#     # except OSError as error:
+#     #     print(error)
+#
+#     try:
+#         os.unlink("excel/otchet_po_otsutstviyu.xlsx")
+#     except OSError as error:
+#
+#         print("OS error: {0}".format(error))
+#
+#     # file = pathlib.path("test/new_file.txt")
+#     # file.unlink()
+#     # Источник: https: // pythononline.ru / osnovy / kak - udalit - fayly - python
+
 
 def osn():
     date_start_example = '01.01.2021'
