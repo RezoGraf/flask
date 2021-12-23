@@ -13,11 +13,14 @@ AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
 
 # Выбор списка подразделений
-sql_podr = "select otd,notd from np_otd where notd is not null"
+sql_podr = "select otd,notd from np_otd where notd is not null order by ps"
 
 
 # Выборка всех ФИО по номеру подразделения
-sql_fio = """select doc, ndoc from n_doc where pv=1 and otd='{otd}'"""
+sql_fio = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """
+
+# Выборка ФИО по коду
+sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_doc.mpp=n_mpp.mpp) and n_doc.doc={doc} """
 
 # Причина отсутствия на рабочем месте
 sql_rsp_rsn = """select rsn, nrsn from rsp_rsn order by rsn"""
@@ -35,13 +38,13 @@ sql_rsp_blc = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), (select nr
 sql_it_rasp_duty = """Select ID,DATE_DUTY, 
                  (select interval_time from it_rasp_time where it_rasp_time.id=IT_RASP_DUTY.ID_INTERVAL_TIME) as TIME_DUTY,
                  CASE EXTRACT (WEEKDAY FROM date_duty)  
-                     WHEN 0 THEN 'Понедельник'
-                     WHEN 1 THEN 'Вторник'
-                     WHEN 2 THEN 'Среда'
-                     WHEN 3 THEN 'Четверг'
-                     WHEN 4 THEN 'Пятница'
-                     WHEN 5 THEN 'Суббота'
-                     WHEN 6 THEN 'Воскресенье'
+                     WHEN 1 THEN 'Понедельник'
+                     WHEN 2 THEN 'Вторник'
+                     WHEN 3 THEN 'Среда'
+                     WHEN 4 THEN 'Четверг'
+                     WHEN 5 THEN 'Пятница'
+                     WHEN 6 THEN 'Суббота'
+                     WHEN 0 THEN 'Воскресенье'
                  END as denNedeli
                  from IT_RASP_DUTY 
                  where doc='{doc}' order by DATE_DUTY"""
