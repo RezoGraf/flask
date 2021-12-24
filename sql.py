@@ -11,11 +11,14 @@ FROM RSP_BLC, N_DOC
 WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
-# Выбор списка подразделений
+# Выбор списка отделений
 sql_podr = "select otd,notd from np_otd where notd is not null order by ps"
 
-# Выбор выбранного подразделения
+# Выбор выбранного отделения
 sql_podr_selected = "select otd, notd from np_otd where otd='{otd}'"
+
+# Выбор выбранного подразделения
+sql_lpu_selected = "select lpu from np_otd where otd='{otd}'"
 
 # Выборка всех ФИО по номеру подразделения
 sql_fio = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """

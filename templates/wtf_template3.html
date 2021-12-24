@@ -10,30 +10,9 @@
 
 {#<body>#}
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ РЕЖИМА РАБОТЫ СОТРУДНИКА#}
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 <form method="post">
 {% for NROOM_KR, NOEVEN_DAY, EVEN_DAY, NTV, NLIST, NSPZ in result_rasp %}
- <div class="modal fade" id="RegimeWorkModal{{ doc }}" tabindex="-1" role="dialog" aria-labelledby="RegimeWorkModal" aria-hidden="true">
+ <div class="modal fade" id="RegimeWorkModal" tabindex="-1" role="dialog" aria-labelledby="RegimeWorkModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -45,7 +24,7 @@
         <form>
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectUpdRsn" >№ Кабинета:</label>
-            <select class="form-select" id="inputGroupSelectUpdRoom" name="UpdRoom" required>
+            <select class="form-select" id="inputGroupSelectUpdRoom" name="UpdRoom" value={{ id }} required>
               {% for id, nroom_kr in result_room %}
                 <option value="{{ id }}"{% if loop.first %} SELECTED{% endif %}>{{ nroom_kr or ""}} </option>
               {% endfor %}
@@ -55,7 +34,7 @@
 
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectUpdRsn" >Не четное:</label>
-            <select class="form-select" id="inputGroupSelectUpdNoEvenDay" name="UpdNoEvenDay" required>
+            <select class="form-select" id="inputGroupSelectUpdNoEvenDay" name="UpdNoEvenDay" value={{ ID }} required>
               {% for ID, INTEVAL_TIME in result_time %}
                 <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
               {% endfor %}
@@ -65,7 +44,7 @@
 
          <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectUpdRsn" >Четное:</label>
-            <select class="form-select" id="inputGroupSelectUpdEvenDay" name="UpdEvenDay" required>
+            <select class="form-select" id="inputGroupSelectUpdEvenDay" name="UpdEvenDay" value={{ ID }} required>
               {% for ID, INTEVAL_TIME in result_time %}
                 <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
               {% endfor %}
@@ -82,7 +61,7 @@
           <div class="mb-3">
             <label class="col-form-label">№ страницы:</label>
 <!--             for="recipient-name"  -->
-            <input type="number" class="form-control" value={{ NLIST }} name="UpdNlist" required>
+            <input type="number" class="form-control" value={{ NLIST }} name="UpdNlist" value={{ spz }} required>
           </div>
 
           <div class="input-group mb-3">
@@ -101,10 +80,11 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="UpdRegimeWork">Сохранить</button>
       </div>
+
     </div>
   </div>
 </div>
-{% endfor %}
+ {% endfor %}
 </form>
 
 {#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
@@ -173,11 +153,11 @@
 
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectUpdRsn" >Причина:</label>
-            <select class="form-select" id="inputGroupSelectUpdRsn" name="UpdRsn" required>
+            <select class="form-select" id="inputGroupSelectUpdRsn" name="UpdRsn" value={{ RSN }} required>
               {% for RSN, NRSN in result_rsn %}
-                <option value="{{ RSN }}"{% if loop.first %} SELECTED{% endif %}>{{ NRSN or ""}} </option>
+                <option value="{{ RSN }}" {% if loop.first %} SELECTED{% endif %}>{{ NRSN or ""}} </option>
               {% endfor %}
-              <option selected>{{ NRSN_ }}</option>
+              <option selected>{{ NRSN_ }} </option>
             </select>
           </div>
         </form>
@@ -269,7 +249,7 @@
 
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectUpdTimeDuty" >Время:</label>
-            <select class="form-select" id="inputGroupSelectUpdTimeDuty" name="UpdTimeDuty" required>
+            <select class="form-select" id="inputGroupSelectUpdTimeDuty" name="UpdTimeDuty" value={{ ID }} required>
               {% for ID, INTEVAL_TIME in result_time %}
                 <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
               {% endfor %}
@@ -288,7 +268,6 @@
 </div>
 {% endfor %}
 </form>
-
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 <form method="post">
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
@@ -318,7 +297,15 @@
      <form class="form-horizontal" method="POST" action="">
                 {{ form.csrf_token() }}
 
-     <div>Режим работы сотрудника</div>
+     <div> Режим работы сотрудника
+         <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#RegimeWorkModal">
+         <i class="bi bi-calendar-plus"></i>
+         </button>
+
+          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#InsRspDutyModal">
+                    <i class="bi bi-trash"></i>
+                </button>
+     </div>
      <table class="table caption-top table table-striped table table-bordered">
          <thead>
          <th>№ кабинета</th>
@@ -337,17 +324,17 @@
                 <td>{{ NTV }}</td>
                 <td>{{ NLIST }}</td>
                 <td>{{ NSPZ or ""}}</td>
-                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RegimeWorkModal{{ doc }}">
+                <td style="width:12%;text-align:center;">
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RegimeWorkModal">
                     <i class="bi bi-pencil"></i>
                 </button>
 
-                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal{{ iblc }}">
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal">
                     <i class="bi bi-trash"></i>
                 </button>
                 </td>
             </tr>
          {% endfor %}
-
      </table>
 
      <div> Отстуствие на рабочем месте
