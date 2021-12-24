@@ -153,3 +153,11 @@ def wtf_template3():
                            fioSotrudnika=fioSotrudnika,
                            doc=doc,
                            form=form)
+
+
+@data_input.route('/di_frame_fio.html', methods=['GET', 'POST'])
+def di_frame_fio():
+    otd = request.args.get('otd')
+    doc = request.args.get('doc')
+    return "ok"
+    
