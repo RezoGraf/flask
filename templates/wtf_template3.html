@@ -121,24 +121,20 @@
         <form>
           <div class="mb-3">
             <label class="col-form-label">Дата с:</label>
-<!--             for="recipient-name"  -->
             <input type="date" class="form-control" name="InsDtn" required>
-{#           <input type="date" class="form-control" value={{ DTN }} name="InsDtn">#}
           </div>
 
-                            <div class="mb-3">
-                                <label  class="col-form-label">по:</label>
-<!--                                for="recipient-name"-->
-                                <input type="date" class="form-control" name="InsDtk" required>
-                            </div>
+          <div class="mb-3">
+            <label  class="col-form-label">по:</label>
+            <input type="date" class="form-control" name="InsDtk" required>
+          </div>
 
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectInsRsn" >Причина:</label>
             <select class="form-select" id="inputGroupSelectInsRsn" name="InsRsn" required>
               {% for RSN, NRSN in result_rsn %}
-                <option value="{{ RSN }}"{% if loop.first %} SELECTED{% endif %}>{{ NRSN }} </option>
+                <option value="{{ RSN }}"{% if loop.first %} SELECTED{% endif %}>{{ NRSN or "" }} </option>
               {% endfor %}
-{#              <option selected>{{ NRSN_ }}</option>#}
             </select>
           </div>
         </form>
@@ -155,23 +151,23 @@
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
 <form method="post">
 {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
- <div class="modal fade" id="RspBlcModal{{ iblc }}"  tabindex="-1">
+ <div class="modal fade" id="RspBlcModal{{ iblc }}" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Сведения об отсутствии сотрудника {{ FIO }}</h5>
+        <h5 class="modal-title">Сведения об отсутствии сотрудника</h5>
         <input type="text" name="UpdIblc" value="{{ iblc }}" class="col-form-label" style="display: none;">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
        <div class="modal-body">
         <form>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Дата с:</label>
+            <label class="col-form-label">Дата с:</label>
             <input type="date" class="form-control" value={{ DTN }} name="UpdDtn" required>
           </div>
 
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">по:</label>
+            <label class="col-form-label">по:</label>
             <input type="date" class="form-control" value={{ DTK }} name="UpdDtk" required>
           </div>
 
@@ -186,9 +182,8 @@
           </div>
         </form>
       </div>
-
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="UpdRspBlc">Сохранить</button>
       </div>
     </div>
@@ -200,18 +195,18 @@
 <form method="post">
 {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
 <div class="modal fade" id="DelRspBlcModal{{ iblc }}" tabindex="0">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-backdrop="static" data-keyboard="false">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Удаление информации</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p>УДАЛИТЬ ИНФОРМАЦИЮ ОБ ОТСУТСТВИИ СОТРУДНИКА?</p>
           <input type="text" name="DelIblc" value="{{ iblc }}" class="col-form-label" style="display: none;">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="DelRspBlc">Удалить</button>
       </div>
     </div>
@@ -225,13 +220,13 @@
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве {{ FIO }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
        <div class="modal-body">
         <form>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Дата:</label>
+            <label class="col-form-label">Дата:</label>
             <input type="date" class="form-control" name="InsDtnDuty" required>
           </div>
 
@@ -247,7 +242,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="InsDuty">Сохранить</button>
       </div>
     </div>
@@ -258,17 +253,17 @@
 <form method="post">
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
  <div class="modal fade" id="UpdRspDutyModal{{ ID }}"  tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-backdrop="static" data-keyboard="false">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве {{ FIO }}</h5>
+        <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве</h5>
          <input type="text" name="UpdId" value="{{ ID }}" class="col-form-label" style="display: none;">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
        <div class="modal-body">
         <form>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Дата:</label>
+            <label class="col-form-label">Дата:</label>
             <input type="date" class="form-control" name="UpdDtnDuty"  value={{ DATE_DUTY }} required>
           </div>
 
@@ -280,13 +275,12 @@
               {% endfor %}
               <option selected>{{ TIME_DUTY }}</option>
             </select>
-
           </div>
         </form>
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="UpdDuty">Сохранить</button>
       </div>
     </div>
@@ -303,14 +297,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Удаление информации</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p>УДАЛИТЬ ИНФОРМАЦИЮ О РАБОТЕ СОТРУДНИКА?</p>
           <input type="text" name="DelIdDuty" value="{{ ID }}" class="col-form-label" style="display: none;">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="DelDuty">Удалить</button>
       </div>
     </div>
@@ -324,9 +318,6 @@
      <form class="form-horizontal" method="POST" action="">
                 {{ form.csrf_token() }}
 
-{#        <div class="form-group">#}
-{#            {{ form.submit(class="btn btn-primary")}}#}
-{#        </div>#}
      <div>Режим работы сотрудника</div>
      <table class="table caption-top table table-striped table table-bordered">
          <thead>
@@ -346,7 +337,6 @@
                 <td>{{ NTV }}</td>
                 <td>{{ NLIST }}</td>
                 <td>{{ NSPZ or ""}}</td>
-
                 <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RegimeWorkModal{{ doc }}">
                     <i class="bi bi-pencil"></i>
                 </button>
@@ -361,7 +351,7 @@
      </table>
 
      <div> Отстуствие на рабочем месте
-         <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
+         <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
          <i class="bi bi-calendar-plus"></i>
          </button>
      </div>
@@ -375,32 +365,26 @@
          {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
             <tr>
                 <td>{{ DTN.strftime('%d.%m.%Y') or "" }} </td>
-
                 <td>{{ DTK.strftime('%d.%m.%Y') or ""}} </td>
-
-                <td>{{ NRSN_  or ""}}</td>
-                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"  title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">
-                    <i class="bi bi-pencil"></i>
-                    <span class="visually-hidden">Button</span>
-                </button>
-
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal{{ iblc }}">
-                    <i class="bi bi-trash"></i>
-                    <span class="visually-hidden">Button</span>
-                </button>
+                <td>{{ NRSN_ or ""}}</td>
+                <td style="width:12%;text-align:center;">
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">
+                       <i class="bi bi-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal{{ iblc }}">
+                      <i class="bi bi-trash"></i>
+                    </button>
                 </td>
-
             </tr>
          {% endfor %}
      </table>
 
+     <div>Работа в праздничные и выходные дни, дежурство по графику
+        <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
+          <i class="bi bi-calendar-plus"></i>
+        </button>
+     </div>
      <table class="table caption-top table table-striped table table-bordered">
-     <caption>Работа в праздничные и выходные дни, дежурство по графику
-             <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
-                    <i class="bi bi-calendar-plus"></i>
-                    <span class="visually-hidden">Button</span>
-             </button>
-     </caption>
          <thead>
          <th>Дата</th>
          <th>Время</th>
@@ -413,23 +397,18 @@
                 <td>{{ DATE_DUTY.strftime('%d.%m.%Y') or "" }}</td>
                 <td>{{ TIME_DUTY or "" }}</td>
                 <td>{{ denNedeli or ""}}</td>
-                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"  title="Редактировать запись" data-bs-target="#UpdRspDutyModal{{ ID }}">
+                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#UpdRspDutyModal{{ ID }}">
                     <i class="bi bi-pencil"></i>
-                    <span class="visually-hidden">Button</span>
                 </button>
 
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Удалить запись" data-bs-target="#DelRspDutyModal{{ ID }}">
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspDutyModal{{ ID }}">
                     <i class="bi bi-trash"></i>
-                    <span class="visually-hidden">Button</span>
                 </button>
                 </td>
             </tr>
          {% endfor %}
      </table>
-
-
     </form>
-
 </div>
 {#</body>#}
 {#</html>#}
