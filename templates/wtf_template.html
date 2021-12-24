@@ -3,14 +3,14 @@
 <title>{{ title }}</title>
 <div class="container">
 
-    <h2>Внесение дежурства и выходных</h2>
+    <h2>График работы сотрудников</h2>
     {% for field, errors in form.errors.items() %}
     {{ ', '.join(errors) }}
     {% endfor %}
 
     <form class="form-horizontal" method="POST" action="">
                 {{ form.csrf_token() }}
-    <select name="otd" class="form-select" aria-label="Default select example">
+    <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example">
 {% for OTD, NOTD in result_podr %}
 <option value="{{ OTD }}"{% if loop.first %} SELECTED{% endif %}>{{ NOTD }}</option>
 {% endfor %}

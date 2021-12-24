@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, abort, redirect, url_for, request
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
-from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty
+from data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
+from data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp
 from . import data_input
 import db
 import sql
@@ -74,8 +75,9 @@ def wtf_template2():
 def wtf_template3():
     otd = request.args.get('otd')
     doc = request.args.get('doc')
+    lpu = utils.list_to_int(db.select(sql.sql_lpu_selected.format(otd=otd)))
+
     if request.method == 'POST':
-        # doc = request.form.get('doc')
         if request.form['btn'] == 'DelRspBlc':
             DelIblc = request.form.get('DelIblc')
             db.write(sql_del_rsp_blc.format(DelIblc=DelIblc))
@@ -86,7 +88,6 @@ def wtf_template3():
             UpdDtn = request.form.get('UpdDtn')
             UpdDtk = request.form.get('UpdDtk')
             UpdRsn = request.form.get('UpdRsn')
-            print(UpdRsn, UpdDtk, UpdDtn, UpdIblc)
             db.write(sql_upd_rsp_blc.format(UpdIblc=UpdIblc, UpdDtn=UpdDtn, UpdDtk=UpdDtk, UpdRsn=UpdRsn))
             return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
@@ -109,23 +110,53 @@ def wtf_template3():
             output_params = utils.list_to_int(output_params)
             df = pd.Timestamp(InsDtnDuty)
             InsNDay = df.dayofweek
-            # print(sql_ins_it_rasp_duty.format(output_params=output_params, doc=doc, InsDtnDuty=InsDtnDuty, InsTimeDuty=InsTimeDuty, InsNDay=InsNday))
             db.write(sql_ins_it_rasp_duty.format(output_params=output_params, doc=doc, InsDtnDuty=InsDtnDuty, InsTimeDuty=InsTimeDuty, InsNDay=InsNDay))
             return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
-    result_fio = db.select(sql.sql_fio.format(otd=otd))
+        if request.form['btn'] == 'UpdDuty':
+            UpdId = request.form.get('UpdId')
+            UpdDtnDuty = request.form.get('UpdDtnDuty')
+            UpdTimeDuty = request.form.get('UpdTimeDuty')
+            df = pd.Timestamp(UpdDtnDuty)
+            UpdNDay = df.dayofweek
+            db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdId=UpdId))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
+
+        if request.form['btn'] == 'DelDuty':
+            DelId = request.form.get('DelIdDuty')
+            db.write(sql_del_it_rasp_duty.format(DelId=DelId))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
+
+        if request.form['btn'] == 'UpdRegimeWork':
+            spz = request.form.get('UpdSpz')
+            room = request.form.get('UpdRoom')
+            interval1 = request.form.get('UpdNoEvenDay')
+            interval2 = request.form.get('UpdEvenDay')
+            ntv = request.form.get('NTV')
+            nlist = request.form.get('NLIST')
+            db.write(sql_del_it_rasp.format(doc=doc))
+            db.write(sql_ins_it_rasp_duty.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
+
     result_rsn = db.select(sql.sql_rsp_rsn)
     result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
+    result_room = db.select(sql.sql_room.format(doc=doc))
+    result_spz = db.select(sql.sql_spz)
+
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
+    if result_rasp == []:
+        print("2")
+    print(result_rasp)
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
     result_time = db.select(sql.sql_interval_time)
 
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
+    fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
+    fioSotrudnika = utils.list_to_str(fioSotrudnika)
+
     form = WtfTemplate3()
 
-    #outputParams = list_to_list(output_params)
-    # print("Результат генератора: ", output_params)
     return render_template('wtf_template3.html',
                            result_fio=result_fio,
                            result_rsn=result_rsn,
@@ -133,4 +164,9 @@ def wtf_template3():
                            result_rasp=result_rasp,
                            result_duty=result_duty,
                            result_time=result_time,
+                           result_room=result_room,
+                           result_spz=result_spz,
+                           fioSotrudnika=fioSotrudnika,
+                           doc=doc,
+                           lpu=lpu,
                            form=form)

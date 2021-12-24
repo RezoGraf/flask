@@ -1,11 +1,10 @@
 {% extends 'menu.html' %} {% block content %}
 
 
-<head>
     <meta charset="UTF-8">
     <title>Отчет по отсутствующим</title>
 </head>
-
+<div class="content">
 <body>
     <form method="post">
         <table>
@@ -24,23 +23,23 @@
                 <td>
                     <button type="button submit" class="btn btn-primary">Сформировать</button>
                 </td>
-                <!-- <td>
-                    <select name="reason" class="form-select" aria-label="Default select example">
+                <td>
+                    <select name="otd_select" class="form-select" aria-label="Default select example">
                         {% for DOC, NDOC in result_fio %}
                         <option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
                         {% endfor %}
                         </select>
                 </td>
                 <td>
-                    <select name="reason" class="form-select" aria-label="Default select example">
+                    <select name="reason_select" class="form-select" aria-label="Default select example">
                         {% for DOC, NDOC in result_fio %}
                         <option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
                         {% endfor %}
                         </select>
-                </td> -->
+                </td>
                 <td>
                     {# <label for="exampleDataList" class="form-label">Поиск по ФИО</label>#}
-                    <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска...">
+                    <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
                     <!-- <datalist id="datalistOptions">
   <option value="San Francisco">
   <option value="New York">
@@ -91,7 +90,7 @@
             </tr>
         </tfoot>
 </table>
-
+</div>
 <script>
     function filterTable(event) {
         var filter = event.target.value.toUpperCase();
