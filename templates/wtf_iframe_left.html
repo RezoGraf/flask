@@ -1,0 +1,39 @@
+{% extends 'basic.html' %}
+{% block content %}
+
+<form method='POST'>
+<table id="myTable" style="width:100%">
+    <thead>
+    <th>
+        <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
+    </th>
+</thead>
+<tbody>
+    {% for DOC, NDOC in result_fio %}
+    <tr>
+    <td>
+<a htref="/wtf_template3?otd={{ otd }}&doc={{ DOC }}">{{ NDOC }}</a>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</form>
+<script>
+    function filterTable(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[1].textContent.toUpperCase();
+            if (firstCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+</script>
+{% endblock %}

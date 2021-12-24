@@ -3,14 +3,17 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
+
 {#<head>#}
 {#    <meta charset="UTF-8">#}
 {#    <title>Title</title>#}
 {#</head>#}
-
+<div class="wtf-container" style="width:100%;padding:0px;auto">
+  <div class="row">
+    <div class="col-9">
 {#<body>#}
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ РЕЖИМА РАБОТЫ СОТРУДНИКА#}
-<form method="post">
+<form method="post" style="width:100%">
 {% for NROOM_KR, NOEVEN_DAY, EVEN_DAY, NTV, NLIST, NSPZ in result_rasp %}
  <div class="modal fade" id="RegimeWorkModal" tabindex="-1" role="dialog" aria-labelledby="RegimeWorkModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -290,9 +293,9 @@
 {% endfor %}
 </form>
 
-<div class="container">
+<div class="container" style="width:100%;padding:0px;auto">
     <h2>График работы сотрудника {{ fioSotrudnika }}</h2>
-     <form class="form-horizontal" method="POST" action="">
+     <form class="form-horizontal" method="POST" action="" style="width:100%">
                 {{ form.csrf_token() }}
 
      <div> Режим работы сотрудника
@@ -304,7 +307,7 @@
                     <i class="bi bi-trash"></i>
                 </button>
      </div>
-     <table class="table caption-top table table-striped table table-bordered">
+     <table class="table table-striped" style="width:100%">
          <thead>
          <th>№ кабинета</th>
          <th>Нечетное</th>
@@ -340,7 +343,7 @@
          <i class="bi bi-calendar-plus"></i>
          </button>
      </div>
-     <table class="table caption-top table table-striped table table-bordered" >
+     <table class="table table-striped" style="width:100%">
          <thead>
          <th>Дата с</th>
          <th>по</th>
@@ -369,7 +372,7 @@
           <i class="bi bi-calendar-plus"></i>
         </button>
      </div>
-     <table class="table caption-top table table-striped table table-bordered">
+     <table class="table table-striped" style="width:100%">
          <thead>
          <th>Дата</th>
          <th>Время</th>
@@ -397,7 +400,29 @@
 </div>
 {#</body>#}
 {#</html>#}
-
+</div>
+<div class="col-3" style="width:100%;padding:0px">
+    <table id="myTable2" class="table table-striped" style="width:100%">
+        <thead>
+        <th>
+            <input class="form-control" list="datalistOptions" id="myInput2" placeholder="Пишите для поиска..." autocomplete="off">
+        </th>
+    </thead>
+    <tbody>
+        {% for DOC, NDOC in result_fio %}
+        {% for OTD, NOTD in result_podr %}
+        <tr>
+        <td>
+          <a class="text" href="wtf_template3?otd={{ OTD }}&doc={{ DOC }}">{{ NDOC }}</a>
+        </td>
+    </tr>
+    {% endfor %}
+    {% endfor %}
+    </tbody>
+    </table>
+  </div>
+</div>
+</div>
 <script>
 
     function myFunction() {
@@ -413,6 +438,23 @@ var myInput = document.getElementById('myInput')
 myModal.addEventListener('shown.bs.modal', function () {
   myInput.focus()
 })
+
+
+function filterTable(event) {
+  var filter = event.target.value.toUpperCase();
+  var rows = document.querySelector("#myTable2 tbody").rows;
+
+  for (var i = 0; i < rows.length; i++) {
+      var firstCol = rows[i].cells[1].textContent.toUpperCase();
+      if (firstCol.indexOf(filter) > -1) {
+          rows[i].style.display = "";
+      } else {
+          rows[i].style.display = "none";
+      }
+  }
+}
+
+document.querySelector('#myInput2').addEventListener('keyup', filterTable, false);
 
 </script>
 {% endblock %}
