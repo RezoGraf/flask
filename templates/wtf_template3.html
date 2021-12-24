@@ -294,11 +294,11 @@
 </form>
 
 <div class="container" style="width:100%;padding:0px;auto">
-    <h2>График работы сотрудника {{ fioSotrudnika }}</h2>
+    <h2 class="text-primary">График работы сотрудника {{ fioSotrudnika }}</h2>
      <form class="form-horizontal" method="POST" action="" style="width:100%">
                 {{ form.csrf_token() }}
 
-     <div> Режим работы сотрудника
+     <div class="text-primary"> Режим работы сотрудника
          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#RegimeWorkModal">
          <i class="bi bi-calendar-plus"></i>
          </button>
@@ -338,7 +338,7 @@
          {% endfor %}
      </table>
 
-     <div> Отстуствие на рабочем месте
+     <div class="text-primary"> Отстуствие на рабочем месте
          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
          <i class="bi bi-calendar-plus"></i>
          </button>
@@ -367,7 +367,7 @@
          {% endfor %}
      </table>
 
-     <div>Работа в праздничные и выходные дни, дежурство по графику
+     <div class="text-primary">Работа в праздничные и выходные дни, дежурство по графику
         <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
           <i class="bi bi-calendar-plus"></i>
         </button>
@@ -402,7 +402,10 @@
 {#</html>#}
 </div>
 <div class="col-3" style="width:100%;padding:0px">
-    <table id="myTable2" class="table table-striped" style="width:100%">
+  {% for OTD, NOTD in result_podr %}
+  <h3 class="text-primary">{{ NOTD }}</h3>
+    {% endfor %}
+    <table id="myTable2" class="table" style="width:100%">
         <thead>
         <th>
             <input class="form-control" list="datalistOptions" id="myInput2" placeholder="Пишите для поиска..." autocomplete="off">
@@ -413,7 +416,7 @@
         {% for OTD, NOTD in result_podr %}
         <tr>
         <td>
-          <a class="text" href="wtf_template3?otd={{ OTD }}&doc={{ DOC }}">{{ NDOC }}</a>
+          <a class="text-dark" href="wtf_template3?otd={{ OTD }}&doc={{ DOC }}">{{ NDOC }}</ф>
         </td>
     </tr>
     {% endfor %}
