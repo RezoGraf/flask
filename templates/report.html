@@ -1,11 +1,10 @@
 {% extends 'menu.html' %} {% block content %}
 
 
-<head>
     <meta charset="UTF-8">
     <title>Отчет по отсутствующим</title>
 </head>
-
+<div class="content">
 <body>
     <form method="post">
         <table>
@@ -91,7 +90,7 @@
             </tr>
         </tfoot>
 </table>
-
+</div>
 <script>
     function filterTable(event) {
         var filter = event.target.value.toUpperCase();

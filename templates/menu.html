@@ -2,19 +2,37 @@
 
 
 <head>
-    <ul class="nav">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <div class="bg"></div>
+    <div class="bg bg2"></div>
+    <div class="bg bg3"></div>
+    <div class="content">
+    <ul class="nav nav-pills">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/menu">Главная</a>
+          <a class="nav-link active" href="#">Вернуться</a>
         </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Сотрудники</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/data_input">График работы</a>
+            <!--<div class="dropdown-divider"></div>-->
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="/report">Отчет по отсутствующим</a>
+              <!--<div class="dropdown-divider"></div>-->
+            </div>
+          </li>
+       <!-- <li class="nav-item">
+          <a class="nav-link" href="#">Ссылка</a>
+        </li>
+    -->
         <li class="nav-item">
-            <a class="nav-link" href="/data_input">Сотрудники</a>
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Панель управления</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/report">Отчеты</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link disabled" href="/excel" tabindex="-1" aria-disabled="true">Excel</a>
-        </li>
-    </ul>
+      </ul>
+    </div>
 
     {% endblock %}
