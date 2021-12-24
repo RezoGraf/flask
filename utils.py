@@ -24,5 +24,6 @@ def list_to_str(list_result):
     string_result = string_result.replace('(', '')
     string_result = string_result.replace(')', '')
     string_result = string_result.replace(',', '')
+    string_result = string_result.replace("'", '')
     #string_result = string_result.append(s)
     return string_result
