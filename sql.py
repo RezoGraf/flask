@@ -11,13 +11,11 @@ FROM RSP_BLC, N_DOC
 WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
-
 # Выбор списка подразделений
 sql_podr = "select otd,notd from np_otd where notd is not null order by ps"
 
 # Выбор выбранного подразделения
 sql_podr_selected = "select otd, notd from np_otd where otd='{otd}'"
-
 
 # Выборка всех ФИО по номеру подразделения
 sql_fio = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """
@@ -28,9 +26,15 @@ sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_do
 # Причина отсутствия на рабочем месте
 sql_rsp_rsn = """select rsn, nrsn from rsp_rsn order by rsn"""
 
+# Номера кабинетов
+sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc='{{ doc }}') order by id"""
+
+# Специальности сотрудников
+sql_spz = """select spz, nspz from n_spz where pd=1 order by nspz"""
+
 # Информация о режиме работы сотрудника
-sql_it_rasp = """Select NROOM_KR,(select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as NOEVEN_DAY,
-                 (select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as EVEN_DAY,NTV,NLIST,NSPZ 
+sql_it_rasp = """Select ROOM.NROOM_KR,(select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as NOEVEN_DAY,
+                 (select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as EVEN_DAY,IT_RASP.NTV,IT_RASP.NLIST,N_SPZ.NSPZ 
                  from IT_RASP,ROOM,N_SPZ 
                  where (it_rasp.room=room.id) and (it_rasp.spz=n_spz.spz) and doc='{doc}'"""
 

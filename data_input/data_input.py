@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, abort, redirect, url_for, request
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
-from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
+from data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
 from . import data_input
 import db
 import sql
@@ -118,9 +118,8 @@ def wtf_template3():
             UpdTimeDuty = request.form.get('UpdTimeDuty')
             df = pd.Timestamp(UpdDtnDuty)
             UpdNDay = df.dayofweek
-            print(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdId=UpdId))
-            # db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdId=UpdId))
-            # return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
+            db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdId=UpdId))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
         if request.form['btn'] == 'DelDuty':
             DelId = request.form.get('DelIdDuty')
@@ -130,6 +129,9 @@ def wtf_template3():
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     result_rsn = db.select(sql.sql_rsp_rsn)
     result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
+    result_room = db.select(sql.sql_room.format(doc=doc))
+    result_spz = db.select(sql.sql_spz)
+
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
     result_time = db.select(sql.sql_interval_time)
@@ -139,8 +141,6 @@ def wtf_template3():
     fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
     form = WtfTemplate3()
 
-    #outputParams = list_to_list(output_params)
-    # print("Результат генератора: ", output_params)
     return render_template('wtf_template3.html',
                            result_fio=result_fio,
                            result_rsn=result_rsn,
@@ -148,5 +148,8 @@ def wtf_template3():
                            result_rasp=result_rasp,
                            result_duty=result_duty,
                            result_time=result_time,
+                           result_room=result_room,
+                           result_spz=result_spz,
                            fioSotrudnika=fioSotrudnika,
+                           doc=doc,
                            form=form)
