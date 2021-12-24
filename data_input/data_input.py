@@ -129,14 +129,27 @@ def wtf_template3():
 
         if request.form['btn'] == 'UpdRegimeWork':
             spz = request.form.get('UpdSpz')
+            if spz == None:
+                spz = 0
             room = request.form.get('UpdRoom')
+            if room == None:
+                room = 0
             interval1 = request.form.get('UpdNoEvenDay')
+            if interval1 == None:
+                interval1 = 0
+                print(interval1)
             interval2 = request.form.get('UpdEvenDay')
+            if interval2 == None:
+                interval2 = 0
+
             ntv = request.form.get('NTV')
             nlist = request.form.get('NLIST')
+
             db.write(sql_del_it_rasp.format(doc=doc))
-            db.write(sql_ins_it_rasp_duty.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
-            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
+            print(nlist)
+            print(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
+            # db.write(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
+            # return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
     result_rsn = db.select(sql.sql_rsp_rsn)
     result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
@@ -145,19 +158,14 @@ def wtf_template3():
 
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     if result_rasp == []:
-        result_rasp = list(result_rasp)
-        result_rasp.append('HGFG')
-        result_rasp.append('ccc')
-        result_rasp.append('dddd')
+        result_rasp.append('')
+        result_rasp.append('')
+        result_rasp.append('')
         result_rasp.append('0')
         result_rasp.append('0')
-        result_rasp.append('dfddf')
-        print(result_rasp)
-        print(type(result_rasp))
-        # result_rasp = result_rasp1
-    print(result_rasp)
-    print(type(result_rasp))
-    # print(result_rasp)
+        result_rasp.append('')
+        result_rasp = (result_rasp, )
+
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
     result_time = db.select(sql.sql_interval_time)
 

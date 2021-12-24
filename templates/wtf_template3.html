@@ -34,7 +34,7 @@
 
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectUpdRsn" >Не четное:</label>
-            <select class="form-select" id="inputGroupSelectUpdNoEvenDay" name="UpdNoEvenDay" value={{ ID }} required>
+            <select class="form-select" id="inputGroupSelectUpdNoEvenDay" name="UpdNoEvenDay" value={{ ID or 0 }} required>
               {% for ID, INTEVAL_TIME in result_time %}
                 <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
               {% endfor %}
@@ -54,13 +54,11 @@
 
           <div class="mb-3">
             <label class="col-form-label">№ Монитора:</label>
-<!--              for="recipient-name"-->
             <input type="number" class="form-control" value={{ NTV }} name="UpdNtv">
           </div>
 
           <div class="mb-3">
             <label class="col-form-label">№ страницы:</label>
-<!--             for="recipient-name"  -->
             <input type="number" class="form-control" value={{ NLIST }} name="UpdNlist" value={{ spz }} required>
           </div>
 
