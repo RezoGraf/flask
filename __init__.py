@@ -19,11 +19,6 @@ app.register_blueprint(excel, url_prefix='/excel')
 app.register_blueprint(report, url_prefix='/report')
 
 
-@app.route('/menu')
-def menu():
-    return render_template('menu.html')
-
-
 @app.route('/', methods=['GET', 'POST'])
 def login():
     message = ""
@@ -35,6 +30,11 @@ def login():
         else:
             message = "Неверное имя пользователя или пароль"
     return render_template('login.html', message=message)
+
+
+@app.route('/menu')
+def menu():
+    return render_template('menu.html')
 
 
 if __name__ == "__main__":

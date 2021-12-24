@@ -4,18 +4,20 @@
 <!DOCTYPE html>
 <html lang="ru">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <!--<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>-->
 <title>Авторизация</title>
 
 
 <div class="form">
     <form class="login" method="post">
+
         {% if message %}
         <p>{{ message }}</p>
         {% endif %}
         <p class="title ">Авторизация</p>
         <input type="text " id="inputLogin" name="username" placeholder="Имя пользователя " autofocus/>
         <i class="fa fa-user "></i>
-        <input type="password " id="inputPasswor" name="password" placeholder="Пароль " />
+        <input type="password" id="inputPasswor" name="password" placeholder="Пароль" />
         <i class="fa fa-key "></i>
         <!-- <a href="# ">Forgot your password?</a> -->
         <button type="button submit ">
