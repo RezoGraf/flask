@@ -1,29 +1,18 @@
 import datetime
 import os
 from datetime import date
-
 from flask import Blueprint, send_file, request
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
-
 import db
 from excel.excel_sql import sql_select_otsut
 
-
 excel = Blueprint('excel', __name__)
 
-# date = datetime.datetime.now()
-# date_for_text = date.strftime("%d.%m.%Y")
-
-
 def book_create(date_start, date_finish):
-    # date_start = date_start.strftime("%d.%m.%Y")
-    # date_finish = date_finish.strftime("%d.%m.%Y")
     data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
-    # sql_select = sql_select_template.format(date_start=date_start, date_finish=date_finish)
-    # data = db_select(sql_select)
     book = Workbook()
     sheet = book.active
     sheet.title = "Период отсутствия персонала"
@@ -57,7 +46,6 @@ def book_create(date_start, date_finish):
     sheet.merge_cells('A5:A6')
     sheet.merge_cells('B5:B6')
     sheet.merge_cells('C5:C6')
-    # sheet.merge_cells('F5:E6')
     sheet.merge_cells('A2:E2')
     sheet.merge_cells('A3:E3')
     list_result = []
@@ -89,10 +77,6 @@ def book_create(date_start, date_finish):
         dateCell = sheet.cell(row=i+1, column=4)
         dateCell.number_format = 'dd/mm/yyyy;@'
     # -------------------------------------------------------------------------------
-    # for i in range(1, sheet.max_row):
-    #     if sheet.cell(row=i+1, column=6).value == "Отсутствует":
-    #         for s in range(1, sheet.max_column + 1):
-    #             sheet.cell(row=i + 1, column=s).fill = PatternFill(start_color="FFC7CE", fill_type="solid")
     fullRange = "A6:" + get_column_letter(sheet.max_column) + str(sheet.max_row)
     sheet.auto_filter.ref = fullRange
     set_column_widths(sheet)
@@ -100,13 +84,11 @@ def book_create(date_start, date_finish):
     set_border_heading(sheet)
     sheet.column_dimensions['D'].width = 15
     sheet.column_dimensions['E'].width = 15
-    # sheet.column_dimensions['F'].width = 20
     side_top = Side(border_style=None, color='FF000000')
     for i in range(1, (sheet.max_column + 1)):
         for s in range(1, 5):
             sheet.cell(row=s, column=i).border = Border(top=side_top, bottom=side_top, left=side_top, right=side_top)
-    # ws.cell(row=5, column=i).font = Font(size=14, bold=True)
-    # book.save(f"{date}_otchet_po_otsutstviyu.xlsx")
+
     book.save("excel/otchet_po_otsutstviyu.xlsx")
 
 
@@ -114,13 +96,10 @@ def convert_data(conv_data):
     list_data = list(conv_data)
     if list_data[4] is None:
         list_data[4] = ''
-        # list_data.append("Отсутствует")
+
     else:
         list_data[4] = list_data[4].date()
         list_data[3] = list_data[3].date()
-
-        # if list_data[4] >= date and list_data[3] <= date:
-        #     list_data.append("Отсутствует")
 
     convert_result = tuple(list_data)
     return convert_result
@@ -171,18 +150,21 @@ def set_column_widths(ws):
         ws.column_dimensions[get_column_letter(i + 1)].width = column_width
 
 # -----------------------------------------------------------------------------
+def cleanup(path):
+    os.remove(path)
 
 @excel.route('/', methods=['GET', 'POST'])
 def excel_ots():
+    name_xlsx = "otchet_po_otsutstviyu.xlsx"
+    path_xlsx = f"excel/{name_xlsx}"
 
+    cleanup(path_xlsx)
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
-    # date_start_example = '01.01.2021'
-    # date_finish_example = '31.12.2021'
+
     book_create(dtn, dtk)
 
-    return send_file("excel/otchet_po_otsutstviyu.xlsx",
+    return send_file(path_xlsx,
                      mimetype='xlsx',
-                     attachment_filename='otchet_po_otsutstviyu.xlsx',
+                     attachment_filename=name_xlsx,
                      as_attachment=True)
-
