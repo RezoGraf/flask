@@ -145,8 +145,19 @@ def wtf_template3():
 
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     if result_rasp == []:
-        print("2")
+        result_rasp = list(result_rasp)
+        result_rasp.append('HGFG')
+        result_rasp.append('ccc')
+        result_rasp.append('dddd')
+        result_rasp.append('0')
+        result_rasp.append('0')
+        result_rasp.append('dfddf')
+        print(result_rasp)
+        print(type(result_rasp))
+        # result_rasp = result_rasp1
     print(result_rasp)
+    print(type(result_rasp))
+    # print(result_rasp)
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
     result_time = db.select(sql.sql_interval_time)
 
