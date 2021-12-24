@@ -27,7 +27,7 @@ sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_do
 sql_rsp_rsn = """select rsn, nrsn from rsp_rsn order by rsn"""
 
 # Номера кабинетов
-sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc='{{ doc }}') order by id"""
+sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc={doc}) order by id"""
 
 # Специальности сотрудников
 sql_spz = """select spz, nspz from n_spz where pd=1 order by nspz"""

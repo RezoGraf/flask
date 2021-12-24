@@ -10,15 +10,36 @@
 
 {#<body>#}
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ РЕЖИМА РАБОТЫ СОТРУДНИКА#}
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <form method="post">
 {% for NROOM_KR, NOEVEN_DAY, EVEN_DAY, NTV, NLIST, NSPZ in result_rasp %}
- <div class="modal" id="RegimeWorkModal{{ doc }}" tabindex="-1">
+ <div class="modal fade" id="RegimeWorkModal{{ doc }}" tabindex="-1" role="dialog" aria-labelledby="RegimeWorkModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Режим работы сотрудника</h5>
         <input type="text" name="RegimeWork" value="{{ doc }}" class="col-form-label" style="display: none;">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
        <div class="modal-body">
         <form>
@@ -77,7 +98,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="UpdRegimeWork">Сохранить</button>
       </div>
     </div>
@@ -89,23 +110,25 @@
 {#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
 <form method="post">
 {#{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}#}
- <div class="modal" id="InsRspBlcModal"  tabindex="-1">
+ <div class="modal fade" id="InsRspBlcModal" tabindex="-1" role="dialog" aria-labelledby="InsRspBlcModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Сведения об отсутствии сотрудника {{ FIO }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title">Сведения об отсутствии сотрудника</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
        <div class="modal-body">
         <form>
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Дата с:</label>
+            <label class="col-form-label">Дата с:</label>
+<!--             for="recipient-name"  -->
             <input type="date" class="form-control" name="InsDtn" required>
-{#             <input type="date" class="form-control" value={{ DTN }} name="InsDtn">#}
+{#           <input type="date" class="form-control" value={{ DTN }} name="InsDtn">#}
           </div>
 
                             <div class="mb-3">
-                                <label for="recipient-name" class="col-form-label">по:</label>
+                                <label  class="col-form-label">по:</label>
+<!--                                for="recipient-name"-->
                                 <input type="date" class="form-control" name="InsDtk" required>
                             </div>
 
@@ -122,7 +145,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="InsRspBlc">Сохранить</button>
       </div>
     </div>
@@ -132,7 +155,7 @@
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
 <form method="post">
 {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
- <div class="modal" id="RspBlcModal{{ iblc }}"  tabindex="-1">
+ <div class="modal fade" id="RspBlcModal{{ iblc }}"  tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -176,7 +199,7 @@
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
 <form method="post">
 {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
-<div class="modal" id="DelRspBlcModal{{ iblc }}" tabindex="0">
+<div class="modal fade" id="DelRspBlcModal{{ iblc }}" tabindex="0">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -198,7 +221,7 @@
 </form>
 {#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 <form method="post">
- <div class="modal" id="InsRspDutyModal"  tabindex="-1">
+ <div class="modal fade" id="InsRspDutyModal"  tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -234,7 +257,7 @@
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 <form method="post">
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
- <div class="modal" id="UpdRspDutyModal{{ ID }}"  tabindex="-1">
+ <div class="modal fade" id="UpdRspDutyModal{{ ID }}"  tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
@@ -275,7 +298,7 @@
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 <form method="post">
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
-<div class="modal" id="DelRspDutyModal{{ ID }}" tabindex="0">
+<div class="modal fade" id="DelRspDutyModal{{ ID }}" tabindex="0">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -304,9 +327,8 @@
 {#        <div class="form-group">#}
 {#            {{ form.submit(class="btn btn-primary")}}#}
 {#        </div>#}
-
+     <div>Режим работы сотрудника</div>
      <table class="table caption-top table table-striped table table-bordered">
-     <caption>Режим работы сотрудника</caption>
          <thead>
          <th>№ кабинета</th>
          <th>Нечетное</th>
@@ -324,14 +346,13 @@
                 <td>{{ NTV }}</td>
                 <td>{{ NLIST }}</td>
                 <td>{{ NSPZ or ""}}</td>
-                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"  title="Редактировать запись" data-bs-target="#RegimeWorkModal{{ doc }}">
+
+                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RegimeWorkModal{{ doc }}">
                     <i class="bi bi-pencil"></i>
-                    <span class="visually-hidden">Button</span>
                 </button>
 
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Удалить запись" data-bs-target="#DelRspBlcModal{{ iblc }}">
+                <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal{{ iblc }}">
                     <i class="bi bi-trash"></i>
-                    <span class="visually-hidden">Button</span>
                 </button>
                 </td>
             </tr>
@@ -339,13 +360,12 @@
 
      </table>
 
+     <div> Отстуствие на рабочем месте
+         <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
+         <i class="bi bi-calendar-plus"></i>
+         </button>
+     </div>
      <table class="table caption-top table table-striped table table-bordered" >
-         <caption>Отстуствие на рабочем месте
-             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Добавить запись" data-bs-target="#InsRspBlcModal">
-                    <i class="bi bi-calendar-plus"></i>
-                    <span class="visually-hidden">Button</span>
-             </button>
-         </caption>
          <thead>
          <th>Дата с</th>
          <th>по</th>
@@ -359,12 +379,12 @@
                 <td>{{ DTK.strftime('%d.%m.%Y') or ""}} </td>
 
                 <td>{{ NRSN_  or ""}}</td>
-                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"  title="Редактировать запись" data-bs-target="#RspBlcModal{{ iblc }}">
+                <td style="width:12%;text-align:center;"> <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal"  title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">
                     <i class="bi bi-pencil"></i>
                     <span class="visually-hidden">Button</span>
                 </button>
 
-                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Удалить запись" data-bs-target="#DelRspBlcModal{{ iblc }}">
+                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal{{ iblc }}">
                     <i class="bi bi-trash"></i>
                     <span class="visually-hidden">Button</span>
                 </button>
@@ -376,7 +396,7 @@
 
      <table class="table caption-top table table-striped table table-bordered">
      <caption>Работа в праздничные и выходные дни, дежурство по графику
-             <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" title="Добавить запись" data-bs-target="#InsRspDutyModal">
+             <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
                     <i class="bi bi-calendar-plus"></i>
                     <span class="visually-hidden">Button</span>
              </button>
