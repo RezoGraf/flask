@@ -9,6 +9,10 @@ from openpyxl.workbook import Workbook
 
 import db
 from excel.excel_sql import sql_select_otsut
+# from win32com import client
+# from fpdf import FPDF
+# import pandas as pd
+# import numpy as np
 
 
 excel = Blueprint('excel', __name__)
@@ -186,3 +190,107 @@ def excel_ots():
                      attachment_filename='otchet_po_otsutstviyu.xlsx',
                      as_attachment=True)
 
+
+
+# @excel.route('/pdf', methods=['GET', 'POST'])
+# def excel_to_pdf():
+#     dtn = request.args.get('dtn')
+#     dtk = request.args.get('dtk')
+#     # dtn = '01.01.2021'
+#     # dtk = '31.12.2021'
+#     book_create(dtn, dtk)
+#
+#     # # Open Microsoft Excel
+#     #
+#     # excel = client.Dispatch("Excel.Application")
+#     #
+#     # # Read Excel File
+#     # sheets = excel.Workbooks.Open("excel/otchet_po_otsutstviyu.xlsx")
+#     # work_sheets = sheets.Worksheets[0]
+#     #
+#     # # Convert into PDF File
+#     # work_sheets.ExportAsFixedFormat(0, 'excel/otchet_po_otsutstviyu.pdf')
+#
+#     # read in the .xlsx file just created
+#     # df_2 = pd.read_excel('test.xlsx')
+#
+#     # my_wb = openpyxl.Workbook('excel/otchet_po_otsutstviyu.xlsx')
+#     # df_2 = my_wb.active
+#     #
+#     #
+#     #
+#     #
+#     # # creating a pdf in called test.pdf in the current directory
+#     # pdf = FPDF()
+#     # pdf.add_page()
+#     # pdf.set_xy(0, 0)
+#     # pdf.set_font('arial', 'B', 14)
+#     # pdf.cell(60)
+#     # pdf.cell(70, 10, 'Writing a PDF from python', 0, 2, 'C')
+#     # pdf.cell(-40)
+#     # pdf.cell(50, 10, 'Index Column', 1, 0, 'C')
+#     # pdf.cell(40, 10, 'Col A', 1, 0, 'C')
+#     # pdf.cell(40, 10, 'Col B', 1, 2, 'C')
+#     # pdf.cell(-90)
+#     # pdf.set_font('arial', '', 12)
+#     # for i in range(0, len(df_2) - 1):
+#     #     col_ind = str(i)
+#     #     col_a = str(df_2.A.ix[i])
+#     #     col_b = str(df_2.B.ix[i])
+#     #     pdf.cell(50, 10, '%s' % (col_ind), 1, 0, 'C')
+#     #     pdf.cell(40, 10, '%s' % (col_a), 0, 0, 'C')
+#     #     pdf.cell(40, 10, '%s' % (col_b), 0, 2, 'C')
+#     #     pdf.cell(-90)
+#     # pdf.output('excel/otchet_po_otsutstviyu.pdf', 'F')
+#     #
+#     # Creating a dataframe and saving as test.xlsx in current directory
+#     df_1 = pd.DataFrame(np.random.randn(10, 2), columns=list('AB'))
+#     writer = pd.ExcelWriter('excel/otchet_po_otsutstviyu.xlsx')
+#     df_1.to_excel(writer)
+#     writer.save()
+#
+#     #read in the .xlsx file just created
+#     df_2 = pd.read_excel('excel/otchet_po_otsutstviyu.xlsx')
+#
+#     #creating a pdf in called test.pdf in the current directory
+#     pdf = FPDF()
+#     pdf.add_page()
+#     pdf.set_xy(0, 0)
+#     pdf.set_font('arial', 'B', 14)
+#     pdf.cell(60)
+#     pdf.cell(70, 10, 'Writing a PDF from python', 0, 2, 'C')
+#     pdf.cell(-40)
+#     pdf.cell(50, 10, 'Index Column', 1, 0, 'C')
+#     pdf.cell(40, 10, 'Col A', 1, 0, 'C')
+#     pdf.cell(40, 10, 'Col B', 1, 2, 'C')
+#     pdf.cell(-90)
+#     pdf.set_font('arial', '', 12)
+#     # for i in range(0, len(df_2)-1):
+#     #     col_ind = str(i)
+#     #     col_a = str(df_2.A.x[i])
+#     #     col_b = str(df_2.B.ix[i])
+#     #     pdf.cell(50, 10, '%s' % (col_ind), 1, 0, 'C')
+#     #     pdf.cell(40, 10, '%s' % (col_a), 0, 0, 'C')
+#     #     pdf.cell(40, 10, '%s' % (col_b), 0, 2, 'C')
+#     #     pdf.cell(-90)
+#     pdf.output('excel/otchet_po_otsutstviyu.pdf', 'F')
+#
+#     # pdf = FPDF()
+#     #
+#     # pdf.add_page()
+#     #
+#     # pdf.set_font("Arial", size=25)
+#     #
+#     # # create a cell
+#     # pdf.cell(200, 10, txt="JournalDev",
+#     #          ln=1, align='C')
+#     #
+#     # pdf.cell(200, 10, txt="Welcome to the world of technologies!",
+#     #          ln=2, align='C')
+#     #
+#     # pdf.output("excel/otchet_po_otsutstviyu.pdf")
+#
+#     return send_file("excel/otchet_po_otsutstviyu.pdf",
+#                      mimetype='pdf',
+#                      attachment_filename='otchet_po_otsutstviyu.pdf',
+#                      as_attachment=True)
