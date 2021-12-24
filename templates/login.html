@@ -4,11 +4,13 @@
 <!DOCTYPE html>
 <html lang="ru">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <!--<script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>-->
 <title>Авторизация</title>
 
 
 <div class="form">
     <form class="login" method="post">
+
         {% if message %}
         <p>{{ message }}</p>
         {% endif %}
