@@ -46,7 +46,7 @@ def main():
                                 dtn=dtn,
                                 dtk=dtk))
     result = db.select(sql.sql_select.format(dtn=dtn,
-                                                dtk=dtk))
+                                             dtk=dtk))
     print(type(result))
     return render_template("report.html",
                            my_list=result, dtn=dtn, dtk=dtk)
