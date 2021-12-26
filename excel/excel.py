@@ -157,10 +157,12 @@ def cleanup(path):
 def excel_ots():
     name_xlsx = "otchet_po_otsutstviyu.xlsx"
     path_xlsx = f"excel/{name_xlsx}"
-
-    cleanup(path_xlsx)
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
+
+    # cleanup(path_xlsx)
+    # dtn = request.args.get('dtn')
+    # dtk = request.args.get('dtk')
 
     book_create(dtn, dtk)
 

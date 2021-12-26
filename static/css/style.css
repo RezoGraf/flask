@@ -1,4 +1,4 @@
 .wtf-container {
-    @include make-container();
-    width: 100%;
-  }
+  @include make-container();
+  width: 100%;
+}

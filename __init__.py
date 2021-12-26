@@ -25,7 +25,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')  # запрос к данным формы
         password = request.form.get('password')
-        if username == 'root' and password == 'pass':
+        if (username == 'root' and password == 'pass') or (username == 'kadr' and password == 'kadr') or (username == 'epid' and password == 'epid'): 
             return redirect(url_for('menu'))
         else:
             message = "Неверное имя пользователя или пароль"

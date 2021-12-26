@@ -1,31 +1,40 @@
 {% extends 'basic.html' %} {% block head %}
 
-
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <ul class="nav nav-pills">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Переключатель навигации">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="/menu">Главная</a>
+          <a class="nav-link text-primary" href="/menu">Главная</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Сотрудники</a>
+          <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Сотрудники</a>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="/data_input">График работы</a>
+            <a class="dropdown-item text-primary" href="/data_input">График работы</a>
           </div>
         </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
+            <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="/report">Отчет по отсутствующим</a>
+              <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
             </div>
           </li>
-        <li class="nav-item">
-          <a class="nav-link active" type="button" onclick="history.back();" >Назад</a>
+<!--        <li class="nav-item">
+          <a class="nav-link active text-primary" type="button" onclick="history.back();" >Назад</a>
         </li>
-
-      </ul>
+      -->
+      </ul> 
+      <form class="form-inline my-2 my-lg-0">
+        <label >Сменить пользователя: </label>
+        <!--<input class="form-control mr-sm-2" type="search" placeholder="Поиск" aria-label="Поиск">-->
+        <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Поиск</button>-->
+        <a href="/" class="btn btn-secondary" role="button">Выход</a>
+        <!--<button class="btn btn-outline-success my-2 my-sm-0" href="/" >Выход</button>-->
+      </form>
     </div>
-<script>
-
-</script>
+  </nav>
     {% endblock %}

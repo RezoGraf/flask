@@ -21,32 +21,42 @@ import calendar
 report = Blueprint('report', __name__)
 
 
-@report.route("/", methods=['GET', 'POST'])
+@report.route('/', methods=['GET', 'POST'])
 def main():
-    dtn = request.args.get('dtn')  # запрос к данным формы
-    dtk = request.args.get('dtk')
-    if dtn is None:
-        dtn = datetime.today().strftime('%d.%m.%Y')
-        # dtn = datetime.today()
-        # dtn = '01.12.2021'
-    if dtk is None:
-        # dtk = '07.12.2021'
-        dtk = datetime.today().strftime('%d.%m.%Y')
     if request.method == 'POST':
         # dtn = request.form.get('dtn')
-        dtn = pd.Timestamp(request.form.get('dtn'))  # запрос к данным формы
-        dtk = pd.Timestamp(request.form.get('dtk'))
+        dtn = request.form.get('dtn_get')
+        dtk = request.form.get('dtk_get')
+        dtn_simple = pd.Timestamp(request.form.get('dtn_get'))  # запрос к данным формы
+        dtk_simple = pd.Timestamp(request.form.get('dtk_get'))
         # dtn.strftime("%d.%m.%Y")
         # dtk.strftime("%d.%m.%Y")
         if request.form['btn'] == 'saveToPdf':
             # dtn = request.form.get('dtn')  # запрос к данным формы
             # dtk = request.form.get('dtk')
-            return redirect(url_for('excel.excel_ots', _external=True, dtn=dtn.strftime("%d.%m.%Y"), dtk=dtk.strftime("%d.%m.%Y")))
-        return redirect(url_for('report.main',
+            return redirect(url_for('excel.excel_ots', _external=True, dtn=dtn_simple.strftime("%d.%m.%Y"), dtk=dtk_simple.strftime("%d.%m.%Y")))
+        else:
+            return redirect(url_for('report.main',
                                 dtn=dtn,
                                 dtk=dtk))
-    result = db.select(sql.sql_select.format(dtn=dtn,
+    else:
+        dtn_simple = request.args.get('dtn')
+        dtk_simple = request.args.get('dtk')
+        dtn = request.args.get('dtn')  # запрос к данным формы
+        dtk = request.args.get('dtk')
+        if dtn is None:
+            dtn = datetime.today().strftime('%d.%m.%Y')
+            dtn_simple = datetime.today().strftime('%Y-%m-%d')
+            # dtn = datetime.today()
+            # dtn = '01.12.2021'
+        if dtn_simple is None:
+            dtn_simple  = datetime.today().strftime('%Y-%m-%d')
+        if dtk is None:
+            # dtk = '07.12.2021'
+            dtk = datetime.today().strftime('%d.%m.%Y')
+        if dtk_simple is None:
+            dtk_simple = datetime.today().strftime('%Y-%m-%d')
+        result = db.select(sql.sql_select.format(dtn=dtn,
                                              dtk=dtk))
-    print(type(result))
-    return render_template("report.html",
-                           my_list=result, dtn=dtn, dtk=dtk)
+        return render_template("report.html",
+                           my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple)

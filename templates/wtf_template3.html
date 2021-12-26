@@ -3,17 +3,16 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 
-
 {#<head>#}
 {#    <meta charset="UTF-8">#}
 {#    <title>Title</title>#}
 {#</head>#}
-<div class="wtf-container" style="width:100%;padding:0px;auto">
+<div class="wtf-container" style="overflow-x: hidden;">
   <div class="row">
-    <div class="col-9">
+    <div class="col-md-auto">
 {#<body>#}
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ РЕЖИМА РАБОТЫ СОТРУДНИКА#}
-<form method="post" style="width:100%">
+<form method="post">
 {% for NROOM_KR, NOEVEN_DAY, EVEN_DAY, NTV, NLIST, NSPZ in result_rasp %}
  <div class="modal fade" id="RegimeWorkModal" tabindex="-1" role="dialog" aria-labelledby="RegimeWorkModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -293,21 +292,21 @@
 {% endfor %}
 </form>
 
-<div class="container" style="width:100%;padding:0px;auto">
-    <h2 class="text-primary">График работы сотрудника {{ fioSotrudnika }}</h2>
-     <form class="form-horizontal" method="POST" action="" style="width:100%">
+<div class="container">
+    <h4 class="text-primary">График работы сотрудника {{ fioSotrudnika }}</h4>
+     <form class="form-horizontal" method="POST" action="">
                 {{ form.csrf_token() }}
 
      <div class="text-primary"> Режим работы сотрудника
          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#RegimeWorkModal">
-         <i class="bi bi-calendar-plus"></i>
+         <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
          </button>
 
           <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#InsRspDutyModal">
-                    <i class="bi bi-trash"></i>
+                    <i class="bi bi-trash" style="color:#0069D9"></i>
                 </button>
      </div>
-     <table class="table table-striped" style="width:100%">
+     <table class="table table-striped">
          <thead>
          <th>№ кабинета</th>
          <th>Нечетное</th>
@@ -327,11 +326,11 @@
                 <td>{{ NSPZ or ""}}</td>
                 <td style="width:12%;text-align:center;">
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RegimeWorkModal">
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil" style="color:#0069D9"></i>
                 </button>
 
                 <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal">
-                    <i class="bi bi-trash"></i>
+                    <i class="bi bi-trash" style="color:#0069D9"></i>
                 </button>
                 </td>
             </tr>
@@ -340,10 +339,10 @@
 
      <div class="text-primary"> Отстуствие на рабочем месте
          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
-         <i class="bi bi-calendar-plus"></i>
+         <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
          </button>
      </div>
-     <table class="table table-striped" style="width:100%">
+     <table class="table table-striped">
          <thead>
          <th>Дата с</th>
          <th>по</th>
@@ -357,10 +356,10 @@
                 <td>{{ NRSN_ or ""}}</td>
                 <td style="width:12%;text-align:center;">
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">
-                       <i class="bi bi-pencil"></i>
+                       <i class="bi bi-pencil" style="color:#0069D9"></i>
                     </button>
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal{{ iblc }}">
-                      <i class="bi bi-trash"></i>
+                      <i class="bi bi-trash" style="color:#0069D9"></i>
                     </button>
                 </td>
             </tr>
@@ -369,10 +368,10 @@
 
      <div class="text-primary">Работа в праздничные и выходные дни, дежурство по графику
         <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
-          <i class="bi bi-calendar-plus"></i>
+          <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
         </button>
      </div>
-     <table class="table table-striped" style="width:100%">
+     <table class="table table-striped">
          <thead>
          <th>Дата</th>
          <th>Время</th>
@@ -390,7 +389,7 @@
                 </button>
 
                 <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspDutyModal{{ ID }}">
-                    <i class="bi bi-trash"></i>
+                    <i class="bi bi-trash" style="color:#0069D9"></i>
                 </button>
                 </td>
             </tr>
@@ -401,23 +400,33 @@
 {#</body>#}
 {#</html>#}
 </div>
-<div class="col-3" style="width:100%;padding:0px">
-  {% for OTD, NOTD in result_podr %}
-  <h3 class="text-primary">{{ NOTD }}</h3>
+<!--<div class="col col-lg-2">-->
+  <div class="col col-lg-3">
+    <!--<div class="col-md-auto">-->
+  <div class="table-wrapper-scroll-y my-custom-scrollbar">
+<!--  {% for OTD, NOTD in result_podr %}
+  <h5 class="text-primary">{{ NOTD }}</h5>-->
+  <h5 class="text-primary">
+    <form method="get" action="wtf_template2" id="MyForm">
+  <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example" onchange="document.getElementById('MyForm').submit()">
+    {% for OTD, NOTD in result_podr2 %}
+    <option value="{{ OTD }}"{% if loop.first %} SELECTED{% endif %}>{{ NOTD }}</option>
     {% endfor %}
-    <table id="myTable2" class="table" style="width:100%">
+    </select>
+  </form>
+  </h5>
+    <!--{% endfor %}-->
+    <table id="myTable" class="table table-borderless" >
         <thead>
         <th>
-            <input class="form-control" list="datalistOptions" id="myInput2" placeholder="Пишите для поиска..." autocomplete="off">
+            <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
         </th>
     </thead>
     <tbody>
         {% for DOC, NDOC in result_fio %}
         {% for OTD, NOTD in result_podr %}
-        <tr>
-        <td>
-          <a class="text-dark" href="wtf_template3?otd={{ OTD }}&doc={{ DOC }}">{{ NDOC }}</ф>
-        </td>
+        <tr onclick="window.location.href='wtf_template3?otd={{ OTD }}&doc={{ DOC }}'; return false">
+        <td style="padding:2px">{{ NDOC }}</td>
     </tr>
     {% endfor %}
     {% endfor %}
@@ -426,38 +435,24 @@
   </div>
 </div>
 </div>
+
 <script>
 
-    function myFunction() {
-       alert("  ") //document.querySelectorAll("input[type=submit]")[0].click();
+  function filterTable(event) {
+    var filter = event.target.value.toUpperCase();
+    var rows = document.querySelector("#myTable tbody").rows;
+
+    for (var i = 0; i < rows.length; i++) {
+        var firstCol = rows[i].cells[0].textContent.toUpperCase();
+        if (firstCol.indexOf(filter) > -1) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
+        }
     }
-
-var datepicker = new Datepicker("#datepicker");
-var datepicker2 = new Datepicker('#datepicker2');
-
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
-
-myModal.addEventListener('shown.bs.modal', function () {
-  myInput.focus()
-})
-
-
-function filterTable(event) {
-  var filter = event.target.value.toUpperCase();
-  var rows = document.querySelector("#myTable2 tbody").rows;
-
-  for (var i = 0; i < rows.length; i++) {
-      var firstCol = rows[i].cells[1].textContent.toUpperCase();
-      if (firstCol.indexOf(filter) > -1) {
-          rows[i].style.display = "";
-      } else {
-          rows[i].style.display = "none";
-      }
-  }
 }
 
-document.querySelector('#myInput2').addEventListener('keyup', filterTable, false);
+document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
 
 </script>
 {% endblock %}

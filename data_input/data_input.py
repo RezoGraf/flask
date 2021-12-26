@@ -174,6 +174,7 @@ def wtf_template3():
     fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
     fioSotrudnika = utils.list_to_str(fioSotrudnika)
     result_podr = db.select(sql.sql_podr_selected.format(otd=otd))
+    result_podr2 = db.select(sql.sql_podr)
 
     form = WtfTemplate3()
 
@@ -190,7 +191,8 @@ def wtf_template3():
                            doc=doc,
                            lpu=lpu,
                            form=form,
-                           result_podr=result_podr)
+                           result_podr=result_podr,
+                           result_podr2=result_podr2)
 
 
 @data_input.route('/di_frame_fio', methods=['GET', 'POST'])
@@ -198,8 +200,10 @@ def di_frame_fio():
     otd = request.args.get('otd')
     result_podr = db.select(sql.sql_podr_selected.format(otd=otd))
     result_fio = db.select(sql.sql_fio.format(otd=otd))
+    result_podr2 = db.select(sql.sql_podr)
     print(result_podr)
     return render_template('wtf_iframe_left.html',
                            result_podr=result_podr,
+                           result_podr2=result_podr2,
                            result_fio=result_fio)
     

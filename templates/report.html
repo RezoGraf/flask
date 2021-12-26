@@ -6,57 +6,34 @@
 </head>
 <div class="content">
 <body>
-    <form method="post">
-        <table>
-            <tr>
-                <td>
+
+    <form method="POST">
+        <div class="container">
+        <div class="row">
+
+            <div class="col-md-auto">
 
                     <label for="datepicker" class="form-label">Дата начала</label>
-                    <input type="date" value="{{ dtn }}" name="dtn" />
+                    <input type="date" value="{{ dtn_get }}" name="dtn_get" />
 
-                </td>
-                <td>
+            </div>
+            <div class="col-md-auto">
 
                     <label for="datepicker2" class="form-label">Окончание</label>
-                    <input type="date" value="{{ dtk }}" name="dtk" />
-                </td>
-                <td>
-                    <button type="button submit" class="btn btn-primary">Сформировать</button>
-                </td>
-                <td>
-                    <select name="otd_select" class="form-select" aria-label="Default select example">
-                        {% for DOC, NDOC in result_fio %}
-                        <option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
-                        {% endfor %}
-                        </select>
-                </td>
-                <td>
-                    <select name="reason_select" class="form-select" aria-label="Default select example">
-                        {% for DOC, NDOC in result_fio %}
-                        <option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
-                        {% endfor %}
-                        </select>
-                </td>
-                <td>
-                    {# <label for="exampleDataList" class="form-label">Поиск по ФИО</label>#}
-                    <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
-                    <!-- <datalist id="datalistOptions">
-  <option value="San Francisco">
-  <option value="New York">
-  <option value="Seattle">
-  <option value="Los Angeles">
-  <option value="Chicago">
-</datalist> -->
-                </td>
-                <td>
-                    <button type="submit" class="btn btn-primary" name="btn" value="saveToPdf">PDF</button>
-                </td>
-            </tr>
-        </table>
-    </form>
-</body>
+                    <input type="date" value="{{ dtk_get }}" name="dtk_get" />
+            </div>
+            <div class="col-md-auto">
+                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Сформировать</button>
+            </div>
 
-</html>
+            <div class="col-md-auto">
+                    <button type="submit" class="btn btn-primary" name="btn" value="saveToPdf">Выгрузить в Excel</button>
+            </div>
+  
+        </div>
+    </div>
+</form>
+
 <table id="myTable" class="table table-striped" style="width:100%">
     <thead>
         <tr>
@@ -66,9 +43,23 @@
             <th>Отстутствует с</th>
             <th>Отсутствует по</th>
         </tr>
+        <tr>
+            <th>
+                <input name="otd_filter" list="datalistOptions" class="form-control" id="myInputOtd" placeholder="Поиск по отделению" autocomplete="off">         
+            </th>
+            <th>
+                <input name="fil_filter" list="datalistOptions" class="form-control" id="myInput" placeholder="Пишите для поиска по ФИО" autocomplete="off">
+            </th>
+            <th>
+                <input name="reason_filter" list="datalistOptions" class="form-control" id="myInputReason" placeholder="Поиск по причине" autocomplete="off"> 
+                </th>
+                <th>
+                </th>
+                    <th>
+                    </th>
+            </tr>
     </thead>
     <tbody>
-
 
 
         {% for SNLPU, NDOC, NRSN, DTN, DTK in my_list %}
@@ -91,6 +82,9 @@
         </tfoot>
 </table>
 </div>
+</body>
+
+</html>
 <script>
     function filterTable(event) {
         var filter = event.target.value.toUpperCase();
@@ -107,6 +101,42 @@
     }
 
     document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+
+
+    function filterTable2(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[0].textContent.toUpperCase();
+            if (firstCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#myInputOtd').addEventListener('keyup', filterTable2, false);
+
+
+
+    function filterTable3(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var thirdCol = rows[i].cells[2].textContent.toUpperCase();
+            if (thirdCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#myInputReason').addEventListener('keyup', filterTable3, false);
+
 </script>
 
 <!-- <script>
