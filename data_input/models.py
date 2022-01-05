@@ -11,7 +11,6 @@ from wtforms import (
 from wtforms.validators import (
     ValidationError,
     DataRequired,
-    Email,
     EqualTo,
     Length,
     URL,
@@ -22,10 +21,6 @@ from wtforms.validators import (
 class SignupForm(FlaskForm):
     """Sign up for a user account."""
 
-    email = StringField(
-        "Email",
-        [Email(message="Not a valid email address."), DataRequired()]
-    )
     password = PasswordField(
         "Password",
         [DataRequired(message="Please enter a password.")],
