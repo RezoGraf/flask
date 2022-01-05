@@ -25,7 +25,7 @@ def book_create(date_start, date_finish):
     sheet.page_margins.bottom = 0.44
     sheet.page_margins.header = 0.2
     sheet.oddHeader.left.text = "Отчет: 'Периоды отсутствия персонала' Стр. &[Page] из &N"
-    sheet.oddHeader.left.size = 12
+    sheet.oddHeader.left.size = 14
     sheet.oddHeader.left.font = "Tahoma,Bold"
     sheet.oddHeader.left.color = "000000"
     row2 = sheet.row_dimensions[2]
