@@ -66,5 +66,4 @@ class SignupForm(FlaskForm):
         ],
     )
     website = StringField("Website", validators=[URL()])
-    birthday = DateField("Your Birthday")
     submit = SubmitField("Submit")
