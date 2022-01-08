@@ -14,7 +14,7 @@ sql_upd_it_rasp_duty = """UPDATE IT_RASP_DUTY SET DATE_DUTY='{UpdDtnDuty}',ID_IN
 sql_del_it_rasp_duty = """DELETE FROM IT_RASP_DUTY WHERE ID={DelId} """
 
 sql_ins_it_rasp = """INSERT INTO IT_RASP (LPU,OTD,SPZ,DOC,ROOM,NTV,ID_INTERVAL1,ID_INTERVAL2,NLIST) 
-                             VALUES({lpu},{doc},{spz},{room},{ntv},{interval1},{interval2},{nlist})"""
+                             VALUES({lpu},{otd},{spz},{doc},{room},{ntv},{interval1},{interval2},{nlist})"""
 
 sql_del_it_rasp = """DELETE FROM IT_RASP WHERE DOC={doc} """
 
