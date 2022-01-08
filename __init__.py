@@ -39,4 +39,4 @@ def menu():
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run('0.0.0.0')
+    app.run('127.0.0.1', debug=True)
