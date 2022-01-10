@@ -12,16 +12,13 @@ WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
 # Выбор списка отделений
-sql_podr = "select otd,notd from np_otd where notd is not null order by ps"
+sql_allOtd = "select otd,notd from np_otd where notd is not null order by ps"
 
 # Выбор выбранного отделения
-sql_podr_selected = "select otd, notd from np_otd where otd='{otd}'"
+sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
 sql_otd = """select first 1 otd from np_otd where otd>0 order by otd"""
 
-# Выбор выбранного подразделения
-sql_lpu_selected = "select lpu from np_otd where otd='{otd}'"
-
-# Выборка всех ФИО по номеру подразделения
+# Выборка всех ФИО по коду отделения
 sql_fio = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """
 sql_doc = """select first 1 doc from n_doc where pv=1 and otd='{otd}' order by ndoc"""
 
@@ -44,8 +41,8 @@ sql_it_rasp = """Select ROOM.NROOM_KR,(select interval_time from it_rasp_time wh
                  where (it_rasp.room=room.id) and (it_rasp.spz=n_spz.spz) and doc='{doc}'"""
 
 # Информация об отсутствии на работе
-sql_rsp_blc = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ 
-                from rsp_blc where doc='{doc}' order by dtn desc """
+sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ 
+                from rsp_blc where doc='{doc}' order by dtn desc"""
 
 # Информация о дежурстве
 sql_it_rasp_duty = """Select ID,DATE_DUTY, 

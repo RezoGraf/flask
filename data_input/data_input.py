@@ -37,7 +37,7 @@ def wtf_template():
     if request.method == 'POST':
         otd = request.form.get('otd')
         return redirect(url_for('data_input.wtf_template2', otd=otd))
-    result_podr = db.select(sql.sql_podr)
+    result_podr = db.select(sql.sql_allOtd)
     form = WtfTemplate()
     #Если метод запроса - POST и если поля формы валидны
     # if form.validate_on_submit():
@@ -61,7 +61,7 @@ def wtf_template2():
         return redirect(url_for('data_input.wtf_template3',
                                 otd=otd,
                                 doc=doc))
-    result_podr = db.select(sql.sql_podr_selected.format(otd=otd))
+    result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
     result_fio = db.select(sql.sql_fio.format(otd=otd))
     form = WtfTemplate2()
     #Если метод запроса - POST и если поля формы валидны
@@ -70,60 +70,17 @@ def wtf_template2():
                            result_podr=result_podr,
                            form=form)
 
-
-# @data_input.route('/wtf_start', methods=['GET', 'POST'])
-# def wtf_start():
-#     # otd = request.args.get('12')
-#     # doc = request.args.get('23')
-
-#     result_podr2 = db.select(sql.sql_podr)
-#     result_rasp = db.select(sql.sql_it_rasp.format(doc=0))
-#     visible_ = ''
-#     if result_rasp == []:
-#         result_rasp.append('')
-#         result_rasp.append('')
-#         result_rasp.append('')
-#         result_rasp.append('0')
-#         result_rasp.append('0')
-#         result_rasp.append('')
-#         result_rasp = (result_rasp, )
-#     else:
-#         visible_ = 'style=display:none;'
-        
-#     # result_fio = db.select(sql.sql_fio.format(otd=0))
-    
-#     # if result_fio == []:
-#     # result_fio=([])
-#     # result_fio.append(0)
-#     # result_fio.append('')
-#     # result_fio = (result_fio, )
-    
-#     result_otd = db.select(sql.sql_otd)
-#     print(result_otd)
-#     otd = utils.list_to_int(result_otd)
-#     result_fio = db.select(sql.sql_podr_selected.format(otd=otd))
-    
-#     form = WtfTemplate3()
-#     return render_template('wtf_start.html',
-#                            form=form,
-#                            result_rasp=result_rasp,
-#                            result_podr2=result_podr2,
-#                            result_fio=result_fio,
-#                            result_podr=result_podr2,
-#                            visible_=visible_)
-
-
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
     result_otd = db.select(sql.sql_otd)
     otd = request.args.get('otd') or utils.list_to_int(result_otd)  
-    result_notd = db.select(sql.sql_podr_selected.format(otd=otd))
+    result_notd = db.select(sql.sql_currentOtd.format(otd=otd))
     notd = result_notd[0]
     
     result_doc = db.select(sql.sql_doc.format(otd=otd))
     doc = request.args.get('doc') or utils.list_to_int(result_doc)
 
-    lpu = utils.list_to_int(db.select(sql.sql_lpu_selected.format(otd=otd)))
+    lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     visible_ = ''
     if result_rasp == []:
@@ -214,9 +171,9 @@ def wtf_template3():
             return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_))
 
     result_rsn = db.select(sql.sql_rsp_rsn)
-    try:
-      result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
-    except: print("result_rsp_blc")
+    
+    result_noWork = db.select(sql.sql_noWork.format(doc=doc))
+    
     result_room = db.select(sql.sql_room.format(doc=doc))
     result_spz = db.select(sql.sql_spz)
 
@@ -227,15 +184,15 @@ def wtf_template3():
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
     fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
     fioSotrudnika = utils.list_to_str(fioSotrudnika)
-    result_podr = db.select(sql.sql_podr_selected.format(otd=otd))
-    result_podr2 = db.select(sql.sql_podr)
+    result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
+    result_podr2 = db.select(sql.sql_allOtd)
 
     form = WtfTemplate3()
     print(visible_)
     return render_template('wtf_template3.html',
                            result_fio=result_fio,
                            result_rsn=result_rsn,
-                           result_rsp_blc=result_rsp_blc,
+                           result_rsp_blc=result_noWork,
                            result_rasp=result_rasp,
                            result_duty=result_duty,
                            result_time=result_time,
@@ -250,13 +207,12 @@ def wtf_template3():
                            result_podr=result_podr,
                            result_podr2=result_podr2)
 
-
 @data_input.route('/di_frame_fio', methods=['GET', 'POST'])
 def di_frame_fio():
     otd = request.args.get('otd')
-    result_podr = db.select(sql.sql_podr_selected.format(otd=otd))
+    result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
     result_fio = db.select(sql.sql_fio.format(otd=otd))
-    result_podr2 = db.select(sql.sql_podr)
+    result_podr2 = db.select(sql.sql_allOtd)
     print(result_podr)
     return render_template('wtf_iframe_left.html',
                            result_podr=result_podr,
