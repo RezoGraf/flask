@@ -398,8 +398,10 @@
          <tr>
          {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
             <tr>
-                <td>{{ DTN.strftime('%d.%m.%Y') or "" }} </td>
-                <td>{{ DTK.strftime('%d.%m.%Y') or ""}} </td>
+                
+                <td>{% if DTN != None %} {{ DTN.strftime('%d.%m.%Y') }} {% else %} {{ DTN or "" }} {%endif %} </td>
+                <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %} </td>
+               
                 <td>{{ NRSN_ or ""}}</td>
                 <td style="width:12%;text-align:center;white-space: nowrap;">
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">

@@ -16,6 +16,7 @@ sql_podr = "select otd,notd from np_otd where notd is not null order by ps"
 
 # Выбор выбранного отделения
 sql_podr_selected = "select otd, notd from np_otd where otd='{otd}'"
+sql_otd = """select first 1 otd from np_otd where otd>0 order by otd"""
 
 # Выбор выбранного подразделения
 sql_lpu_selected = "select lpu from np_otd where otd='{otd}'"
