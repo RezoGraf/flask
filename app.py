@@ -3,6 +3,7 @@ from data_input.data_input import data_input
 from excel.excel import excel
 from report.report import report
 from flask import Flask, render_template, request, url_for, redirect
+import auth
 
 app = Flask(__name__, static_folder="static",
             template_folder='templates')
@@ -27,6 +28,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')  # запрос к данным формы
         password = request.form.get('password')
+        auth.check_credentials(username, password)
         if (username == 'root' and password == 'pass') or (username == 'kadr' and password == 'kadr') or (username == 'epid' and password == 'epid'): 
             return redirect(url_for('menu'))
         else:
