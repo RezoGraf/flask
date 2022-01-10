@@ -10,7 +10,9 @@
 
 <div class="form" style="overflow-x: hidden;">
     <form class="login" method="post">
-
+{% if message_auth %}
+<p>{{ message_auth }}</p>
+{% endif %}
         {% if message %}
         <p>{{ message }}</p>
         {% endif %}

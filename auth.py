@@ -22,9 +22,9 @@ def check_credentials(username, password):
         ldap_client.simple_bind_s(LDAP_USERNAME, LDAP_PASSWORD)
     except ldap.INVALID_CREDENTIALS:
         ldap_client.unbind()
-        return 'Wrong username or password'
+        return 'error1', 'AD: Неверное имя пользователя или пароль'
     except ldap.SERVER_DOWN:
-        return 'AD server not available'
+        return 'error2', 'AD: Сервер не доступен'
     # all is well
     # get all user groups and store it in cerrypy session for future use
     #    cherrypy.session[username] = str(ldap_client.search_s(base_dn,
@@ -34,6 +34,7 @@ def check_credentials(username, password):
     # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1])
     # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1][''])
     d = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs2)[0][0])
+    auth_fio = ""
     for x in s:
         x = str(x, 'utf-8')
         # print(type(x))
@@ -44,16 +45,20 @@ def check_credentials(username, password):
         # print(x.decode("utf-8", "ignore"))
         # print(x.decode())
         n = x[x.find(chars1)+3 : x.find(chars2)]
+        if n == "web_hs_admin":
+            auth_fio = n
+            
         print(f'Состоит в группе: { n }')
         # print(n)
         # print(n.decode("utf-8", "ignore"))
         # print(x.decode("utf-8", "ignore"))
     char1 = 'CN='
     char2 = ','
+    k = ""
     k = d[d.find(char1)+3 : d.find(char2)]
     print(f'ФИО: {k}')
     # print(k)
     # print(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
     # print(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, )
     ldap_client.unbind()
-    return None
+    return k, auth_fio
