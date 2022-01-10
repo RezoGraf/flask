@@ -16,7 +16,7 @@
         {{ form.sub_category }}
         <input type="submit" value="Отправить">
     </form>
-
+<a></a>
     <script type="text/javascript">
         function choice_category(){
             var tmp_id = parseInt ($("#category").val());
@@ -31,6 +31,7 @@
             }
         }
 
+        
         function load_subcategory(){
             $.ajax({
                 type: "POST",

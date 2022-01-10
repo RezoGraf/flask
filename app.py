@@ -7,6 +7,8 @@ from flask import Flask, render_template, request, url_for, redirect
 app = Flask(__name__, static_folder="static",
             template_folder='templates')
 app.config["SECRET_KEY"] = '79537d00f4834892986f09a100aa1edf'
+app.jinja_env.auto_reload = True
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.register_blueprint(data_input,
                        url_prefix='/data_input',
                        static_folder='/static',
@@ -39,4 +41,4 @@ def menu():
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run('0.0.0.0')
+    app.run('0.0.0.0', debug=True)
