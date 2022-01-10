@@ -71,47 +71,55 @@ def wtf_template2():
                            form=form)
 
 
-@data_input.route('/wtf_start', methods=['GET', 'POST'])
-def wtf_start():
-    # otd = request.args.get('12')
-    # doc = request.args.get('23')
+# @data_input.route('/wtf_start', methods=['GET', 'POST'])
+# def wtf_start():
+#     # otd = request.args.get('12')
+#     # doc = request.args.get('23')
 
-    result_podr2 = db.select(sql.sql_podr)
-    result_rasp = db.select(sql.sql_it_rasp.format(doc=0))
-    visible_ = ''
-    if result_rasp == []:
-        result_rasp.append('')
-        result_rasp.append('')
-        result_rasp.append('')
-        result_rasp.append('0')
-        result_rasp.append('0')
-        result_rasp.append('')
-        result_rasp = (result_rasp, )
-    else:
-        visible_ = 'style=display:none;'
-    # result_fio = db.select(sql.sql_fio.format(otd=0))
-    # if result_fio == []:
-    result_fio=([])
-    result_fio.append(0)
-    result_fio.append('')
-    result_fio = (result_fio, )
-    result_podr = db.select(sql.sql_podr_selected.format(otd=0))
-    form = WtfTemplate3()
-    return render_template('wtf_start.html',
-                           form=form,
-                           result_rasp=result_rasp,
-                           result_podr2=result_podr2,
-                           result_fio=result_fio,
-                           result_podr=result_podr,
-                           visible_=visible_)
+#     result_podr2 = db.select(sql.sql_podr)
+#     result_rasp = db.select(sql.sql_it_rasp.format(doc=0))
+#     visible_ = ''
+#     if result_rasp == []:
+#         result_rasp.append('')
+#         result_rasp.append('')
+#         result_rasp.append('')
+#         result_rasp.append('0')
+#         result_rasp.append('0')
+#         result_rasp.append('')
+#         result_rasp = (result_rasp, )
+#     else:
+#         visible_ = 'style=display:none;'
+        
+#     # result_fio = db.select(sql.sql_fio.format(otd=0))
+    
+#     # if result_fio == []:
+#     # result_fio=([])
+#     # result_fio.append(0)
+#     # result_fio.append('')
+#     # result_fio = (result_fio, )
+    
+#     result_otd = db.select(sql.sql_otd)
+#     print(result_otd)
+#     otd = utils.list_to_int(result_otd)
+#     result_fio = db.select(sql.sql_podr_selected.format(otd=otd))
+    
+#     form = WtfTemplate3()
+#     return render_template('wtf_start.html',
+#                            form=form,
+#                            result_rasp=result_rasp,
+#                            result_podr2=result_podr2,
+#                            result_fio=result_fio,
+#                            result_podr=result_podr2,
+#                            visible_=visible_)
 
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
-    otd = request.args.get('otd')
+    result_otd = db.select(sql.sql_otd)
+    otd = request.args.get('otd') or utils.list_to_int(result_otd)  
     result_notd = db.select(sql.sql_podr_selected.format(otd=otd))
     notd = result_notd[0]
-    print(result_notd)
+    
     result_doc = db.select(sql.sql_doc.format(otd=otd))
     doc = request.args.get('doc') or utils.list_to_int(result_doc)
 
@@ -206,7 +214,9 @@ def wtf_template3():
             return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_))
 
     result_rsn = db.select(sql.sql_rsp_rsn)
-    result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
+    try:
+      result_rsp_blc = db.select(sql.sql_rsp_blc.format(doc=doc))
+    except: print("result_rsp_blc")
     result_room = db.select(sql.sql_room.format(doc=doc))
     result_spz = db.select(sql.sql_spz)
 
