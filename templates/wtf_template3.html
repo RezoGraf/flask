@@ -318,9 +318,6 @@
                 {{ form.csrf_token() }}
 
      <div class="text-primary"> Режим работы сотрудника
-         <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#RegimeWorkModal" {{ visible_ }}>
-         <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
-         </button>
      </div>
      <table class="table table-striped table-hover" >
          <thead>
@@ -330,6 +327,11 @@
          <th>№ монитора</th>
          <th>№ страницы</th>
          <th>Специальность</th>
+         <th>
+           <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#RegimeWorkModal" {{ visible_ }}>
+           <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
+           </button>
+         </th>
          </thead>
          <tr>
          {% for NROOM_KR , NOEVEN_DAY, EVEN_DAY, NTV, NLIST, NSPZ in result_rasp %}
@@ -354,21 +356,22 @@
      </table>
 
      <div class="text-primary">Работа в праздничные и выходные дни, дежурство по графику
-        <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
-          <i class="bi bi-calendar-plus" style="color:#0069D9;"></i>
-        </button>
      </div>
      <table class="table table-hover">
          <thead>
          <th>Дата</th>
          <th>Время</th>
          <th>День недели</th>
-
+         <th>
+         <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
+          <i class="bi bi-calendar-plus" style="color:#0069D9;"></i>
+         </button>
+         </th>
          </thead>
          <tr>
          {% for ID, DATE_DUTY, TIME_DUTY, denNedeli in result_duty %}
             <tr>
-                <td>{{ DATE_DUTY.strftime('%d.%m.%Y') or "" }}</td>
+                <td>{% if DATE_DUTY != None %} {{ DATE_DUTY.strftime('%d.%m.%Y') }} {% else %} {{ DATE_DUTY or "" }} {%endif %}</td>
                 <td>{{ TIME_DUTY or "" }}</td>
                 <td>{{ denNedeli or ""}}</td>
                 <td style="width:12%;text-align:center;white-space: nowrap;">
@@ -385,23 +388,24 @@
      </table>
 
      <div class="text-primary"> Отстуствие на рабочем месте
-         <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
-         <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
-         </button>
+
      </div>
      <table class="table table-hover">
          <thead>
          <th>Дата с</th>
          <th>по</th>
          <th>Причина</th>
+         <th>
+          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
+            <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
+          </button>
+         </th> 
          </thead>
          <tr>
          {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
             <tr>
-                
                 <td>{% if DTN != None %} {{ DTN.strftime('%d.%m.%Y') }} {% else %} {{ DTN or "" }} {%endif %} </td>
                 <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %} </td>
-               
                 <td>{{ NRSN_ or ""}}</td>
                 <td style="width:12%;text-align:center;white-space: nowrap;">
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">
@@ -414,7 +418,6 @@
             </tr>
          {% endfor %}
      </table>
-
     </form>
 </div>
 {#</body>#}
@@ -424,19 +427,19 @@
   <div class="col col-lg-auto">
     <!--<div class="col-md-auto">-->
   <div class="table-wrapper-scroll-y my-custom-scrollbar table-hover">
-<!--  {% for OTD, NOTD in result_podr %}
-  <h5 class="text-primary">{{ NOTD }}</h5>-->
   <h5 class="text-primary">
     <form method="get" action="" id="MyForm">
-  <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example" onchange="document.getElementById('MyForm').submit()">
+      {% for OTD, NOTD, LPU in result_podr %}
+      <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example" onchange="document.getElementById('MyForm').submit()">
           <option value="{{ OTD }}" selected="selected">{{ NOTD }}</option>
+
     {% for OTD, NOTD in result_podr2 %}
     <option value="{{ OTD }}"{% if loop.first %} {% endif %}>{{ NOTD }}</option>
     {% endfor %}
     </select>
+    {% endfor %}
   </form>
   </h5>
-    <!--{% endfor %}-->
     <table id="myTable" class="table table-borderless" >
         <thead>
         <th>
@@ -445,7 +448,7 @@
     </thead>
     <tbody>
         {% for DOC, NDOC in result_fio %}
-        {% for OTD, NOTD in result_podr %}
+        {% for OTD, NOTD,LPU in result_podr %}
         <tr onclick="window.location.href='?otd={{ OTD }}&doc={{ DOC }}'; return false">
         <td style="padding:2px">{{ NDOC }}</td>
     </tr>
