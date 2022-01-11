@@ -33,7 +33,7 @@ def login():
             message_auth = auth_result[1]
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
-        if (username == 'root' and password == 'pass') or (username == 'kadr' and password == 'kadr') or (username == 'epid' and password == 'epid') or (auth_result[0] == 'ok'): 
+        if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'): 
             return redirect(url_for('menu'))
         else:
             message = "Неверное имя пользователя или пароль"
