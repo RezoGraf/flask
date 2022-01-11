@@ -24,17 +24,16 @@ app.register_blueprint(report, url_prefix='/report')
 @app.route('/', methods=['GET', 'POST'])
 def login():
     message = ""
+    message_auth = ""
     if request.method == 'POST':
         username = request.form.get('username')  # запрос к данным формы
         password = request.form.get('password')
         auth_result = auth.check_credentials(username, password)
-        if auth_result[0] == 'error1':
+        if auth_result[0] == 'error':
             message_auth = auth_result[1]
-        if auth_result[0] == 'error2':
-            message_auth = auth_result[1]
-        if auth_result[0] != '':
-            message_auth = f'AD: успешная авторизация {auth_result[0]}, доступ уровень {auth_result[1]}'
-        if (username == 'root' and password == 'pass') or (username == 'kadr' and password == 'kadr') or (username == 'epid' and password == 'epid'): 
+        if auth_result[0] == 'ok':
+            message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
+        if (username == 'root' and password == 'pass') or (username == 'kadr' and password == 'kadr') or (username == 'epid' and password == 'epid') or (auth_result[0] == 'ok'): 
             return redirect(url_for('menu'))
         else:
             message = "Неверное имя пользователя или пароль"
