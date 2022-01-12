@@ -62,7 +62,7 @@ def wtf_template2():
                                 otd=otd,
                                 doc=doc))
     result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-    result_fio = db.select(sql.sql_fio.format(otd=otd))
+    result_fio = db.select(sql.sql_allDoc.format(otd=otd))
     form = WtfTemplate2()
     #Если метод запроса - POST и если поля формы валидны
     return render_template('wtf_template2.html',
@@ -72,12 +72,12 @@ def wtf_template2():
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
-    result_otd = db.select(sql.sql_otd)
+    result_otd = db.select(sql.sql_randomOtd)
     otd = request.args.get('otd') or utils.list_to_int(result_otd)  
     result_notd = db.select(sql.sql_currentOtd.format(otd=otd))
     notd = result_notd[0]
     
-    result_doc = db.select(sql.sql_doc.format(otd=otd))
+    result_doc = db.select(sql.sql_randomDoc.format(otd=otd))
     doc = request.args.get('doc') or utils.list_to_int(result_doc)
 
     lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
@@ -115,7 +115,6 @@ def wtf_template3():
             procedure_name = 'NEW_IBLC'
             output_params = db.proc(procedure_name)
             output_params = utils.list_to_int(output_params)
-            # print(InsDtn, InsDtk, InsRsn)
             db.write(sql_ins_rsp_blc.format(output_params=output_params, doc=doc, InsDtn=InsDtn, InsDtk=InsDtk, InsRsn=InsRsn))
             return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
@@ -175,12 +174,12 @@ def wtf_template3():
     result_noWork = db.select(sql.sql_noWork.format(doc=doc))
     
     result_room = db.select(sql.sql_room.format(doc=doc))
-    result_spz = db.select(sql.sql_spz)
+    result_spz = db.select(sql.sql_allSpz)
 
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
     result_time = db.select(sql.sql_interval_time)
 
-    result_fio = db.select(sql.sql_fio.format(otd=otd))
+    result_fio = db.select(sql.sql_allDoc.format(otd=otd))
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
     fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
     fioSotrudnika = utils.list_to_str(fioSotrudnika)
@@ -211,7 +210,7 @@ def wtf_template3():
 def di_frame_fio():
     otd = request.args.get('otd')
     result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-    result_fio = db.select(sql.sql_fio.format(otd=otd))
+    result_fio = db.select(sql.sql_allDoc.format(otd=otd))
     result_podr2 = db.select(sql.sql_allOtd)
     print(result_podr)
     return render_template('wtf_iframe_left.html',

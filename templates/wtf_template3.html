@@ -10,10 +10,10 @@
 <div class="wtf-container" style="overflow-x: hidden;">
   <div class="row">
     <div class="col-md-auto">
-{#<body>#}
+
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ РЕЖИМА РАБОТЫ СОТРУДНИКА#}
-<form method="post">
 {% for NROOM_KR, NOEVEN_DAY, EVEN_DAY, NTV, NLIST, NSPZ in result_rasp %}
+<form method="post">
  <div class="modal fade" id="RegimeWorkModal" tabindex="-1" role="dialog" aria-labelledby="RegimeWorkModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -84,8 +84,8 @@
     </div>
   </div>
 </div>
- {% endfor %}
 </form>
+{% endfor %}
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ РЕЖИМА РАБОТЫ СОТРУДНИКА#}
 <form method="post">
 <div class="modal fade" id="DelRegimeWorkModal{{ doc }}" tabindex="0">
@@ -109,7 +109,6 @@
 </form>
 {#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
 <form method="post">
-{#{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}#}
  <div class="modal fade" id="InsRspBlcModal" tabindex="-1" role="dialog" aria-labelledby="InsRspBlcModal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -139,7 +138,6 @@
           </div>
         </form>
       </div>
-
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
         <button type="submit" class="btn btn-primary" name="btn" value="InsRspBlc">Сохранить</button>
@@ -149,38 +147,34 @@
 </div>
 </form>
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
-<form method="post">
 {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+<form method="post"> 
  <div class="modal fade" id="RspBlcModal{{ iblc }}" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-keyboard="false">
+    <div class="modal-content">      
       <div class="modal-header">
         <h5 class="modal-title">Сведения об отсутствии сотрудника</h5>
-        <input type="text" name="UpdIblc" value="{{ iblc }}" class="col-form-label" style="display: none;">
+        <input type="text" name="UpdIblc" value={{ iblc }} class="col-form-label">
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
-       <div class="modal-body">
-        <form>
+      <div class="modal-body">  
           <div class="mb-3">
             <label class="col-form-label">Дата с:</label>
-            <input type="date" class="form-control" value={{ DTN }} name="UpdDtn" required>
+            <input type="date" class="form-control" value={{ DTN }} name="UpdDtn">
           </div>
-
           <div class="mb-3">
             <label class="col-form-label">по:</label>
-            <input type="date" class="form-control" value={{ DTK }} name="UpdDtk" required>
+            <input type="date" class="form-control" value={{ DTK }} name="UpdDtk">
           </div>
-
           <div class="input-group mb-3">
             <label class="input-group-text" for="inputGroupSelectUpdRsn" >Причина:</label>
-            <select class="form-select" id="inputGroupSelectUpdRsn" name="UpdRsn" value={{ RSN }} required>
+            <select class="form-select" class="form-control" id="inputGroupSelectUpdRsn" name="UpdRsn" value={{ RSN }}>
               {% for RSN, NRSN in result_rsn %}
                 <option value="{{ RSN }}" {% if loop.first %} SELECTED{% endif %}>{{ NRSN or ""}} </option>
               {% endfor %}
               <option selected>{{ NRSN_ }} </option>
             </select>
           </div>
-        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
@@ -189,11 +183,11 @@
     </div>
   </div>
 </div>
-{% endfor %}
 </form>
+{% endfor %}
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
-<form method="post">
 {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+<form method="post">
 <div class="modal fade" id="DelRspBlcModal{{ iblc }}" tabindex="0">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-backdrop="static" data-keyboard="false">
     <div class="modal-content">
@@ -212,8 +206,9 @@
     </div>
   </div>
 </div>
-{% endfor %}
 </form>
+{% endfor %}
+
 {#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 <form method="post">
  <div class="modal fade" id="InsRspDutyModal"  tabindex="-1">
@@ -250,8 +245,8 @@
 </div>
 </form>
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
-<form method="post">
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
+<form method="post">
  <div class="modal fade" id="UpdRspDutyModal{{ ID }}"  tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-backdrop="static" data-keyboard="false">
     <div class="modal-content">
@@ -286,11 +281,11 @@
     </div>
   </div>
 </div>
-{% endfor %}
 </form>
+{% endfor %}
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
-<form method="post">
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
+<form method="post">
 <div class="modal fade" id="DelRspDutyModal{{ ID }}" tabindex="0">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -309,8 +304,8 @@
     </div>
   </div>
 </div>
-{% endfor %}
 </form>
+{% endfor %}
 
 <div class="container">
     <h4 class="text-primary">График работы сотрудника {{ fioSotrudnika }}</h4>
@@ -362,6 +357,12 @@
          <th>Дата</th>
          <th>Время</th>
          <th>День недели</th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
          <th>
          <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspDutyModal">
           <i class="bi bi-calendar-plus" style="color:#0069D9;"></i>
@@ -374,6 +375,12 @@
                 <td>{% if DATE_DUTY != None %} {{ DATE_DUTY.strftime('%d.%m.%Y') }} {% else %} {{ DATE_DUTY or "" }} {%endif %}</td>
                 <td>{{ TIME_DUTY or "" }}</td>
                 <td>{{ denNedeli or ""}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td style="width:12%;text-align:center;white-space: nowrap;">
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#UpdRspDutyModal{{ ID }}">
                     <i class="bi bi-pencil"></i>
@@ -388,13 +395,17 @@
      </table>
 
      <div class="text-primary"> Отстуствие на рабочем месте
-
      </div>
      <table class="table table-hover">
          <thead>
          <th>Дата с</th>
          <th>по</th>
          <th>Причина</th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
+         <th></th>
          <th>
           <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Добавить запись" data-target="#InsRspBlcModal">
             <i class="bi bi-calendar-plus" style="color:#0069D9"></i>
@@ -407,10 +418,16 @@
                 <td>{% if DTN != None %} {{ DTN.strftime('%d.%m.%Y') }} {% else %} {{ DTN or "" }} {%endif %} </td>
                 <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %} </td>
                 <td>{{ NRSN_ or ""}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td style="width:12%;text-align:center;white-space: nowrap;">
-                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal"  title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">
+                    <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Редактировать запись" data-target="#RspBlcModal{{ iblc }}">
                        <i class="bi bi-pencil" style="color:#0069D9"></i>
                     </button>
+
                     <button type="button" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись" data-target="#DelRspBlcModal{{ iblc }}">
                       <i class="bi bi-trash" style="color:#0069D9"></i>
                     </button>
@@ -420,7 +437,7 @@
      </table>
     </form>
 </div>
-{#</body>#}
+
 {#</html>#}
 </div>
 <!--<div class="col col-lg-2">-->
@@ -479,4 +496,5 @@
 document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
 
 </script>
+
 {% endblock %}
