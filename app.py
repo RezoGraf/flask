@@ -24,6 +24,7 @@ app.register_blueprint(report, url_prefix='/report')
 @app.route('/', methods=['GET', 'POST'])
 def login():
     message = ""
+    message_auth=""
     if request.method == 'POST':
         username = request.form.get('username')  # запрос к данным формы
         password = request.form.get('password')
