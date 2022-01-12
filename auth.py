@@ -22,11 +22,11 @@ def check_credentials(username, password):
         ldap_client.simple_bind_s(LDAP_USERNAME, LDAP_PASSWORD)
     except ldap.INVALID_CREDENTIALS:
         ldap_client.unbind()
-        return 'error1', 'AD: Неверное имя пользователя или пароль'
+        return 'error', 'AD: Неверное имя пользователя или пароль'
     except ldap.SERVER_DOWN:
-        return 'error2', 'AD: Сервер не доступен'
+        return 'error', 'AD: Сервер не доступен'
     # all is well
-    # get all user groups and store it in cerrypy session for future use
+    # get all user groups and store it in session for future use
     #    cherrypy.session[username] = str(ldap_client.search_s(base_dn,
     #                    ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
     # print(str(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf']))
@@ -61,4 +61,4 @@ def check_credentials(username, password):
     # print(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
     # print(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, )
     ldap_client.unbind()
-    return k, auth_fio
+    return "ok", k, auth_fio
