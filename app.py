@@ -58,7 +58,7 @@ def menu():
         auth_group = session.get('auth_group')
     else:
         auth_group = 'none'
-    return render_template('menu.html', arena_fio=arena_fio, arena_user=arena_user, auth_group=auth_group)
+    return render_template('menu.html', arena_fio=arena_fio)
 
 
 if __name__ == "__main__":

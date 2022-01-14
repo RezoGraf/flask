@@ -71,5 +71,4 @@ def main():
                                              dtk=dtk))
         return render_template("report.html",
                            my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple,
-                           arena_user=arena_user, arena_fio=arena_fio,
-                           auth_group=auth_group)
+                           arena_fio=arena_fio)

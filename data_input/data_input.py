@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, redirect, url_for, request
+from flask import Blueprint, render_template, abort, redirect, url_for, request, session
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
@@ -187,6 +187,10 @@ def wtf_template3():
     result_podr2 = db.select(sql.sql_allOtd)
 
     form = WtfTemplate3()
+    if 'arena_fio' in session:
+        arena_fio = session.get('arena_fio')
+    else:
+        arena_fio = "Не пользователь домена"
     print(visible_)
     return render_template('wtf_template3.html',
                            result_fio=result_fio,
@@ -204,7 +208,8 @@ def wtf_template3():
                            form=form,
                            visible_=visible_,
                            result_podr=result_podr,
-                           result_podr2=result_podr2)
+                           result_podr2=result_podr2,
+                           arena_fio=arena_fio)
 
 @data_input.route('/di_frame_fio', methods=['GET', 'POST'])
 def di_frame_fio():
