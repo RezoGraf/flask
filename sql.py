@@ -65,3 +65,6 @@ sql_interval_time = """select id, interval_time from it_rasp_time order by id"""
 sql_doctod = """ select doc, ndoc from n_doc where pv=1 and doc='{doc}' and otd='{otd}'"""
 
 sql_otd_for_report = """"""
+
+sql_ad_arena_username = """select app_user from users_app where com='{}'"""
+sql_ad_arena_mpp = """select mpp from users_app where com='{}'"""

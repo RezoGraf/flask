@@ -2,14 +2,18 @@ from api.api import api
 from data_input.data_input import data_input
 from excel.excel import excel
 from report.report import report
-from flask import Flask, render_template, request, url_for, redirect
+import datetime
+from flask import Flask, render_template, request, url_for, redirect, session
 import auth
+
 
 app = Flask(__name__, static_folder="static",
             template_folder='templates')
 app.config["SECRET_KEY"] = '79537d00f4834892986f09a100aa1edf'
 app.jinja_env.auto_reload = True
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.secret_key = 'sdlfhwerfohw489fh48of4ho'
+app.permanent_session_lifetime = datetime.timedelta(days=365)
 app.register_blueprint(data_input,
                        url_prefix='/data_input',
                        static_folder='/static',
@@ -42,7 +46,19 @@ def login():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    if 'arena_user' in session:
+        arena_user = session.get('arena_user')
+    else:
+        arena_user = 'none'
+    if 'arena_fio' in session:
+        arena_fio = session.get('arena_fio')
+    else:
+        arena_fio = "Не пользователь домена"
+    if 'auth_group' in session:
+        auth_group = session.get('auth_group')
+    else:
+        auth_group = 'none'
+    return render_template('menu.html', arena_fio=arena_fio, arena_user=arena_user, auth_group=auth_group)
 
 
 if __name__ == "__main__":

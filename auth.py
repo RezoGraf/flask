@@ -1,10 +1,15 @@
 import ldap
+from flask import Flask, session
+import db
+import sql
+
 
 def check_credentials(username, password):
     """Verifies credentials for username and password.
     Returns None on success or a string describing the error on failure
     # Adapt to your needs
     """
+    session.clear()
     LDAP_SERVER = 'ldap://192.168.100.2'
     # fully qualified AD user name
     LDAP_USERNAME = '%s@gsp.local' % username
@@ -34,31 +39,41 @@ def check_credentials(username, password):
     # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1])
     # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1][''])
     d = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs2)[0][0])
-    auth_fio = ""
+    auth_group = ""
     for x in s:
         x = str(x, 'utf-8')
-        # print(type(x))
         chars1 = "CN="
         chars2 = ","
-        # print(type(x))
-        # print(x)
-        # print(x.decode("utf-8", "ignore"))
-        # print(x.decode())
-        n = x[x.find(chars1)+3 : x.find(chars2)]
-        if n == "web_hs_admin":
-            auth_fio = n
+        auth_group = x[x.find(chars1)+3 : x.find(chars2)]
+        if "web_hs" in auth_group:
+            print(f'Состоит в группе: { auth_group }')
+            session['auth_group'] = auth_group
             
-        print(f'Состоит в группе: { n }')
-        # print(n)
-        # print(n.decode("utf-8", "ignore"))
-        # print(x.decode("utf-8", "ignore"))
-    char1 = 'CN='
-    char2 = ','
-    k = ""
-    k = d[d.find(char1)+3 : d.find(char2)]
-    print(f'ФИО: {k}')
-    # print(k)
-    # print(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
-    # print(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, )
+        else:
+            print(f'Не состоит в группах web_hs')
+            
+
+    char_start = 'CN='
+    char_end = ','
+    arena_fio = d[d.find(char_start)+3 : d.find(char_end)]
+    print(f'ФИО: {arena_fio}')
+    arena_mpp = 000
+    
+    try:
+        f = db.select(sql.sql_ad_arena_username.format(username))
+        arena_username = f[0][0]
+        if arena_username != None:
+            session['arena_user'] = arena_username
+    except BaseException:
+        pass
+    
+    try:
+        arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
+        session['arena_mpp'] = arena_mpp[0][0]
+    except BaseException:
+        pass
+    arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
+    session['arena_fio'] = arena_fio
+    session['arena_mpp'] = arena_mpp
     ldap_client.unbind()
-    return "ok", k, auth_fio
+    return "ok", arena_fio, auth_group

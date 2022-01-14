@@ -1,4 +1,8 @@
-{% extends 'menu.html' %} {% block content %}
+{% with arena_fio=arena_fio, arena_user=arena_user, auth_group=auth_group %}
+                {% include "menu.html" %}
+            {% endwith %}
+
+{% block content %}
 
 
     <meta charset="UTF-8">
