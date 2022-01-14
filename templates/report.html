@@ -17,8 +17,8 @@
 
             <div class="col-md-auto">
 
-                    <label for="datepicker" class="form-label">Дата начала</label>
-                    <input type="date" value="{{ dtn_get }}" name="dtn_get" />
+                <label for="datepicker" class="form-label">Дата начала</label>
+                <input type="date" value="{{ dtn_get }}" name="dtn_get" />
 
             </div>
             <div class="col-md-auto">
@@ -56,16 +56,14 @@
             </th>
             <th>
                 <input name="reason_filter" list="datalistOptions" class="form-control" id="myInputReason" placeholder="Поиск по причине" autocomplete="off"> 
-                </th>
-                <th>
-                </th>
-                    <th>
-                    </th>
-            </tr>
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+        </tr>
     </thead>
     <tbody>
-
-
         {% for SNLPU, NDOC, NRSN, DTN, DTK in my_list %}
         <tr>
             <td>{{ SNLPU }}</td>
@@ -75,15 +73,16 @@
             <td>{{ DTK.strftime('%d.%m.%Y') }}</td>
         </tr>
         {% endfor %}
-        <tfoot>
-            <tr>
-                <th>Отделение</th>
-                <th>ФИО</th>
-                <th>Причина</th>
-                <th>Отстутствует с</th>
-                <th>Отсутствует по</th>
-            </tr>
-        </tfoot>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>Отделение</th>
+            <th>ФИО</th>
+            <th>Причина</th>
+            <th>Отстутствует с</th>
+            <th>Отсутствует по</th>
+        </tr>
+    </tfoot>
 </table>
 </div>
 </body>
