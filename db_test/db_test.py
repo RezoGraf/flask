@@ -1,3 +1,4 @@
+# coding=utf-8
 from flask import Blueprint, session, render_template, request, redirect, url_for
 from time import time
 import numpy
