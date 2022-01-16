@@ -1,7 +1,9 @@
+from curses import KEY_MARK
 from api.api import api
 from data_input.data_input import data_input
 from excel.excel import excel
 from report.report import report
+from db_test.db_test import db_test
 import datetime
 from flask import Flask, render_template, request, url_for, redirect, session
 import auth
@@ -19,10 +21,9 @@ app.register_blueprint(data_input,
                        static_folder='/static',
                        template_folder='/templates')
 app.register_blueprint(api, url_prefix='/api')
-
 app.register_blueprint(excel, url_prefix='/excel')
-
 app.register_blueprint(report, url_prefix='/report')
+app.register_blueprint(db_test, url_prefix='/db_test')
 
 
 @app.route('/', methods=['GET', 'POST'])

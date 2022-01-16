@@ -18,20 +18,6 @@ data_input = Blueprint('data_input', __name__)
 # Связываем URL со схемой `data_input`
 
 
-@data_input.route('/signup', methods=['GET', 'POST'])
-def signup():
-    """User sign-up form for account creation."""
-    form = SignupForm()
-    if form.validate_on_submit():
-        return redirect(url_for("success"))
-    return render_template(
-        "signup.jinja2",
-        form=form,
-        template="form-template",
-        title="Signup Form"
-    )
-
-
 @data_input.route('/', methods=('GET', 'POST'))
 def wtf_template():
     if request.method == 'POST':
@@ -210,6 +196,7 @@ def wtf_template3():
                            result_podr=result_podr,
                            result_podr2=result_podr2,
                            arena_fio=arena_fio)
+
 
 @data_input.route('/di_frame_fio', methods=['GET', 'POST'])
 def di_frame_fio():
