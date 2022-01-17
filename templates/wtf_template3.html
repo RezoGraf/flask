@@ -309,7 +309,7 @@
 </form>
 {% endfor %}
 
-<div class="container">
+<div class="container-fluid">
     <h4 class="text-primary">График работы сотрудника {{ fioSotrudnika }}</h4>
      <form class="form-horizontal" method="POST" action="">
                 {{ form.csrf_token() }}
@@ -443,8 +443,8 @@
 {#</html>#}
 </div>
 <!--<div class="col col-lg-2">-->
-  <div class="col col-lg-auto">
-    <!--<div class="col-md-auto">-->
+  <div class="col">
+    <div class="w-100">   <!--<div class="col-md-auto">-->
   <div class="table-wrapper-scroll-y my-custom-scrollbar table-hover">
   <h5 class="text-primary">
     <form method="get" action="" id="MyForm">
@@ -476,6 +476,8 @@
     </tbody>
     </table>
   </div>
+</div>
+ 
 </div>
 </div>
 
