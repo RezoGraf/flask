@@ -6,3 +6,4 @@ data_input.py/__pycache__/
 excel/__pycache__/
 report/__pycache__/
 excel/otchet_po_otsutstviyu.xlsx
+.DS_Store
