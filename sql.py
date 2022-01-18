@@ -68,3 +68,14 @@ sql_otd_for_report = """"""
 
 sql_ad_arena_username = """select app_user from users_app where com='{}'"""
 sql_ad_arena_mpp = """select mpp from users_app where com='{}'"""
+
+# Табель учета рабочего времени
+sql_TabWorkTime = """Select (select nroom_kr from room where room.id=it_rasp_grf.room),
+                (select notd from np_otd where np_otd.otd=it_rasp_grf.otd),
+                n_spz.nspz,n_doc.ndoc,
+                it_rasp_grf.*
+                from it_rasp_grf,n_doc,n_spz
+                where (it_rasp_grf.doc=n_doc.doc) and (it_rasp_grf.spz=n_spz.spz)
+                and it_rasp_grf.YEARWORK={EYear}
+                and it_rasp_grf.MONTHWORK={EMonth}
+                and it_rasp_grf.OTD={otd}"""

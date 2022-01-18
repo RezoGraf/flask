@@ -1,61 +1,36 @@
-{% extends 'menu.html' %}
+{% with arena_fio=arena_fio %}
+        {% include "menu.html" %}
+{% endwith %}
+
 {% block content %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='datepicker.material.css') }}">
-<script src="{{ url_for('static', filename='datepicker.js') }}"></script>
-
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>Title</title>#}
-{#</head>#}
-{#<body>#}
 <div class="container">
-    <h2>Внесение дежурства и выходных</h2>
-    {% for field, errors in form.errors.items() %}
-    {{ ', '.join(errors) }}
-    {% endfor %}
-
+    <h2>Табель учета рабочего времени</h2>
     <form class="form-horizontal" method="POST" action="">
-                {{ form.csrf_token() }}
-    <select name="ndoc" class="form-select" aria-label="Default select example" disabled>
-    {% for DOC, NDOC in result_fio %}
-      <option value="{{ DOC }}"{% if loop.first %} SELECTED{% endif %}>{{ NDOC }}</option>
-    {% endfor %}
-    </select>
-
-    <table>
-      <tr>
-        <td>
-    	  <label for="datepicker" class="form-label">Дата начала</label>
-          <input type="text" id="datepicker" name="dtn" autocomplete="off">
-        </td>
-        <td>
-          <label for="datepicker2" class="form-label">Окончание</label>
-          <input type="text" id="datepicker2" name="dtk" autocomplete="off">
-        </td>
-      </tr>
-    </table>
-
-        <select name="rsn" class="form-select" aria-label="Default select example" >
-         {% for RSN, NRSN in result_rsn %}
-         <option value="{{ RSN }}"{% if loop.first %} SELECTED{% endif %}>{{ NRSN if NRSN }}</option>
-         {% endfor %}
-        </select>
-
-        <div class="form-group">
-            {{ form.submit(class="btn btn-primary")}}
+      <div class="row">
+        <div class="col-md-auto">
+          <label for="year_" class="form-label">Год</label>
+          <input type="number" id="year_" name="year">
         </div>
-
-    </form>
-
-
+        <div>
+         <label for="month_" class="form-label">Месяц</label>
+         <input type="number" id="month_" name="month">
+        </div>
+      </div>
+    <select name="notd" class="form-select" aria-label="Default select example">
+      {% for OTD, NOTD in result_otd %}
+        <option value="{{ OTD }}"{% if loop.first %} SELECTED{% endif %}>{{ NOTD }}</option>
+      {% endfor %}
+     </select> 
+     </form>
+    
+    <div class="form-group">
+      <input type="submit">
+    </div>
 </div>
-{#</body>#}
-{#</html>#}
 
 <script>
-
-var datepicker = new Datepicker("#datepicker");
-var datepicker2 = new Datepicker('#datepicker2');
+  var datepicker = new Datepicker("#datepicker");
+  var datepicker2 = new Datepicker('#datepicker2');
 </script>
 {% endblock %}
