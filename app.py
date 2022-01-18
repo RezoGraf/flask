@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 # from curses import KEY_MARK
+=======
+>>>>>>> 324c33de3668af1dc2fe17f312062055cba8773d
 from api.api import api
 from data_input.data_input import data_input
 from excel.excel import excel
@@ -9,8 +12,11 @@ from flask import Flask, render_template, request, url_for, redirect, session
 import auth
 import errors
 import logging
+<<<<<<< HEAD
 import db
 # from logging.handlers import tele
+=======
+>>>>>>> 324c33de3668af1dc2fe17f312062055cba8773d
 
 
 app = Flask(__name__, static_folder="static",

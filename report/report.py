@@ -26,7 +26,7 @@ def main():
         # dtn = request.form.get('dtn')
         dtn = request.form.get('dtn_get')
         dtk = request.form.get('dtk_get')
-        dtn_simple = pd.Timestamp(request.form.get('dtn_get'))  # запрос к данным формы
+        dtn_simple = pd.Timestamp(request.form.get('dtn_get'))
         dtk_simple = pd.Timestamp(request.form.get('dtk_get'))
         # dtn.strftime("%d.%m.%Y")
         # dtk.strftime("%d.%m.%Y")
