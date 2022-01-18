@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Blueprint, session, render_template, request, redirect, url_for
+from flask import Blueprint, g, session, render_template, request, redirect, url_for
 from time import time
 import numpy
 from db_test.db_test_sql import sql_visit1, sql_visit2, sql_visit3
@@ -69,5 +69,5 @@ def main():
                             select_requests=select_requests,
                             select_counts=select_counts,
                             count_select=count_select,
-                            script_select=script_select,
+                            script_select=script_select
                             )
