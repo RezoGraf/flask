@@ -13,15 +13,15 @@ AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
 # Выбор списка отделений
 sql_allOtd = "select otd,notd from np_otd where notd is not null order by ps"
-
-# Выбор выбранного отделения
+# Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
-sql_otd = """select first 1 otd from np_otd where otd>0 order by otd"""
+# Выборка первого попавшегося отделения
+sql_randomOtd = """select first 1 otd from np_otd where otd>0 order by otd"""
 
-# Выборка всех ФИО по коду отделения
-sql_fio = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """
-sql_doc = """select first 1 doc from n_doc where pv=1 and otd='{otd}' order by ndoc"""
-
+# Выборка всех ФИО врачей по коду отделения
+sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """
+# Выборка первого попавшегося врача
+sql_randomDoc = """select first 1 doc from n_doc where pv=1 and otd='{otd}' order by ndoc"""
 # Выборка ФИО по коду
 sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_doc.mpp=n_mpp.mpp) and n_doc.doc={doc} """
 
@@ -31,8 +31,8 @@ sql_rsp_rsn = """select rsn, nrsn from rsp_rsn order by rsn"""
 # Номера кабинетов
 sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc={doc}) order by id"""
 
-# Специальности сотрудников
-sql_spz = """select spz, nspz from n_spz where pd=1 order by nspz"""
+# Выборка всех специальностей сотрудников
+sql_allSpz = """select spz, nspz from n_spz where pd=1 order by nspz"""
 
 # Информация о режиме работы сотрудника
 sql_it_rasp = """Select ROOM.NROOM_KR,(select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as NOEVEN_DAY,
@@ -155,3 +155,16 @@ order by idkv,dou"""
 # npolir- ФИО Полировщика 
 # nvarh - ФИО Варщика
 # --------------------------------------------------------------{% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh in my_list %}
+sql_ad_arena_username = """select app_user from users_app where com='{}'"""
+sql_ad_arena_mpp = """select mpp from users_app where com='{}'"""
+
+# Табель учета рабочего времени
+sql_TabWorkTime = """Select (select nroom_kr from room where room.id=it_rasp_grf.room),
+                (select notd from np_otd where np_otd.otd=it_rasp_grf.otd),
+                n_spz.nspz,n_doc.ndoc,
+                it_rasp_grf.*
+                from it_rasp_grf,n_doc,n_spz
+                where (it_rasp_grf.doc=n_doc.doc) and (it_rasp_grf.spz=n_spz.spz)
+                and it_rasp_grf.YEARWORK={EYear}
+                and it_rasp_grf.MONTHWORK={EMonth}
+                and it_rasp_grf.OTD={otd}"""
