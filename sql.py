@@ -65,3 +65,93 @@ sql_interval_time = """select id, interval_time from it_rasp_time order by id"""
 sql_doctod = """ select doc, ndoc from n_doc where pv=1 and doc='{doc}' and otd='{otd}'"""
 
 sql_otd_for_report = """"""
+
+# zakaz_naryad-----ВСЕ----------if check_open and check_close----------------------------------------------------
+sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
+       n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
+       (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh,
+       (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
+from pl_uslk,patient,np_otd,n_opl
+Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
+  and (np_otd.GR_OTD=2) 
+  and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
+order by idkv,dou"""
+# Только открытые наряды------if check_open and check_close is None--------------------------------------------------------
+sql_zakaz_naryad_select_open = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
+       n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
+       (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh,
+       (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
+from pl_uslk,patient,np_otd,n_opl
+Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
+  and (np_otd.GR_OTD=2) 
+  and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
+  and (pl_uslk.dzr is null)
+order by idkv,dou"""
+# Только закрытые наряды-------if check_open is None and check_close-------------------------------------------------------
+sql_zakaz_naryad_select_close = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
+       n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
+       (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh,
+       (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
+from pl_uslk,patient,np_otd,n_opl
+Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
+  and (np_otd.GR_OTD=2) 
+  and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
+  and (pl_uslk.dzr is not null)
+order by idkv,dou"""
+# данные наряда по номеру------------------------------------------------------------------------------------------------
+sql_zn_naryad_select_info = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
+       n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
+       (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh,
+       (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
+from pl_uslk,patient,np_otd,n_opl
+Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
+  and (pl_uslk.idkv = {idkv})
+order by idkv,dou"""
+
+# sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
+#        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
+#        (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
+#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh,
+#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit,
+#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir,
+#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh,
+#        (select nyml from np_yml where np_yml.kspr=pl_uslk.lpu and np_yml.yml=1) as nlpu
+# from pl_uslk,patient,np_otd,n_opl
+# Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
+#   and (np_otd.GR_OTD=2) 
+#   and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
+# order by idkv,dou"""
+
+# idkv, - уникальный код квитанции (не нужен)
+# nkv,  - номер наряда
+# dou,  - дата оформления наряда
+# stu,  - полная стоимость
+# dzr,  - дата закрытия
+# nopl, - вид оплаты
+# uid,  - номер карты пациента
+# fam,  - Фамилия пац
+# im,   - Имя пац
+# ot,   - Отчество пац
+# dr,   - дата рождения
+# nmpp, - ФИО врача
+# nteh, - ФИО Техника
+# nlit, - ФИО Литейщика
+# npolir- ФИО Полировщика 
+# nvarh - ФИО Варщика
+# --------------------------------------------------------------{% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh in my_list %}
