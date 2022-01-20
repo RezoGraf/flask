@@ -1,5 +1,6 @@
 # from curses import KEY_MARK
 from api.api import api
+from htmx_test.htmx_test import htmx_test
 from data_input.data_input import data_input
 from excel.excel import excel
 from report.report import report
@@ -32,6 +33,7 @@ app.register_blueprint(report, url_prefix='/report')
 app.register_blueprint(db_test, url_prefix='/db_test')
 
 app.register_blueprint(zakaz_naryad, url_prefix='/zakaz_naryad')
+app.register_blueprint(htmx_test, url_prefix='/htmx_test')
 
 @app.route('/', methods=['GET', 'POST'])
 def login():

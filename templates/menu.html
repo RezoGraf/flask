@@ -44,13 +44,19 @@
           </div>
         </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
+            <a 
+            class="nav-link dropdown-toggle text-primary" 
+            data-toggle="dropdown" 
+            href="#" role="button" 
+            aria-haspopup="true" 
+            aria-expanded="false">Отчеты</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
-              <a class="dropdown-item text-primary" href="/zakaz_naryad">Заказ Наряды</a>
+              <a class="dropdown-item text-primary"
+              href="/report">Отчет по отсутствующим</a>
+              <a class="dropdown-item text-primary" 
+              href="/zakaz_naryad">Заказ Наряды</a>
             </div>
-          </li>
-      </ul> 
+          </li> 
           <a
             class="nav-link dropdown-toggle text-primary"
             data-toggle="dropdown"
@@ -58,12 +64,11 @@
             role="button"
             aria-haspopup="true"
             aria-expanded="false"
-            >Отчеты</a
-          >
+            >Отчеты</a>
           <div class="dropdown-menu">
-            <a class="dropdown-item text-primary" href="/report"
-              >Отчет по отсутствующим</a
-            >
+            <a class="dropdown-item text-primary" 
+            href="/report"
+              >Отчет по отсутствующим</a>
           </div>
         </li>
         <li class="nav-item dropdown">
@@ -74,18 +79,21 @@
             role="button"
             aria-haspopup="true"
             aria-expanded="false"
-            >Сервис</a
-          >
+            >Сервис</a>
           <div class="dropdown-menu">
-            <a class="dropdown-item text-primary" href="/db_test"
-              >Тестирование БД Firebird</a
-            >
+            <a class="dropdown-item text-primary" 
+            href="/db_test"
+              >Тестирование БД Firebird</a>
+              <a class="dropdown-item text-primary" 
+              href="/htmx_test"
+                >Тестирование HTMX</a>
           </div>
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <label>{{arena_fio}}</label>
-        <a href="/" class="btn btn-secondary" role="button"> Выход</a>
+        <a href="/" class="btn btn-secondary" 
+        role="button"> Выход</a>
       </form>
     </div>
   </nav>
