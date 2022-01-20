@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, Blueprint
 import json
 import os.path
+import db, sql
 
 data = ["Один", "Тор"]
 
@@ -42,3 +43,17 @@ def name_order():
 @htmx_test.route("/")
 def index():
     return render_template("htmx_test.html", items=data)
+
+
+@htmx_test.route("/table_view")
+def table_view():
+    table_view_all = db.select(sql.sql_htmx_text_tablevew)
+    otd=12
+    return render_template("htmx_tableview.html", table_view_all=table_view_all)
+
+
+@htmx_test.route("/table_view/edit/")
+def table_view_edit(id):
+    otd = request.args['otd']
+    id_grf = request.args['id_grf']
+    """it_rasp_grf"""
