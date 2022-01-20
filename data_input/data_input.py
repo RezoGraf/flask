@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, abort, redirect, url_for, request
+from flask import Blueprint, render_template, abort, redirect, url_for, request, session
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
@@ -16,20 +16,6 @@ data_input = Blueprint('data_input', __name__)
 # теперь в этой схеме, вместо экземпляра приложения
 # 'app' используем экземпляр `Blueprint` с именем `data_input`.
 # Связываем URL со схемой `data_input`
-
-
-@data_input.route('/signup', methods=['GET', 'POST'])
-def signup():
-    """User sign-up form for account creation."""
-    form = SignupForm()
-    if form.validate_on_submit():
-        return redirect(url_for("success"))
-    return render_template(
-        "signup.jinja2",
-        form=form,
-        template="form-template",
-        title="Signup Form"
-    )
 
 
 @data_input.route('/', methods=('GET', 'POST'))
@@ -187,6 +173,10 @@ def wtf_template3():
     result_podr2 = db.select(sql.sql_allOtd)
 
     form = WtfTemplate3()
+    if 'arena_fio' in session:
+        arena_fio = session.get('arena_fio')
+    else:
+        arena_fio = "Не пользователь домена"
     print(visible_)
     return render_template('wtf_template3.html',
                            result_fio=result_fio,
@@ -204,8 +194,23 @@ def wtf_template3():
                            form=form,
                            visible_=visible_,
                            result_podr=result_podr,
-                           result_podr2=result_podr2)
+                           result_podr2=result_podr2,
+                           arena_fio=arena_fio)
 
+@data_input.route('/wtf_template4/', methods=['GET', 'POST'])
+def WtfTemplate4():
+    otd = request.args.get('otd')
+    if otd is None : otd=12
+    # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
+    # result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+    result_otd = db.select(sql.sql_allOtd)
+    print(result_otd)
+    return render_template('wtf_template4.html',
+                           result_otd=result_otd)
+                        #    result_podr=result_podr,
+                        #    result_podr2=result_podr2,
+    
+    
 @data_input.route('/di_frame_fio', methods=['GET', 'POST'])
 def di_frame_fio():
     otd = request.args.get('otd')

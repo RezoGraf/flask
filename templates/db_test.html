@@ -1,0 +1,28 @@
+{% with arena_fio=arena_fio %}
+                {% include "menu.html" %}
+            {% endwith %}
+{% block content %}
+<form method="post">
+    <select class="custom-select" name="script_select" required>
+        {% for nameid, valueid in select_requests %}
+        <option value="{{ valueid }}"{% if loop.first %} SELECTED{% endif %}>{{ nameid or "" }} </option>
+      {% endfor %}
+    </select>
+    <select class="custom-select" name="count_select" required>
+        {% for namecount, valuecount in select_counts %}
+        <option value="{{ valuecount }}"{% if loop.first %} SELECTED{% endif %}>{{ namecount or "" }} </option>
+      {% endfor %}
+    </select>
+    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Сформировать</button>
+    <br>
+    <a>Сформировано по скрипту: {{ script_select }}, количество проходов: {{ count_select }}
+    <br>
+    <a>Минимальное время на выборку: {{min_time}}</a>
+    <br>
+    <a>Среднее время на выборку: {{ average_time }}</a>
+    <br>
+    <a>Максимальное время на обработку запроса: {{max_time}}</a>
+</form>
+  
+
+{% endblock %}
