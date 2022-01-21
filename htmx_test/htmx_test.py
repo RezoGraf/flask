@@ -52,8 +52,31 @@ def table_view():
     return render_template("htmx_tableview.html", table_view_all=table_view_all)
 
 
-@htmx_test.route("/table_view/edit/")
-def table_view_edit(id):
-    otd = request.args['otd']
-    id_grf = request.args['id_grf']
-    """it_rasp_grf"""
+@htmx_test.route("/table_view/edit/", methods=["GET", "POST"])
+def table_view_edit():
+    # otd = request.args['otd']
+    # id_grf = request.args['id_grf']
+    list_of_time = db.select(sql.sql_interval_time)
+    list_of_options = ''
+    i = 1
+    while i < len(list_of_time):
+        option = f'<option value="{list_of_time[i][0]}">{list_of_time[i][1]}</option>'
+        list_of_options = f'{list_of_options + option}'
+    print (list_of_options)
+    # response = """<div>
+    #     <label >Make</label>
+    #     <select name="make" hx-get="/models" hx-target="#models" hx-indicator=".htmx-indicator">
+    #     <option value="audi">Audi</option>
+    #     <option value="toyota">Toyota</option>
+    #     <option value="bmw">BMW</option>
+    #     </select>
+    # </div>"""
+    response = """<div>
+                <label >Make</label>
+                <select name="make" hx-get="/models" hx-target="#models" hx-indicator=".htmx-indicator">
+                  <option value="audi">Audi</option>
+                  <option value="toyota">Toyota</option>
+                  <option value="bmw">BMW</option>
+                </select>
+              </div>"""
+    return response
