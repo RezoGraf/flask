@@ -13,48 +13,40 @@
 <td>{{ NOTD }}</td>
 <td>{{ NSPZ }}</td>
 <td>{{ NDOC }}</td>
-<td onclick="window.location.href='/htmx_test/table_view/edit/?otd={{ OTD }}&ID_GRF={{ ID_GRF }}'; return false">{{ DAY1 }}</td>
-<td>{{ DAY2 }}</td>
-<td>{{ DAY3 }}</td>
-<td>{{ DAY4 }}</td>
-<td>{{ DAY5 }}</td>
-<td>{{ DAY6 }}</td>
-<td>{{ DAY7 }}</td>
-<td>{{ DAY8 }}</td>
-<td>{{ DAY9 }}</td>
-<td>{{ DAY10 }}</td>
-<td>{{ DAY11 }}</td>
-<td>{{ DAY12 }}</td>
-<td>{{ DAY13 }}</td>
-<td>{{ DAY14 }}</td>
-<td>{{ DAY15 }}</td>
-<td>{{ DAY16 }}</td>
-<td>{{ DAY17 }}</td>
-<td>{{ DAY18 }}</td>
-<td>{{ DAY19 }}</td>
-<td>{{ DAY20 }}</td>
-<td>{{ DAY21 }}</td>
-<td>{{ DAY22 }}</td>
-<td>{{ DAY23 }}</td>
-<td>{{ DAY24 }}</td>
-<td>{{ DAY25 }}</td>
-<td>{{ DAY26 }}</td>
-<td>{{ DAY27 }}</td>
-<td>{{ DAY28 }}</td>
-<td>{{ DAY29 }}</td>
-<td>{{ DAY30 }}</td>
-<td>{{ DAY31 }}</td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY1 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY3 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY2 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY4 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY5 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY6 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY7 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY8 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY9 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY10 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY11 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY12 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY13 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY14 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY15 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY16 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY17 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY18 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY19 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY20 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY21 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY22 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY23 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY24 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY25 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY26 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY27 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY28 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY29 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY30 }}</div></form></td>
+<td><form id="td{{ID_GRF}}"><div name="id_grf" value="{{ID_GRF}}" hx-target="#td{{ID_GRF}}" hx-swap="outerHTML" hx-get="table_view/edit">{{ DAY31 }}</div></form></td>
     </tr>
     {% endfor %}
 </tbody>
 </table>
-<div hx-target="this" hx-swap="inner HTML">
-    <div><label>First Name</label>: Joe</div>
-    <div><label>Last Name</label>: Blow</div>
-    <div><label>Email Address</label>: joe@blow.com</div>
-    <button hx-get="htmx_test/table_view/edit" class="btn btn-primary">
-    Click To Edit
-    </button>
-</div>
 
 {% endblock %}
