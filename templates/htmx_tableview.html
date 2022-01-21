@@ -48,11 +48,11 @@
     {% endfor %}
 </tbody>
 </table>
-<div hx-target="this" hx-swap="outerHTML">
+<div hx-target="this" hx-swap="inner HTML">
     <div><label>First Name</label>: Joe</div>
     <div><label>Last Name</label>: Blow</div>
     <div><label>Email Address</label>: joe@blow.com</div>
-    <button hx-get="contact/1/edit" class="btn btn-primary">
+    <button hx-get="htmx_test/table_view/edit" class="btn btn-primary">
     Click To Edit
     </button>
 </div>

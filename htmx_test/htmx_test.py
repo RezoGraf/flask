@@ -52,12 +52,10 @@ def table_view():
     return render_template("htmx_tableview.html", table_view_all=table_view_all)
 
 
-@htmx_test.route("/table_view/edit/", methods=["GET", "POST"])
-def table_view_edit():
-    # otd = request.args['otd']
-    # id_grf = request.args['id_grf']
-    list_of_time = db.select(sql.sql_interval_time)
-    list_of_options = ''
+@htmx_test.route("/table_view/edit")
+def table_edit():
+    # list_of_time = db.select(sql.sql_interval_time)
+    # list_of_options = ''
     i = 1
     while i < len(list_of_time):
         option = f'<option value="{list_of_time[i][0]}">{list_of_time[i][1]}</option>'
