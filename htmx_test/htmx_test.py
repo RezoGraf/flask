@@ -86,16 +86,77 @@ def table_edit():
         """
         return response
     else:
-        id_grf = request.form.get('id_grf')
+        id_grf = ''
+        if request.form.get('id_grf01') != None:
+            id_grf = request.form.get('id_grf01')
+        if request.form.get('id_grf02') != None:
+            id_grf = request.form.get('id_grf02')
+        if request.form.get('id_grf03') != None:
+            id_grf = request.form.get('id_grf03')
+        if request.form.get('id_grf04') != None:
+            id_grf = request.form.get('id_grf04')
+        if request.form.get('id_grf05') != None:
+            id_grf = request.form.get('id_grf05')
+        if request.form.get('id_grf06') != None:
+            id_grf = request.form.get('id_grf06')
+        if request.form.get('id_grf07') != None:
+            id_grf = request.form.get('id_grf07')
+        if request.form.get('id_grf08') != None:
+            id_grf = request.form.get('id_grf08')
+        if request.form.get('id_grf09') != None:
+            id_grf = request.form.get('id_grf09')
+        if request.form.get('id_grf10') != None:
+            id_grf = request.form.get('id_grf10')
+        if request.form.get('id_grf11') != None:
+            id_grf = request.form.get('id_grf11')
+        if request.form.get('id_grf12') != None:
+            id_grf = request.form.get('id_grf12')
+        if request.form.get('id_grf13') != None:
+            id_grf = request.form.get('id_grf13')
+        if request.form.get('id_grf14') != None:
+            id_grf = request.form.get('id_grf14')
+        if request.form.get('id_grf15') != None:
+            id_grf = request.form.get('id_grf15')
+        if request.form.get('id_grf16') != None:
+            id_grf = request.form.get('id_grf16')
+        if request.form.get('id_grf17') != None:
+            id_grf = request.form.get('id_grf17')
+        if request.form.get('id_grf18') != None:
+            id_grf = request.form.get('id_grf18')
+        if request.form.get('id_grf19') != None:
+            id_grf = request.form.get('id_grf19')
+        if request.form.get('id_grf20') != None:
+            id_grf = request.form.get('id_grf20')
+        if request.form.get('id_grf21') != None:
+            id_grf = request.form.get('id_grf21')
+        if request.form.get('id_grf22') != None:
+            id_grf = request.form.get('id_grf22')
+        if request.form.get('id_grf23') != None:
+            id_grf = request.form.get('id_grf23')
+        if request.form.get('id_grf24') != None:
+            id_grf = request.form.get('id_grf24')
+        if request.form.get('id_grf25') != None:
+            id_grf = request.form.get('id_grf25')
+        if request.form.get('id_grf26') != None:
+            id_grf = request.form.get('id_grf26')
+        if request.form.get('id_grf27') != None:
+            id_grf = request.form.get('id_grf27')
+        if request.form.get('id_grf28') != None:
+            id_grf = request.form.get('id_grf28')
+        if request.form.get('id_grf29') != None:
+            id_grf = request.form.get('id_grf29')
+        if request.form.get('id_grf30') != None:
+            id_grf = request.form.get('id_grf30')
+        if request.form.get('id_grf31') != None:
+            id_grf = request.form.get('id_grf31')
+        print ("id_grf"+id_grf)
         list_of_time = db.select(sql.sql_interval_time)
-        print(len(list_of_time))
         list_of_options = ''
         i = 1
         while i < (len(list_of_time)):
             option = f"""<option value="{list_of_time[i][0]}">{list_of_time[i][1]}</option>"""
             list_of_options = list_of_options + option
             i += 1
-        print (list_of_options)
         response = f"""
             <form id="td{id_grf}">
                 <div>
