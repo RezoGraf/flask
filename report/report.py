@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, url_for, redirect
 from flask import Blueprint, render_template, abort, redirect, url_for, request, session
 import pandas as pd
 
-from api.api import api
+from excel.excel import excel
 from data_input.data_input import data_input
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc, sql_ins_it_rasp_duty 

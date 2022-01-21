@@ -1,0 +1,227 @@
+{% extends 'menu.html' %} {% block content %}
+
+
+    <meta charset="UTF-8">
+    <title>Отчет по отсутствующим</title>
+</head>
+
+<body>
+    
+
+        <table class="table table-borderless">
+            
+            <tr>
+                
+                <td style = "width:80%;">
+                    
+                    <table class="table" style="border: none">
+                        
+                        <tbody>
+                            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh, nlpu in zn_naryad_list %}
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px; border: none">
+                                <td><span class="font-weight-bold"><u>Номер наряда:</u></span> {{nkv}}</td> 
+                                <td> 
+                                    <span class="font-weight-bold">Статус: </span> 
+                                    <span class="{{'text-success' if dzr != None else 'text-danger'}}"> {{'Закрыт' if dzr != None else 'Открыт'}}</span>
+                                </td> 
+                                <td><span class="font-weight-bold">Вид оплаты:</span> {{nopl}}</td>                                
+                            </tr>        
+                   
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">Дата оформления:</span> {% if dou != None %} {{ dou.strftime('%d.%m.%Y') }} {% else %} {{ dou or "" }} {%endif %}</td>
+                                <td><span class="font-weight-bold">Дата закрытия:</span> {% if dzr != None %} {{ dzr.strftime('%d.%m.%Y') }} {% else %} {{ dzr or "" }} {%endif %}</td>
+                                <td><span class="font-weight-bold">Полная стоимость:</span> {{stu}}</td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><hr/></td><td><hr/></td><td><hr/></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold"><u>Исполнители</u></span></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">Техник:</span> {{nteh or 'Не назначен'}}</td> 
+                                <td><span class="font-weight-bold">Врач:</span> {{nmpp or 'Не назначен'}}</td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">Литейщик:</span> {{nlit or 'Не назначен'}}</td> 
+                                <td><span class="font-weight-bold">Полировщик:</span> {{npolir or 'Не назначен'}}</td> 
+                                <td><span class="font-weight-bold">Варщик:</span> {{nvarh or 'Не назначен'}}</td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><hr/></td><td><hr/></td><td><hr/></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold"><u>Пациент</u></span></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">№ карты:</span> {{uid}}</td> 
+                                <td><span class="font-weight-bold">ФИО:</span> {{ fam or '' }} {{ im or '' }} {{ ot or '' }}</td> 
+                                <td><span class="font-weight-bold">Дата рождения:</span> {% if dr != None %} {{ dr.strftime('%d.%m.%Y') }} {% else %} {{ dr or "" }} {%endif %}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                
+                </td>
+
+                <td> 
+                    <br/> <br/> 
+                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary" {{'disabled' if dzr != None else ''}}>Редактировать</button>
+                    <br/> <br/>
+                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary" >Кнопка 2</button>
+
+
+                </td>
+
+                {% endfor %} 
+        </table>
+
+        <button 
+            hx-get="/zn_modal_edit" 
+            hx-target="#modals-here" 
+            hx-trigger="click"
+            class="btn btn-primary"
+            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Open Modal</button>
+    
+        <div id="modals-here"></div>
+
+
+        
+        
+ 
+    
+    <form method="POST">
+    </form>
+
+    <table id="Table_usl" class="table table-striped">
+        <thead>
+            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                <th>№</th>
+                <th>Подразделение</th>
+                <th>Открытие</th>
+                <th>Закрытие</th>
+                <th>Сумма</th>
+            </tr>
+
+            <tr>
+                <th>         
+                    <input name="otd_filter" list="datalistOptions" class="form-control" id="idSerch0" placeholder="Поиск" autocomplete="off">         
+                </th>
+                <th>         
+                    <input name="otd_filter" list="datalistOptions" class="form-control" id="idSerch1" placeholder="Поиск" autocomplete="off">         
+                </th>
+                <th>
+                    <input class="form-control" type="date" id="idSerch2">
+                </th>
+                <th>
+                    <input class="form-control" type="date" id="idSerch4">
+                </th>
+                <th>
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch6" placeholder="Поиск" autocomplete="off"> 
+                </th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            {% for usl, kusl, nusl, price, kol, stu in result_usl %}            
+            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                <td>{{ kusl or '' }}</td>
+                <td>{{ nusl or '' }}</td>
+                <td>{{ price or '' }}</td>
+                <td>{{ kol or '' }}</td>
+                <td>{{ stu or '' }}</td> 
+            </tr>
+            {% endfor %}
+        </tbody>        
+    </table>
+</body>
+
+<script>
+
+    function filterTable0(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[0].textContent.toUpperCase();
+            if (firstCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch0').addEventListener('keyup', filterTable0, false);
+
+
+    function filterTable1(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[1].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch1').addEventListener('keyup', filterTable1, false);
+
+    function filterTable2(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[2].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch2').addEventListener('change', filterTable2, false);
+
+    function filterTable4(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[4].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch4').addEventListener('change', filterTable4, false);
+
+
+    function filterTable6(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[6].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch6').addEventListener('keyup', filterTable6, false);
+
+
+</script>
+
+{% endblock %}

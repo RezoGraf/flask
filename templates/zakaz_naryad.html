@@ -1,0 +1,340 @@
+{% extends 'menu.html' %} {% block content %}
+
+
+    <meta charset="UTF-8">
+    <title>Отчет по отсутствующим</title>
+</head>
+
+<body>
+
+    <form method="POST">
+
+        <div class="container">
+        
+            <div class="row align-items-center color_containter">
+                
+                <div class="col item">
+                    <label for="datepicker" class="form-label">Открытые с: </label>
+                    <input type="date" value="{{ dtn_get }}" name="dtn_get" />
+                </div>
+
+                <div class="col item">
+                    <label for="datepicker2" class="form-label">по: </label>
+                    <input type="date" value="{{ dtk_get }}" name="dtk_get" />
+                </div>
+
+                <div class="col item">
+                    <div class="custom-control custom-switch">                        
+                        <input type="checkbox" value="checked" class="custom-control-input" id="openSwitch" name="check_open" {{check1}}>
+                        <label class="custom-control-label" for="openSwitch">Открытые</label>                        
+                    </div>
+                    <div class="custom-control custom-switch">                        
+                        <input type="checkbox" value="checked" class="custom-control-input" id="closeSwitch" name="check_close" {{check2}}>
+                        <label class="custom-control-label" for="closeSwitch">Закрытые</label> 
+                                               
+                    </div>
+                </div>
+
+                <div class="col-md-auto">
+                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Сформировать</button>
+                </div>
+            </div>
+
+        </div>
+
+        
+
+    </form>
+
+    <table id="myTable" class="table table-hover" style="width:100%">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Подразделение</th>
+                <th>Открытие</th>
+                <th>Закрытие</th>
+                <th>Сумма</th>
+                <th>Вид оплаты</th>
+                <th>№ Карты</th>
+                <th>Пациент</th>
+                <th>Дата рождения</th>
+                <th>Врач</th>
+                <th>Техник</th>
+            </tr>
+
+            <tr>
+                <th>         
+                    <input name="otd_filter" list="datalistOptions" class="form-control" id="idSerch0" placeholder="Поиск" autocomplete="off">         
+                </th>
+                <th>         
+                    <input name="otd_filter" list="datalistOptions" class="form-control" id="idSerch1" placeholder="Поиск" autocomplete="off">         
+                </th>
+                <th>
+                    <input class="form-control" type="date" id="idSerch2">
+                </th>
+                <th>
+                    <input class="form-control" type="date" id="idSerch4">
+                </th>
+                <th>
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch6" placeholder="Поиск" autocomplete="off"> 
+                </th>
+                <th>
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch7" placeholder="Поиск" autocomplete="off"> 
+                </th>
+                <th>
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch8" placeholder="Поиск" autocomplete="off"> 
+                </th>
+                <th>
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch9" placeholder="Поиск" autocomplete="off"> 
+                </th>
+                <th>
+                    <input class="form-control" type="date" id="idSerch10"> 
+                </th>
+                <th>
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch12" placeholder="Поиск" autocomplete="off"> 
+                </th>
+                <th>
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch13" placeholder="Поиск" autocomplete="off"> 
+                </th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh, nlpu in my_list %}
+            <tr onmouseover="this.style.backgroundColor='#BADAFF';" onmouseout="this.style.backgroundColor='#fff';">
+                <td>{{ nkv or '' }}</td>
+                <td>{{ nlpu or '' }}</td>                
+                <td style="display:none;">{{dou or ''}}</td>
+                <td>{% if dou != None %} {{ dou.strftime('%d.%m.%Y') }} {% else %} {{ dou or "" }} {%endif %}</td>
+                <td style="display:none;">{{dzr or ''}}</td>
+                <td>{% if dzr != None %} {{ dzr.strftime('%d.%m.%Y') }} {% else %} {{ dzr or "" }} {%endif %}</td>
+                <td>{{ stu or '' }}</td>                
+                <td>{{ nopl or '' }}</td>
+                <td>{{ uid or '' }}</td>
+                <td>{{ fam or '' }} {{ im or '' }} {{ ot or '' }}</td>
+                <td style="display:none;">{{dr or ''}}</td>
+                <td>{% if dr != None %} {{ dr.strftime('%d.%m.%Y') }} {% else %} {{ dr or "" }} {%endif %}</td>                
+                <td>{{ nmpp or '' }}</td>
+                <td>{{ nteh or '' }}</td>
+                <td style="display:none;">{{idkv or ''}}</td>
+                
+                
+              </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+</body>
+
+
+
+</html>
+
+
+<script>
+
+    function filterTable0(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[0].textContent.toUpperCase();
+            if (firstCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch0').addEventListener('keyup', filterTable0, false);
+
+
+    function filterTable1(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[1].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch1').addEventListener('keyup', filterTable1, false);
+
+    function filterTable2(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[2].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch2').addEventListener('change', filterTable2, false);
+
+    function filterTable4(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[4].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch4').addEventListener('change', filterTable4, false);
+
+
+    function filterTable6(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[6].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch6').addEventListener('keyup', filterTable6, false);
+
+    function filterTable7(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[7].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch7').addEventListener('keyup', filterTable7, false);
+
+    function filterTable8(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[8].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch8').addEventListener('keyup', filterTable8, false);
+
+    function filterTable9(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[9].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch9').addEventListener('keyup', filterTable9, false);
+
+    function filterTable10(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[10].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch10').addEventListener('change', filterTable10, false);
+
+    function filterTable12(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[12].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch12').addEventListener('keyup', filterTable12, false);
+
+    function filterTable13(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[13].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch13').addEventListener('keyup', filterTable13, false);
+
+
+    function addRowHandlers() {
+        var table = document.getElementById("myTable");
+        var rows = table.getElementsByTagName("tr");
+        for (i = 0; i < rows.length; i++) {
+            var currentRow = table.rows[i];
+            var createClickHandler = 
+                function(row) 
+                {
+                    return function() { 
+                                            var cell = row.getElementsByTagName("td")[14];
+                                            var id = cell.innerHTML;
+                                            var a = ("?idkv=" + id)
+                                            location.href = ("zn_naryad" + a);
+                                            
+                                     };
+                };
+    
+            currentRow.onclick = createClickHandler(currentRow);
+        }
+    }
+    window.onload = addRowHandlers();
+
+</script>
+
+{% endblock %}

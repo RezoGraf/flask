@@ -1,0 +1,60 @@
+{% with arena_fio=arena_fio %}
+                {% include "menu.html" %}
+            {% endwith %}
+
+{% block content %}
+
+
+<table>
+    <tbody>
+    {% for ID_GRF,NROOM,NOTD,NSPZ,NDOC,DAY1,DAY2,DAY3,DAY4,DAY5,DAY6,DAY7,DAY8,DAY9,DAY10,DAY11,DAY12,DAY13,DAY14,DAY15,DAY16,DAY17,DAY18,DAY19,DAY20,DAY21,DAY22,DAY23,DAY24,DAY25,DAY26,DAY27,DAY28,DAY29,DAY30,DAY31 in table_view_all %}
+    <tr>
+<td>{{ NROOM }}</td>
+<td>{{ NOTD }}</td>
+<td>{{ NSPZ }}</td>
+<td>{{ NDOC }}</td>
+<td onclick="window.location.href='/htmx_test/table_view/edit/?otd={{ OTD }}&ID_GRF={{ ID_GRF }}'; return false">{{ DAY1 }}</td>
+<td>{{ DAY2 }}</td>
+<td>{{ DAY3 }}</td>
+<td>{{ DAY4 }}</td>
+<td>{{ DAY5 }}</td>
+<td>{{ DAY6 }}</td>
+<td>{{ DAY7 }}</td>
+<td>{{ DAY8 }}</td>
+<td>{{ DAY9 }}</td>
+<td>{{ DAY10 }}</td>
+<td>{{ DAY11 }}</td>
+<td>{{ DAY12 }}</td>
+<td>{{ DAY13 }}</td>
+<td>{{ DAY14 }}</td>
+<td>{{ DAY15 }}</td>
+<td>{{ DAY16 }}</td>
+<td>{{ DAY17 }}</td>
+<td>{{ DAY18 }}</td>
+<td>{{ DAY19 }}</td>
+<td>{{ DAY20 }}</td>
+<td>{{ DAY21 }}</td>
+<td>{{ DAY22 }}</td>
+<td>{{ DAY23 }}</td>
+<td>{{ DAY24 }}</td>
+<td>{{ DAY25 }}</td>
+<td>{{ DAY26 }}</td>
+<td>{{ DAY27 }}</td>
+<td>{{ DAY28 }}</td>
+<td>{{ DAY29 }}</td>
+<td>{{ DAY30 }}</td>
+<td>{{ DAY31 }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+<div hx-target="this" hx-swap="inner HTML">
+    <div><label>First Name</label>: Joe</div>
+    <div><label>Last Name</label>: Blow</div>
+    <div><label>Email Address</label>: joe@blow.com</div>
+    <button hx-get="htmx_test/table_view/edit" class="btn btn-primary">
+    Click To Edit
+    </button>
+</div>
+
+{% endblock %}
