@@ -123,6 +123,11 @@ from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
   and (pl_uslk.idkv = {idkv})
 order by idkv,dou"""
+# Услуги по наряду--------------------------------------------------------------------------------------------------------
+sql_zn_naryad_select_usl = """select pl_uslp.usl,pl_uslp.kusl,n_usl.nusl,pl_uslp.price,pl_uslp.kol,pl_uslp.stu
+                               from pl_uslp, n_usl
+                               where (pl_uslp.usl=n_usl.usl)
+                               and (pl_uslp.idkv={idkv})"""
 
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
