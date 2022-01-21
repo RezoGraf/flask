@@ -71,7 +71,7 @@ def main():
             else:
                 # print('default')
                 result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
-                return render_template("zakaz_naryad.html",
+                return render_template("zakaz_naryad.html", 
                                     my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple, check1='checked', check2='')
                 
 @zakaz_naryad.route('/zn_naryad', methods=['GET', 'POST'])
@@ -80,10 +80,12 @@ def zn_naryad():
     if request.method == 'POST':
         idkv = request.form.get('idkv')
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        return redirect(url_for('zakaz_naryad.zn_naryad', zn_naryad_list=result, idkv=idkv))    
+        result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
+        return redirect(url_for('zakaz_naryad.zn_naryad', result_usl = result_usl, zn_naryad_list=result, idkv=idkv))    
    
     else:
         idkv = request.args.get('idkv')    
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        return render_template('zn_naryad.html', zn_naryad_list=result, idkv=idkv)
+        result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))        
+        return render_template('zn_naryad.html', result_usl = result_usl, zn_naryad_list=result, idkv=idkv)
     

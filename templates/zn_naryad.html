@@ -6,75 +6,101 @@
 </head>
 
 <body>
+    
 
-    <form method="POST">
-
-
-        <div class="container mt-3">
+        <table class="table table-borderless">
             
-        </div>
-
-        <div class="container">
-            
-            <div class="row align-items-center color_containter">
+            <tr>
                 
+                <td style = "width:80%;">
+                    
+                    <table class="table" style="border: none">
+                        
+                        <tbody>
+                            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh, nlpu in zn_naryad_list %}
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px; border: none">
+                                <td><span class="font-weight-bold"><u>Номер наряда:</u></span> {{nkv}}</td> 
+                                <td> 
+                                    <span class="font-weight-bold">Статус: </span> 
+                                    <span class="{{'text-success' if dzr != None else 'text-danger'}}"> {{'Закрыт' if dzr != None else 'Открыт'}}</span>
+                                </td> 
+                                <td><span class="font-weight-bold">Вид оплаты:</span> {{nopl}}</td>                                
+                            </tr>        
+                   
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">Дата оформления:</span> {% if dou != None %} {{ dou.strftime('%d.%m.%Y') }} {% else %} {{ dou or "" }} {%endif %}</td>
+                                <td><span class="font-weight-bold">Дата закрытия:</span> {% if dzr != None %} {{ dzr.strftime('%d.%m.%Y') }} {% else %} {{ dzr or "" }} {%endif %}</td>
+                                <td><span class="font-weight-bold">Полная стоимость:</span> {{stu}}</td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><hr/></td><td><hr/></td><td><hr/></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold"><u>Исполнители</u></span></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">Техник:</span> {{nteh or 'Не назначен'}}</td> 
+                                <td><span class="font-weight-bold">Врач:</span> {{nmpp or 'Не назначен'}}</td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">Литейщик:</span> {{nlit or 'Не назначен'}}</td> 
+                                <td><span class="font-weight-bold">Полировщик:</span> {{npolir or 'Не назначен'}}</td> 
+                                <td><span class="font-weight-bold">Варщик:</span> {{nvarh or 'Не назначен'}}</td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><hr/></td><td><hr/></td><td><hr/></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold"><u>Пациент</u></span></td>
+                            </tr>
+                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                                <td><span class="font-weight-bold">№ карты:</span> {{uid}}</td> 
+                                <td><span class="font-weight-bold">ФИО:</span> {{ fam or '' }} {{ im or '' }} {{ ot or '' }}</td> 
+                                <td><span class="font-weight-bold">Дата рождения:</span> {% if dr != None %} {{ dr.strftime('%d.%m.%Y') }} {% else %} {{ dr or "" }} {%endif %}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
                 
-                <div class="col item">
-                    {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh, nlpu in zn_naryad_list %}
-                    <p>Номер наряда: {{nkv}}</p>
-                    <p>дата оформления наряда {{dou}}</p>
-                    <p>полная стоимость{{stu}}</p>
-                    <p>дата закрытия{{dzr}}</p>
-                    <p>вид оплаты{{nopl}}</p>
-                    <p>номер карты пациента{{uid}}</p>
-                    <p>ФИО Пациента {{ fam or '' }} {{ im or '' }} {{ ot or '' }}</p>
-                    <p>дата рождения{{dr}}</p>
-                    <p>ФИО врача{{nmpp}}</p>
-                    <p>ФИО Техника {{nteh}}</p>
-                    <p>ФИО Литейщика{{nlit}}</p>
-                    <p>ФИО Полировщика {{npolir}}</p>
-                    <p>ФИО Варщика{{nvarh}}</p>
-                </div>
+                </td>
 
-                <div class="col item">
+                <td> 
+                    <br/> <br/> 
+                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary" {{'disabled' if dzr != None else ''}}>Редактировать</button>
+                    <br/> <br/>
+                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary" >Кнопка 2</button>
 
-                </div>
 
-                <div class="col item">
-                    <div class="custom-control custom-switch">                        
-                 
-                    </div>
-                    <div class="custom-control custom-switch">                        
+                </td>
 
-                                               
-                    </div>
-                </div>
+                {% endfor %} 
+        </table>
 
-                <div class="col-md-auto">
+        <button 
+            hx-get="/zn_modal_edit" 
+            hx-target="#modals-here" 
+            hx-trigger="click"
+            class="btn btn-primary"
+            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Open Modal</button>
+    
+        <div id="modals-here"></div>
 
-                </div>
-            </div>
-
-        </div>
 
         
-
+        
+ 
+    
+    <form method="POST">
     </form>
 
-    <table id="myTable" class="table table-striped" style="width:100%">
+    <table id="Table_usl" class="table table-striped">
         <thead>
-            <tr>
+            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
                 <th>№</th>
                 <th>Подразделение</th>
                 <th>Открытие</th>
                 <th>Закрытие</th>
                 <th>Сумма</th>
-                <th>Вид оплаты</th>
-                <th>№ Карты</th>
-                <th>Пациент</th>
-                <th>Дата рождения</th>
-                <th>Врач</th>
-                <th>Техник</th>
             </tr>
 
             <tr>
@@ -93,58 +119,23 @@
                 <th>
                     <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch6" placeholder="Поиск" autocomplete="off"> 
                 </th>
-                <th>
-                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch7" placeholder="Поиск" autocomplete="off"> 
-                </th>
-                <th>
-                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch8" placeholder="Поиск" autocomplete="off"> 
-                </th>
-                <th>
-                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch9" placeholder="Поиск" autocomplete="off"> 
-                </th>
-                <th>
-                    <input class="form-control" type="date" id="idSerch10"> 
-                </th>
-                <th>
-                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch12" placeholder="Поиск" autocomplete="off"> 
-                </th>
-                <th>
-                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch13" placeholder="Поиск" autocomplete="off"> 
-                </th>
             </tr>
 
         </thead>
 
         <tbody>
-            
-            <tr>
-                <td>{{ nkv or '' }}</td>
-                <td>{{ nlpu or '' }}</td>                
-                <td style="display:none;">{{dou or ''}}</td>
-                <td>{% if dou != None %} {{ dou.strftime('%d.%m.%Y') }} {% else %} {{ dou or "" }} {%endif %}</td>
-                <td style="display:none;">{{dzr or ''}}</td>
-                <td>{% if dzr != None %} {{ dzr.strftime('%d.%m.%Y') }} {% else %} {{ dzr or "" }} {%endif %}</td>
-                <td>{{ stu or '' }}</td>                
-                <td>{{ nopl or '' }}</td>
-                <td>{{ uid or '' }}</td>
-                <td>{{ fam or '' }} {{ im or '' }} {{ ot or '' }}</td>
-                <td style="display:none;">{{dr or ''}}</td>
-                <td>{% if dr != None %} {{ dr.strftime('%d.%m.%Y') }} {% else %} {{ dr or "" }} {%endif %}</td>                
-                <td>{{ nmpp or '' }}</td>
-                <td>{{ nteh or '' }}</td>
-                
-                
-              </tr>
+            {% for usl, kusl, nusl, price, kol, stu in result_usl %}            
+            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                <td>{{ kusl or '' }}</td>
+                <td>{{ nusl or '' }}</td>
+                <td>{{ price or '' }}</td>
+                <td>{{ kol or '' }}</td>
+                <td>{{ stu or '' }}</td> 
+            </tr>
             {% endfor %}
-        </tbody>
-        
+        </tbody>        
     </table>
 </body>
-
-
-
-</html>
-
 
 <script>
 
@@ -230,122 +221,6 @@
 
     document.querySelector('#idSerch6').addEventListener('keyup', filterTable6, false);
 
-    function filterTable7(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[7].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#idSerch7').addEventListener('keyup', filterTable7, false);
-
-    function filterTable8(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[8].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#idSerch8').addEventListener('keyup', filterTable8, false);
-
-    function filterTable9(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[9].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#idSerch9').addEventListener('keyup', filterTable9, false);
-
-    function filterTable10(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[10].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#idSerch10').addEventListener('change', filterTable10, false);
-
-    function filterTable12(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[12].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#idSerch12').addEventListener('keyup', filterTable12, false);
-
-    function filterTable13(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[13].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#idSerch13').addEventListener('keyup', filterTable13, false);
-
-
-    function addRowHandlers() {
-        var table = document.getElementById("myTable");
-        var rows = table.getElementsByTagName("tr");
-        for (i = 0; i < rows.length; i++) {
-            var currentRow = table.rows[i];
-            var createClickHandler = 
-                function(row) 
-                {
-                    return function() { 
-                                            var cell = row.getElementsByTagName("td")[0];
-                                            var id = cell.innerHTML;
-                                            alert("id:" + id);
-                                     };
-                };
-    
-            currentRow.onclick = createClickHandler(currentRow);
-        }
-    }
-    window.onload = addRowHandlers();
 
 </script>
 
