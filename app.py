@@ -1,4 +1,3 @@
-# from curses import KEY_MARK
 from api.api import api
 from htmx_test.htmx_test import htmx_test
 from data_input.data_input import data_input
@@ -11,9 +10,20 @@ import datetime
 from flask import Flask, render_template, request, url_for, redirect, session
 import auth
 import errors
-import logging
 import db
-# from logging.handlers import tele
+import sentry_sdk
+from flask import Flask
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+sentry_sdk.init(
+    dsn="https://f2b6c112871e4531ae68d13560e78e86@o1123757.ingest.sentry.io/6161912",
+    integrations=[FlaskIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
 
 
 app = Flask(__name__, static_folder="static",
@@ -69,6 +79,11 @@ def menu():
     else:
         auth_group = 'none'
     return render_template('menu.html', arena_fio=arena_fio)
+
+
+@app.route('/debug-sentry')
+def trigger_error():
+    division_by_zero = 1 / 0
 
 
 if __name__ == "__main__":
