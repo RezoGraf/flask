@@ -74,82 +74,19 @@ def table_edit():
             и новыми выбранными данными html и возвращаем обратно на страницу
     """    
     if request.method == 'POST':
+        id_td = request.args.get('id_td')
+        id_grf = request.args.get('id_grf')
         rasp_id = request.form.get('rasp_id')
-        id_grf = request.form.get('id_grf')
         response = f"""
-        <form id="td{id_grf}">
             <div name="id_grf" 
-                value="{id_grf}" hx-target="#td{id_grf}" 
-                hx-swap="outerHTML" hx-get="table_view/edit">{rasp_id}
+                hx-target="#{id_td}" 
+                hx-swap="innerHTML" hx-get="table_view/edit?id_td={id_td}&id_grf={id_grf}">{rasp_id}
             </div>
-        </form>
         """
         return response
     else:
-        id_grf = ''
-        if request.form.get('id_grf01') != None:
-            id_grf = request.form.get('id_grf01')
-        if request.form.get('id_grf02') != None:
-            id_grf = request.form.get('id_grf02')
-        if request.form.get('id_grf03') != None:
-            id_grf = request.form.get('id_grf03')
-        if request.form.get('id_grf04') != None:
-            id_grf = request.form.get('id_grf04')
-        if request.form.get('id_grf05') != None:
-            id_grf = request.form.get('id_grf05')
-        if request.form.get('id_grf06') != None:
-            id_grf = request.form.get('id_grf06')
-        if request.form.get('id_grf07') != None:
-            id_grf = request.form.get('id_grf07')
-        if request.form.get('id_grf08') != None:
-            id_grf = request.form.get('id_grf08')
-        if request.form.get('id_grf09') != None:
-            id_grf = request.form.get('id_grf09')
-        if request.form.get('id_grf10') != None:
-            id_grf = request.form.get('id_grf10')
-        if request.form.get('id_grf11') != None:
-            id_grf = request.form.get('id_grf11')
-        if request.form.get('id_grf12') != None:
-            id_grf = request.form.get('id_grf12')
-        if request.form.get('id_grf13') != None:
-            id_grf = request.form.get('id_grf13')
-        if request.form.get('id_grf14') != None:
-            id_grf = request.form.get('id_grf14')
-        if request.form.get('id_grf15') != None:
-            id_grf = request.form.get('id_grf15')
-        if request.form.get('id_grf16') != None:
-            id_grf = request.form.get('id_grf16')
-        if request.form.get('id_grf17') != None:
-            id_grf = request.form.get('id_grf17')
-        if request.form.get('id_grf18') != None:
-            id_grf = request.form.get('id_grf18')
-        if request.form.get('id_grf19') != None:
-            id_grf = request.form.get('id_grf19')
-        if request.form.get('id_grf20') != None:
-            id_grf = request.form.get('id_grf20')
-        if request.form.get('id_grf21') != None:
-            id_grf = request.form.get('id_grf21')
-        if request.form.get('id_grf22') != None:
-            id_grf = request.form.get('id_grf22')
-        if request.form.get('id_grf23') != None:
-            id_grf = request.form.get('id_grf23')
-        if request.form.get('id_grf24') != None:
-            id_grf = request.form.get('id_grf24')
-        if request.form.get('id_grf25') != None:
-            id_grf = request.form.get('id_grf25')
-        if request.form.get('id_grf26') != None:
-            id_grf = request.form.get('id_grf26')
-        if request.form.get('id_grf27') != None:
-            id_grf = request.form.get('id_grf27')
-        if request.form.get('id_grf28') != None:
-            id_grf = request.form.get('id_grf28')
-        if request.form.get('id_grf29') != None:
-            id_grf = request.form.get('id_grf29')
-        if request.form.get('id_grf30') != None:
-            id_grf = request.form.get('id_grf30')
-        if request.form.get('id_grf31') != None:
-            id_grf = request.form.get('id_grf31')
-        print ("id_grf"+id_grf)
+        id_td = request.args.get('id_td')
+        id_grf = request.args.get('id_grf')
         list_of_time = db.select(sql.sql_interval_time)
         list_of_options = ''
         i = 1
@@ -158,13 +95,11 @@ def table_edit():
             list_of_options = list_of_options + option
             i += 1
         response = f"""
-            <form id="td{id_grf}">
                 <div>
-                    <select name="rasp_id" hx-post="table_view/edit" 
-                        hx-target="#td{id_grf}" hx-indicator=".htmx-indicator">
+                    <select name="rasp_id" hx-post="table_view/edit?id_grf={id_grf}&id_td={id_td}" 
+                        hx-target="#{id_td}" hx-swap="innerHTML" hx-indicator=".htmx-indicator">
                         {list_of_options}
                     </select>
                 </div>
-            </form>
             """
         return response
