@@ -223,9 +223,10 @@ def WtfTemplate4():
                 p=f'0{i}'
             else:
                 p=str(i)  
-            b='<br>'
-            b=b.encode('utf-8')  
-            value_ = f'{p} {b} {pa}' 
+            # b='<br>'
+            # b=b.encode('ascii')  
+            value_ = f'{p} <br> {pa}' 
+            echo nl2br(value_);
             key_ = f'day{str(i)}'
             result_th[key_] = value_        
         
