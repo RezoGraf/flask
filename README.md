@@ -1,5 +1,6 @@
  #HELIOS
  ##Сессии
+ 
     from flask import session
     if 'var' in session:
         var  = session.get('var') //Забрать переменную из сессии
