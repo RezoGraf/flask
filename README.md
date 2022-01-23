@@ -7,7 +7,7 @@
         var  = session.get('var') //Забрать переменную из сессии
     else:
         pass
-
+ 
     session['var'] = var  //Задать переменную в сессию
     session.pop('var', None) //Удалить переменную в сессии
     session.clear() //Удалить сессию
