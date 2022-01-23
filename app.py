@@ -13,6 +13,7 @@ import auth
 import errors
 import logging
 import db
+from ctypes.util import find_library
 # from logging.handlers import tele
 
 
@@ -73,4 +74,4 @@ def menu():
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run(host='0.0.0.0', port=7000)
+    app.run(host='0.0.0.0', port=8000)
