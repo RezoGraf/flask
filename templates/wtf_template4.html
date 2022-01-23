@@ -5,32 +5,87 @@
 {% block content %}
 
 <div class="container">
-    <h2>Табель учета рабочего времени</h2>
+    <h4 class="text-primary">График учета рабочего времени</h4>
     <form class="form-horizontal" method="POST" action="">
       <div class="row">
         <div class="col-md-auto">
           <label for="year_" class="form-label">Год</label>
-          <input type="number" id="year_" name="year">
+          <input type="number" id="year_" name="year" min=2020 max=3000 value=2022 step=1 required=true/>
         </div>
         <div>
          <label for="month_" class="form-label">Месяц</label>
-         <input type="number" id="month_" name="month">
+         <input type="number" id="month_" name="month" min=1 max=31 value=01 step=1 required=true/>
         </div>
+        <label for="notd" class="form-label">Отделение</label>
+        <select name="notd" class="form-select" aria-label="Default select example">
+          {% for OTD, NOTD in result_otd %}
+            <option value="{{ OTD }}"{% if loop.first %} SELECTED{% endif %}>{{ NOTD }}</option>
+          {% endfor %}
+         </select> 
+      </div>  
+      
+      <div class="form-group">
+        <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Сформировать</button>
       </div>
-    <select name="notd" class="form-select" aria-label="Default select example">
-      {% for OTD, NOTD in result_otd %}
-        <option value="{{ OTD }}"{% if loop.first %} SELECTED{% endif %}>{{ NOTD }}</option>
-      {% endfor %}
-     </select> 
+
      </form>
-    
-    <div class="form-group">
-      <input type="submit">
     </div>
+    <table class="table-bordered border-primary table-hover" style="max-width:100%; cellpadding: 0.9rem;" id="myTable" >
+      <thead> 
+        <th>ФИО Сотрудника</th>
+        <th>Специалист</th>
+        <th>№ кабинета</th>
+        {% for key, value in result_th.items() %}
+          <th>{{ value }}</th>
+        {% endfor %}
+  
+      </thead>
+      
+      <tbody style="font-size:small;">
+         {% for nroom, notd, nspz, ndoc, day1, day2, day3, day4, day5, day6,day7, day8, day9, day10, day11, day12, 
+          day13, day14, day15, day16, day17, day18,day19, day20, day21, day22, day23, day24,
+          day25, day26, day27, day28, day29, day30, day31 in result_TabelWorkTime %}
+         <tr>
+             <td>{{ ndoc or "" }}</td>
+             <td>{{ nspz or "" }}</td>
+             <td>{{ nroom }}</td>
+             <td class="{{'table-light' if day1 != None else 'table-warning'}}"> {{ day1 or "нет приема"}} </td>
+             <td class="{{'table-light' if day2 != None else 'table-warning'}}">{{ day2 or "нет приема"}}</td>
+             <td class="{{'table-light' if day3 != None else 'table-warning'}}">{{ day3 or "нет приема"}}</td>
+             <td class="{{'table-light' if day4 != None else 'table-warning'}}"> {{ day4 or "нет приема"}}</td>
+             <td class="{{'table-light' if day5 != None else 'table-warning'}}">{{ day5 or "нет приема"}}</td>
+             <td class="{{'table-light' if day6 != None else 'table-warning'}}">{{ day6 or "нет приема"}}</td>
+             <td class="{{'table-light' if day7 != None else 'table-warning'}}">{{ day7 or "нет приема"}}</td>
+             <td class="{{'table-light' if day8 != None else 'table-warning'}}">{{ day8 or "нет приема"}}</td>
+             <td class="{{'table-light' if day9 != None else 'table-warning'}}">{{ day9 or "нет приема"}}</td>
+             <td class="{{'table-light' if day10 != None else 'table-warning'}}">{{ day10 or "нет приема"}}</td>
+             <td class="{{'table-light' if day11 != None else 'table-warning'}}">{{ day11 or "нет приема"}}</td>
+             <td class="{{'table-light' if day12 != None else 'table-warning'}}">{{ day12 or "нет приема"}}</td>
+             <td class="{{'table-light' if day13 != None else 'table-warning'}}">{{ day13 or "нет приема"}}</td>
+             <td class="{{'table-light' if day14 != None else 'table-warning'}}">{{ day14 or "нет приема"}}</td>
+             <td class="{{'table-light' if day15 != None else 'table-warning'}}">{{ day15 or "нет приема"}}</td>
+             <td class="{{'table-light' if day16 != None else 'table-warning'}}">{{ day16 or "нет приема"}}</td>
+             <td class="{{'table-light' if day17 != None else 'table-warning'}}">{{ day17 or "нет приема"}}</td>
+             <td class="{{'table-light' if day18 != None else 'table-warning'}}">{{ day18 or "нет приема"}}</td>
+             <td class="{{'table-light' if day19 != None else 'table-warning'}}">{{ day19 or "нет приема"}}</td>
+             <td class="{{'table-light' if day20 != None else 'table-warning'}}">{{ day20 or "нет приема"}}</td>
+             <td class="{{'table-light' if day21 != None else 'table-warning'}}">{{ day21 or "нет приема"}}</td>
+             <td class="{{'table-light' if day22 != None else 'table-warning'}}">{{ day22 or "нет приема"}}</td>
+             <td class="{{'table-light' if day23 != None else 'table-warning'}}">{{ day23 or "нет приема"}}</td>
+             <td class="{{'table-light' if day24 != None else 'table-warning'}}">{{ day24 or "нет приема"}}</td>
+             <td class="{{'table-light' if day25 != None else 'table-warning'}}">{{ day25 or "нет приема"}}</td>
+             <td class="{{'table-light' if day26 != None else 'table-warning'}}">{{ day26 or "нет приема"}}</td>
+             <td class="{{'table-light' if day27 != None else 'table-warning'}}">{{ day27 or "нет приема"}}</td>
+             <td class="{{'table-light' if day28 != None else 'table-warning'}}">{{ day28 or "нет приема"}}</td>
+             <td class="{{'table-light' if day29 != None else 'table-warning'}}">{{ day29 or "нет приема"}}</td>
+             <td class="{{'table-light' if day30 != None else 'table-warning'}}">{{ day30 or "нет приема"}}</td>
+             <td class="{{'table-light' if day31 != None else 'table-warning'}}">{{ day31 or "нет приема"}}</td>
+         </tr>
+         {% endfor %}
+        </tbody>     
+  </table>
 </div>
 
-<script>
-  var datepicker = new Datepicker("#datepicker");
-  var datepicker2 = new Datepicker('#datepicker2');
-</script>
+</div>
+
 {% endblock %}

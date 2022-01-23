@@ -10,6 +10,7 @@ import sql
 import utils
 import calendar
 import pandas as pd
+from dateutil import parser
 
 data_input = Blueprint('data_input', __name__)
 
@@ -196,19 +197,59 @@ def wtf_template3():
                            result_podr=result_podr,
                            result_podr2=result_podr2,
                            arena_fio=arena_fio)
+    
 
 @data_input.route('/wtf_template4/', methods=['GET', 'POST'])
 def WtfTemplate4():
-    otd = request.args.get('otd')
-    if otd is None : otd=12
-    # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
+    # otd = request.args.get('otd')
+    # if otd is None : otd=12
+    # # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
     # result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+    otd=12  
+    year_=2021
+    moth_="12"
     result_otd = db.select(sql.sql_allOtd)
-    print(result_otd)
+    
+    russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
+    
+    result_th = {}
+    tt = ''
+    for i in range(31):
+            i+=1
+            dt = '12.'+str(i)+'.'+str(year_)
+            ans = parser.parse(dt).strftime("%a")
+            pa = russianDayWeek[ans]
+            if i<10 :
+                p=f'0{i}'
+            else:
+                p=str(i)  
+            b='<br>'
+            b=b.encode('utf-8')  
+            value_ = f'{p} {b} {pa}' 
+            key_ = f'day{str(i)}'
+            result_th[key_] = value_        
+        
+    print(result_th)
+    if request.method == 'POST':
+        result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+        result_otd = db.select(sql.sql_allOtd)
+        otd=request.form.get('OTD')
+        otd=12
+        year_=2021
+        moth_="12"
+        result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=year_, EMonth=moth_))
+        return render_template('wtf_template4.html',
+                               result_otd=result_otd,
+                               result_TabelWorkTime=result_TabelWorkTime)
+        
+    result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=year_, EMonth=moth_))         
     return render_template('wtf_template4.html',
-                           result_otd=result_otd)
+                           result_otd = result_otd,
+                           result_th = result_th,
+                           result_TabelWorkTime = result_TabelWorkTime)
                         #    result_podr=result_podr,
                         #    result_podr2=result_podr2,
+                        
     
     
 @data_input.route('/di_frame_fio', methods=['GET', 'POST'])

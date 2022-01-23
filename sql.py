@@ -123,6 +123,11 @@ from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
   and (pl_uslk.idkv = {idkv})
 order by idkv,dou"""
+# Услуги по наряду--------------------------------------------------------------------------------------------------------
+sql_zn_naryad_select_usl = """select pl_uslp.usl,pl_uslp.kusl,n_usl.nusl,pl_uslp.price,pl_uslp.kol,pl_uslp.stu
+                               from pl_uslp, n_usl
+                               where (pl_uslp.usl=n_usl.usl)
+                               and (pl_uslp.idkv={idkv})"""
 
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
@@ -159,10 +164,40 @@ sql_ad_arena_username = """select app_user from users_app where com='{}'"""
 sql_ad_arena_mpp = """select mpp from users_app where com='{}'"""
 
 # Табель учета рабочего времени
-sql_TabWorkTime = """Select (select nroom_kr from room where room.id=it_rasp_grf.room),
-                (select notd from np_otd where np_otd.otd=it_rasp_grf.otd),
-                n_spz.nspz,n_doc.ndoc,
-                it_rasp_grf.*
+sql_TabelWorkTime = """Select (select nroom_kr from room where room.id=it_rasp_grf.room) as nroom,
+                (select notd from np_otd where np_otd.otd=it_rasp_grf.otd) as notd,
+                n_spz.nspz, n_doc.ndoc, it_rasp_grf.id_grf,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day1) as day1, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day2) as day2, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day3) as day3, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day4) as day4, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day5) as day5, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day6) as day6,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day7) as day7, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day8) as day8, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day9) as day9, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day10) as day10,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day11) as day11,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day12) as day12, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day13) as day13, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day14) as day14, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day15) as day15, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day16) as day16, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day17) as day17, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day18) as day18,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day19) as day19, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day20) as day20, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day21) as day21, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day22) as day22, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day23) as day23, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day24) as day24,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day25) as day25, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day26) as day26, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day27) as day27, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day28) as day28, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day30) as day30,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day31) as day31
                 from it_rasp_grf,n_doc,n_spz
                 where (it_rasp_grf.doc=n_doc.doc) and (it_rasp_grf.spz=n_spz.spz)
                 and it_rasp_grf.YEARWORK={EYear}
