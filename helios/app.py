@@ -12,9 +12,9 @@ import auth
 import errors
 import db
 import sql
-import sentry_sdk
 from flask import Flask
-from sentry_sdk.integrations.flask import FlaskIntegration
+# import sentry_sdk
+# from sentry_sdk.integrations.flask import FlaskIntegration
 
 # sentry_sdk.init(
 #     dsn="https://f2b6c112871e4531ae68d13560e78e86@o1123757.ingest.sentry.io/6161912",
