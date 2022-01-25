@@ -247,4 +247,6 @@ sql_htmx_text_tablevew = """Select it_rasp_grf.id_grf, (select nroom_kr from roo
                 
                 
 sql_interval_time_list = """select id, interval_time from it_rasp_time"""
+
+sql_interval_time_current = """select interval_time from it_rasp_time where id={id}"""
                 
