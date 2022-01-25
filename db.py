@@ -36,27 +36,25 @@ def proc(proc_name):
     cur.callproc(proc_name)
     output_params = cur.fetchone()
     return output_params
-    
-def select_fileds(sql):
+
+
+def select_dicts_in_turple(sql):
     con = fdb.connect(dsn=config.dsn,
                       user=config.user,
                       password=config.password,
                       charset=config.charset)
     cur = con.cursor()
     cur.execute(sql)
-    # list_ = cur.fetchall()
     result = {}
     fieldIndices = range(len(cur.description))
+    selectFields = ()
+    for fieldDesc in cur.description:
+        selectFields = *selectFields, fieldDesc[fdb.DESCRIPTION_NAME]
+    result2 = ()
     for row in cur:
         for fieldIndex in fieldIndices:
-            fieldValue = str(row[fieldIndex])
-            fieldName = cur.description[fieldIndex][fdb.DESCRIPTION_NAME]
-            # value_ = fieldValue
-            # if fieldName == 'id_grf':
-            #     key = fieldValue 
-            # result[key] = [fieldValue]    
-            print(fieldName)
-            print(fieldValue)
+            result[selectFields[fieldIndex]] = row[fieldIndex]
+        result2 = (*result2, result)
     cur.close()
     del cur
-    return result
+    return result2
