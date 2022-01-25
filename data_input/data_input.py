@@ -11,6 +11,7 @@ import utils
 import calendar
 import pandas as pd
 from dateutil import parser
+from datetime import date
 
 data_input = Blueprint('data_input', __name__)
 
@@ -206,27 +207,26 @@ def WtfTemplate4():
     # # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
     # result_fio = db.select(sql.sql_allDoc.format(otd=otd))
     otd=12  
-    year_=2021
-    moth_="12"
-    result_otd = db.select(sql.sql_allOtd)
-    
+  
+    current_date = date.today()
+    # current_date_string = current_date.strftime('%m/%d/%y')   
+    current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
+    current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
+    all_day = calendar.monthrange(int(current_year), int(current_month))[1]
+    result_otd = db.select(sql.sql_allOtd) 
     russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
     
     result_th = {}
-    tt = ''
-    for i in range(31):
+    for i in range(all_day):
             i+=1
-            dt = '12.'+str(i)+'.'+str(year_)
+            dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
             ans = parser.parse(dt).strftime("%a")
             pa = russianDayWeek[ans]
             if i<10 :
                 p=f'0{i}'
             else:
                 p=str(i)  
-            # b='<br>'
-            # b=b.encode('ascii')  
             value_ = f'{p} <br> {pa}' 
-            echo nl2br(value_);
             key_ = f'day{str(i)}'
             result_th[key_] = value_        
         
@@ -236,14 +236,30 @@ def WtfTemplate4():
         result_otd = db.select(sql.sql_allOtd)
         otd=request.form.get('OTD')
         otd=12
-        year_=2021
-        moth_="12"
-        result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=year_, EMonth=moth_))
+        current_year=request.form.get('year')
+        current_month=request.form.get('month')
+        all_day = calendar.monthrange(int(current_year), int(current_month))[1]
+        result_th = {}
+        for i in range(all_day):
+            i+=1
+            dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
+            ans = parser.parse(dt).strftime("%a")
+            pa = russianDayWeek[ans]
+            if i<10 :
+                p=f'0{i}'
+            else:
+                p=str(i)  
+            value_ = f'{p} <br> {pa}' 
+            key_ = f'day{str(i)}'
+            result_th[key_] = value_ 
+            
+        result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
         return render_template('wtf_template4.html',
                                result_otd=result_otd,
+                               result_th = result_th,
                                result_TabelWorkTime=result_TabelWorkTime)
         
-    result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=year_, EMonth=moth_))         
+    result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))         
     return render_template('wtf_template4.html',
                            result_otd = result_otd,
                            result_th = result_th,
