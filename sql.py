@@ -114,10 +114,14 @@ order by idkv,dou"""
 sql_zn_naryad_select_info = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
        (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
-       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh,
-       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit,
-       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir,
-       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh, 
+       (select mpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as teh,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit, 
+       (select mpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as lit,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir, 
+       (select mpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as polir,
+       (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh, 
+       (select mpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as varh,
        (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
 from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
@@ -128,6 +132,23 @@ sql_zn_naryad_select_usl = """select pl_uslp.usl,pl_uslp.kusl,n_usl.nusl,pl_uslp
                                from pl_uslp, n_usl
                                where (pl_uslp.usl=n_usl.usl)
                                and (pl_uslp.idkv={idkv})"""
+# Все исполнители для списка модального окна-------------------------------------------------------------------------------
+sql_zn_naryad_select_teh = """Select distinct mpp, ndoc
+                              from n_doc
+                              where pv=1 and ((dolj=124 or dolj=130 ) or doc=0)
+                              order by ndoc"""
+sql_zn_naryad_select_lit = """Select distinct mpp, ndoc
+                              from n_doc
+                              where pv=1 and (dolj=163 or doc=0)
+                              order by ndoc"""
+sql_zn_naryad_select_pol = """Select distinct mpp, ndoc
+                              from n_doc
+                              where pv=1 and (dolj=162 or doc=0)
+                              order by ndoc"""
+sql_zn_naryad_select_var = """Select distinct mpp, ndoc
+                              from n_doc
+                              where pv=1 and (dolj=164 or doc=0)
+                              order by ndoc"""
 
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
