@@ -1,6 +1,7 @@
 import fdb
 import config
-
+import utils
+from collections import defaultdict
 
 def select(sql):
     con = fdb.connect(dsn=config.dsn,
@@ -50,11 +51,35 @@ def select_dicts_in_turple(sql):
     selectFields = ()
     for fieldDesc in cur.description:
         selectFields = *selectFields, fieldDesc[fdb.DESCRIPTION_NAME]
-    result2 = ()
+    y = ''
+    m = '' 
+    id=0 
+    # result2 = {}
+    result = defaultdict(list)
     for row in cur:
+        color_='table-light'    
         for fieldIndex in fieldIndices:
-            result[selectFields[fieldIndex]] = row[fieldIndex]
-        result2 = (*result2, result)
+            if 'ID_GRF' in selectFields[fieldIndex] :
+                id = row[fieldIndex]
+            if 'YEARWORK' in selectFields[fieldIndex] :
+                y = row[fieldIndex]
+            if 'MONTHWORK' in selectFields[fieldIndex] :
+                m = str(row[fieldIndex])
+                if len(m) == 1 :
+                    m = f'0{m}'
+            if 'DAY' in selectFields[fieldIndex] :
+                d = (selectFields[fieldIndex])[3:5]
+                dc = f'{d}.{m}.{y}'
+                color_ = utils.date_color(dc)
+                if row[fieldIndex] == None :
+                    color_ = 'table-warning'
+            key=f'{id}'
+            # result[key] = [color_, row[fieldIndex]]
+            result[key].append(color_)
+            result[key].append(row[fieldIndex])
+            # result[key] = (*result, result)
+            
+        # result2 = (*result2, result)
     cur.close()
     del cur
-    return result2
+    return result

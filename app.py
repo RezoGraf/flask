@@ -12,9 +12,9 @@ import auth
 import errors
 import db
 import sql
-import sentry_sdk
+# import sentry_sdk
 from flask import Flask
-from sentry_sdk.integrations.flask import FlaskIntegration
+# from sentry_sdk.integrations.flask import FlaskIntegration
 
 # sentry_sdk.init(
 #     dsn="https://f2b6c112871e4531ae68d13560e78e86@o1123757.ingest.sentry.io/6161912",
@@ -81,10 +81,6 @@ def menu():
         auth_group = 'none'
     return render_template('menu.html', arena_fio=arena_fio)
 
-
-@app.route('/debug-sentry')
-def trigger_error():
-    division_by_zero = 1 / 0
 
 
 if __name__ == "__main__":

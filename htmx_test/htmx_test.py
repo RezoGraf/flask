@@ -6,6 +6,7 @@ from data_input.sql_data_input import sql_upd_it_rasp_grf
 from dateutil import parser
 from datetime import date
 import calendar
+import utils
 
 data = ["Один", "Тор"]
 
@@ -63,7 +64,6 @@ def table_view():
     russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
     
     result_th = {}
-    result_style_td = {}
     for i in range(all_day):
             i+=1
             dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
@@ -81,16 +81,8 @@ def table_view():
                 class_th='table-light'
             result_th[key_] = [class_th,value_]  
     otd=12           
-    table_view_all = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
-    print(table_view_all)  
-    
-
-    # i = 1
-    # result_td = {}
-    # while i < (len(table_view_all)):
-    #     key_ = table_view_all
-    #     result_th[key_] = [class_th,value_]      
-      
+    # table_view_all = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
+    table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))      
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,
                            result_th = result_th)
@@ -114,13 +106,14 @@ def table_edit():
     if request.method == 'POST':
         id_td = request.args.get('id_td')
         s_id_td = id_td[2:4]
-        if int(s_id_td)<10 :
-            s_id_td = s_id_td[1:2]
+        # if int(s_id_td)<10 :
+        # s_id_td = s_id_td[1:2]
         s_id_td = f'day{s_id_td}'    
         id_grf = request.args.get('id_grf')
         rasp_id = request.form.get('rasp_id')
         rasp_id_visible =db.select( sql.sql_interval_time_current.format(id=rasp_id))
         rasp_id_visible = rasp_id_visible[0][0]
+        
         db.write(sql_upd_it_rasp_grf.format(day_col=s_id_td, day_zn=rasp_id, id_grf=id_grf))
         
         response = f"""
@@ -140,7 +133,6 @@ def table_edit():
             option = f"""<option value="{list_of_time[i][0]}">{list_of_time[i][1]}</option>"""
             list_of_options = list_of_options + option
             i += 1
-        print(list_of_options)   
         response = f"""
                 <div>
                     <select name="rasp_id" hx-post="table_view/edit?id_grf={id_grf}&id_td={id_td}" 
