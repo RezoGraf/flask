@@ -13,56 +13,170 @@
         {% for value in result_th.items() %}
           <th class={{ value[1][0] }}> {{ value[1][1] }} </th>
         {% endfor %}
-      </thead>
+    </thead>
 
     <tbody style="font-size:small;">
-    {% for nroom, notd, nspz, ndoc, id_grf, day1, day2, day3, day4, day5, day6, day7, day8, day9, day10, day11, day12, 
-        day13, day14, day15, day16, day17, day18,day19, day20, day21, day22, day23, day24,
-        day25, day26, day27, day28, day29, day30, day31 in table_view_all %}
+    {% for value in table_view_all.items() %}
     <tr>
-    <td>{{ ndoc }}</td> 
-    <td>{{ nspz }}</td>
-    <td>{{ nroom }}</td>
-    {% if loop.index == 2 %} <td class="table-warning"> {{ day1 or "нет приема"}} </td> 
-    {% else %}   
-    <td class="{{'table-light' if day1 != None else 'table-warning'}}">
-        <form id="td01{{id_grf}}">
-        <div hx-target="#td01{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td01{{id_grf}}">{{ day1 or "нет приема"}} </div>
-       </form>
-    </td>   
-    {% endif %}
-<td class="{{'table-light' if day2 != None else 'table-warning'}}"><form id="td02{{id_grf}}"><div hx-target="#td02{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td02{{id_grf}}">{{ day3 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day3 != None else 'table-warning'}}"><form id="td03{{id_grf}}"><div hx-target="#td03{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td03{{id_grf}}">{{ day2 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day4 != None else 'table-warning'}}"><form id="td04{{id_grf}}"><div hx-target="#td04{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td04{{id_grf}}">{{ day4 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day5 != None else 'table-warning'}}"><form id="td05{{id_grf}}"><div hx-target="#td05{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td05{{id_grf}}">{{ day5 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day6 != None else 'table-warning'}}"><form id="td06{{id_grf}}"><div hx-target="#td06{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td06{{id_grf}}">{{ day6 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day7 != None else 'table-warning'}}"><form id="td07{{id_grf}}"><div hx-target="#td07{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td07{{id_grf}}">{{ day7 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day8 != None else 'table-warning'}}"><form id="td08{{id_grf}}"><div hx-target="#td08{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td08{{id_grf}}">{{ day8 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day9 != None else 'table-warning'}}"><form id="td09{{id_grf}}"><div hx-target="#td09{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td09{{id_grf}}">{{ day9 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day10 != None else 'table-warning'}}"><form id="td10{{id_grf}}"><div hx-target="#td10{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td10{{id_grf}}">{{ day10 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day11 != None else 'table-warning'}}"><form id="td11{{id_grf}}"><div hx-target="#td11{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td11{{id_grf}}">{{ day11 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day12 != None else 'table-warning'}}"><form id="td12{{id_grf}}"><div hx-target="#td12{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td12{{id_grf}}">{{ day12 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day13 != None else 'table-warning'}}"><form id="td13{{id_grf}}"><div hx-target="#td13{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td13{{id_grf}}">{{ day13 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day14 != None else 'table-warning'}}"><form id="td14{{id_grf}}"><div hx-target="#td14{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td14{{id_grf}}">{{ day14 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day15 != None else 'table-warning'}}"><form id="td15{{id_grf}}"><div hx-target="#td15{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td15{{id_grf}}">{{ day15 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day16 != None else 'table-warning'}}"><form id="td16{{id_grf}}"><div hx-target="#td16{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td16{{id_grf}}">{{ day16 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day17 != None else 'table-warning'}}"><form id="td17{{id_grf}}"><div hx-target="#td17{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td17{{id_grf}}">{{ day17 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day18 != None else 'table-warning'}}"><form id="td18{{id_grf}}"><div hx-target="#td18{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td18{{id_grf}}">{{ day18 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day19 != None else 'table-warning'}}"><form id="td19{{id_grf}}"><div hx-target="#td19{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td19{{id_grf}}">{{ day19 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day20 != None else 'table-warning'}}"><form id="td20{{id_grf}}"><div hx-target="#td20{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td20{{id_grf}}">{{ day20 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day21 != None else 'table-warning'}}"><form id="td21{{id_grf}}"><div hx-target="#td21{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td21{{id_grf}}">{{ day21 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day22 != None else 'table-warning'}}"><form id="td22{{id_grf}}"><div hx-target="#td22{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td22{{id_grf}}">{{ day22 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day23 != None else 'table-warning'}}"><form id="td23{{id_grf}}"><div hx-target="#td23{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td23{{id_grf}}">{{ day23 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day24 != None else 'table-warning'}}"><form id="td24{{id_grf}}"><div hx-target="#td24{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td24{{id_grf}}">{{ day24 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day25 != None else 'table-warning'}}"><form id="td25{{id_grf}}"><div hx-target="#td25{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td25{{id_grf}}">{{ day25 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day26 != None else 'table-warning'}}"><form id="td26{{id_grf}}"><div hx-target="#td26{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td26{{id_grf}}">{{ day26 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day27 != None else 'table-warning'}}"><form id="td27{{id_grf}}"><div hx-target="#td27{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td27{{id_grf}}">{{ day27 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day28 != None else 'table-warning'}}"><form id="td28{{id_grf}}"><div hx-target="#td28{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td28{{id_grf}}">{{ day28 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day29 != None else 'table-warning'}}"><form id="td29{{id_grf}}"><div hx-target="#td29{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td29{{id_grf}}">{{ day29 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day30 != None else 'table-warning'}}"><form id="td30{{id_grf}}"><div hx-target="#td30{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td30{{id_grf}}">{{ day30 or "нет приема" }}</div></form></td>
-<td class="{{'table-light' if day21 != None else 'table-warning'}}"><form id="td31{{id_grf}}"><div hx-target="#td31{{id_grf}}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{id_grf}}&id_td=td31{{id_grf}}">{{ day31 or "нет приема" }}</div></form></td>
-
-</tr>
+       <td class={{ value[1][12] }}> {{ value[1][13] }} </td> 
+       <td class={{ value[1][10] }}> {{ value[1][11] }} </td>
+       <td class={{ value[1][6] }}> {{ value[1][7] }} </td> 
+       <td class={{ value[1][14] }}>
+        <form id="td01{{ value[1][1] }}">
+          <div hx-target="#td01{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td01{{ value[1][1] }}">{{ value[1][15] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][16] }}>         
+        <form id="td02{{ value[1][1] }}">
+          <div hx-target="#td02{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td02{{ value[1][1] }}">{{ value[1][17] or "нет приема"}} </div>
+        </form>
+      </td>
+       <td class={{ value[1][18] }}> 
+        <form id="td03{{ value[1][1] }}">
+          <div hx-target="#td03{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td03{{ value[1][1] }}">{{ value[1][19] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][20] }}>
+        <form id="td04{{ value[1][1] }}">
+          <div hx-target="#td04{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td04{{ value[1][1] }}">{{ value[1][21] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][22] }}> 
+        <form id="td05{{ value[1][1] }}">
+          <div hx-target="#td05{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td05{{ value[1][1] }}">{{ value[1][23] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][24] }}> 
+        <form id="td06{{ value[1][1] }}">
+          <div hx-target="#td06{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td06{{ value[1][1] }}">{{ value[1][25] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][26] }}> 
+        <form id="td07{{ value[1][1] }}">
+          <div hx-target="#td07{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td07{{ value[1][1] }}">{{ value[1][27] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][28] }}>
+        <form id="td08{{ value[1][1] }}">
+          <div hx-target="#td08{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td08{{ value[1][1] }}">{{ value[1][29] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][30] }}>
+        <form id="td09{{ value[1][1] }}">
+          <div hx-target="#td09{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td09{{ value[1][1] }}">{{ value[1][31] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][32] }}> 
+        <form id="td10{{ value[1][1] }}">
+          <div hx-target="#td10{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td10{{ value[1][1] }}">{{ value[1][33] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][34] }}>  
+        <form id="td11{{ value[1][1] }}">
+          <div hx-target="#td11{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td11{{ value[1][1] }}">{{ value[1][35] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][36] }}> 
+        <form id="td12{{ value[1][1] }}">
+          <div hx-target="#td12{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td12{{ value[1][1] }}">{{ value[1][37] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][38] }}> 
+        <form id="td13{{ value[1][1] }}">
+          <div hx-target="#td13{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td13{{ value[1][1] }}">{{ value[1][39] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][40] }}>
+        <form id="td14{{ value[1][1] }}">
+          <div hx-target="#td14{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td14{{ value[1][1] }}">{{ value[1][41] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][42] }}> 
+        <form id="td15{{ value[1][1] }}">
+          <div hx-target="#td15{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td15{{ value[1][1] }}">{{ value[1][43] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][44] }}> 
+        <form id="td16{{ value[1][1] }}">
+          <div hx-target="#td16{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td16{{ value[1][1] }}">{{ value[1][45] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][46] }}> 
+        <form id="td17{{ value[1][1] }}">
+          <div hx-target="#td17{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td17{{ value[1][1] }}">{{ value[1][47] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][48] }}> 
+        <form id="td18{{ value[1][1] }}">
+          <div hx-target="#td81{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td18{{ value[1][1] }}">{{ value[1][49] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][50] }}> 
+        <form id="td19{{ value[1][1] }}">
+          <div hx-target="#td19{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td19{{ value[1][1] }}">{{ value[1][51] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][52] }}>
+        <form id="td20{{ value[1][1] }}">
+          <div hx-target="#td20{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td20{{ value[1][1] }}">{{ value[1][53] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][54] }}>
+        <form id="td21{{ value[1][1] }}">
+          <div hx-target="#td21{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td21{{ value[1][1] }}">{{ value[1][55] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][56] }}>
+        <form id="td22{{ value[1][1] }}">
+          <div hx-target="#td22{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td22{{ value[1][1] }}">{{ value[1][57] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][58] }}> 
+        <form id="td23{{ value[1][1] }}">
+          <div hx-target="#td23{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td23{{ value[1][1] }}">{{ value[1][59] or "нет приема"}} </div>
+        </form>
+       </td> 
+       <td class={{ value[1][60] }}> 
+        <form id="td24{{ value[1][1] }}">
+          <div hx-target="#td24{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td24{{ value[1][1] }}">{{ value[1][61] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][62] }}> 
+        <form id="td25{{ value[1][1] }}">
+          <div hx-target="#td25{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td25{{ value[1][1] }}">{{ value[1][63] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][64] }}> 
+        <form id="td26{{ value[1][1] }}">
+          <div hx-target="#td26{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td26{{ value[1][1] }}">{{ value[1][65] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][66] }}> 
+        <form id="td27{{ value[1][1] }}">
+          <div hx-target="#td27{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td27{{ value[1][1] }}">{{ value[1][67] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][68] }}>  
+        <form id="td28{{ value[1][1] }}">
+          <div hx-target="#td28{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td28{{ value[1][1] }}">{{ value[1][69] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][70] }}>
+        <form id="td29{{ value[1][1] }}">
+          <div hx-target="#td29{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td29{{ value[1][1] }}">{{ value[1][71] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][72] }}>
+        <form id="td30{{ value[1][1] }}">
+          <div hx-target="#td30{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td30{{ value[1][1] }}">{{ value[1][73] or "нет приема"}} </div>
+        </form>
+       </td>
+       <td class={{ value[1][74] }}> 
+        <form id="td31{{ value[1][1] }}">
+          <div hx-target="#td31{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td31{{ value[1][1] }}">{{ value[1][75] or "нет приема"}} </div>
+        </form>
+       </td>
+    </tr>
     {% endfor %}
 </tbody>
 

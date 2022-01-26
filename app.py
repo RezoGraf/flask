@@ -77,10 +77,6 @@ def menu():
     return render_template('menu.html', arena_fio=arena_fio)
 
 
-@app.route('/debug-sentry')
-def trigger_error():
-    division_by_zero = 1 / 0
-
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
