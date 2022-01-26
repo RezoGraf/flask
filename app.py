@@ -4,16 +4,11 @@ from data_input.data_input import data_input
 from excel.excel import excel
 from report.report import report
 from zakaz_naryad.zakaz_naryad import zakaz_naryad
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session
 from db_test.db_test import db_test
 import datetime
-from flask import Flask, render_template, request, url_for, redirect, session
 import auth
-import errors
-import db
-import sql
 # import sentry_sdk
-from flask import Flask
 # from sentry_sdk.integrations.flask import FlaskIntegration
 
 # sentry_sdk.init(

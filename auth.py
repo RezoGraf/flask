@@ -52,7 +52,6 @@ def check_credentials(username, password):
         else:
             print(f'Не состоит в группах web_hs')
             
-
     char_start = 'CN='
     char_end = ','
     arena_fio = d[d.find(char_start)+3 : d.find(char_end)]
