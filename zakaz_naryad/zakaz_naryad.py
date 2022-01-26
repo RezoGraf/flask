@@ -1,20 +1,13 @@
-import db
-import models
-import sql
+import db, sql
 from api.api import api
 from data_input.data_input import data_input
-from flask import Flask, render_template, request, url_for, redirect
-from flask import Blueprint, render_template, abort, redirect, url_for, request
+from flask import Flask, render_template, request, url_for, redirect, Blueprint
 # регистрируем схему `Blueprint`
-from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
 from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty
 from . import zakaz_naryad
 import pandas as pd
 from datetime import datetime
-import db
-import sql
-import utils
 import calendar
 
 
@@ -73,6 +66,7 @@ def main():
                 result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
                 return render_template("zakaz_naryad.html", 
                                     my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple, check1='checked', check2='')
+                
                 
 @zakaz_naryad.route('/zn_naryad', methods=['GET', 'POST'])
 def zn_naryad():

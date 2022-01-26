@@ -5,6 +5,7 @@
         "cherrypy",
         "conv",
         "countid",
+        "dateutil",
         "dolj",
         "dred",
         "edfs",
