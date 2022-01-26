@@ -18,3 +18,4 @@ sql_ins_it_rasp = """INSERT INTO IT_RASP (LPU,OTD,SPZ,DOC,ROOM,NTV,ID_INTERVAL1,
 
 sql_del_it_rasp = """DELETE FROM IT_RASP WHERE DOC={doc} """
 
+sql_upd_it_rasp_grf = "UPDATE IT_RASP_GRF set {day_col}={day_zn} where id_grf={id_grf}"

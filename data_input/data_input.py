@@ -10,6 +10,8 @@ import sql
 import utils
 import calendar
 import pandas as pd
+from dateutil import parser
+from datetime import date
 
 data_input = Blueprint('data_input', __name__)
 
@@ -196,19 +198,75 @@ def wtf_template3():
                            result_podr=result_podr,
                            result_podr2=result_podr2,
                            arena_fio=arena_fio)
+    
 
 @data_input.route('/wtf_template4/', methods=['GET', 'POST'])
 def WtfTemplate4():
-    otd = request.args.get('otd')
-    if otd is None : otd=12
-    # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
+    # otd = request.args.get('otd')
+    # if otd is None : otd=12
+    # # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
     # result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-    result_otd = db.select(sql.sql_allOtd)
-    print(result_otd)
+    otd=12  
+  
+    current_date = date.today()
+    # current_date_string = current_date.strftime('%m/%d/%y')   
+    current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
+    current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
+    all_day = calendar.monthrange(int(current_year), int(current_month))[1]
+    result_otd = db.select(sql.sql_allOtd) 
+    russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
+    
+    result_th = {}
+    for i in range(all_day):
+            i+=1
+            dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
+            ans = parser.parse(dt).strftime("%a")
+            pa = russianDayWeek[ans]
+            if i<10 :
+                p=f'0{i}'
+            else:
+                p=str(i)  
+            value_ = f'{p} <br> {pa}' 
+            key_ = f'day{str(i)}'
+            result_th[key_] = value_        
+        
+    print(result_th)
+    if request.method == 'POST':
+        result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+        result_otd = db.select(sql.sql_allOtd)
+        otd=request.form.get('OTD')
+        otd=12
+        current_year=request.form.get('year')
+        current_month=request.form.get('month')
+        all_day = calendar.monthrange(int(current_year), int(current_month))[1]
+        result_th = {}
+        for i in range(all_day):
+            i+=1
+            dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
+            ans = parser.parse(dt).strftime("%a")
+            pa = russianDayWeek[ans]
+            if i<10 :
+                p=f'0{i}'
+            else:
+                p=str(i)  
+            value_ = f'{p} <br> {pa}' 
+            key_ = f'day{str(i)}'
+            result_th[key_] = value_ 
+            
+        result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
+        return render_template('wtf_template4.html',
+                               result_otd=result_otd,
+                               result_th = result_th,
+                               result_TabelWorkTime=result_TabelWorkTime)
+        
+    result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))         
     return render_template('wtf_template4.html',
-                           result_otd=result_otd)
+                           result_otd = result_otd,
+                           result_th = result_th,
+                           result_TabelWorkTime = result_TabelWorkTime)
                         #    result_podr=result_podr,
                         #    result_podr2=result_podr2,
+                        
     
     
 @data_input.route('/di_frame_fio', methods=['GET', 'POST'])

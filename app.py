@@ -1,19 +1,25 @@
-# from curses import KEY_MARK
 from api.api import api
 from htmx_test.htmx_test import htmx_test
 from data_input.data_input import data_input
 from excel.excel import excel
 from report.report import report
 from zakaz_naryad.zakaz_naryad import zakaz_naryad
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, session
 from db_test.db_test import db_test
 import datetime
-from flask import Flask, render_template, request, url_for, redirect, session
 import auth
-import errors
-import logging
-import db
-# from logging.handlers import tele
+# import sentry_sdk
+# from sentry_sdk.integrations.flask import FlaskIntegration
+
+# sentry_sdk.init(
+#     dsn="https://f2b6c112871e4531ae68d13560e78e86@o1123757.ingest.sentry.io/6161912",
+#     integrations=[FlaskIntegration()],
+
+#     # Set traces_sample_rate to 1.0 to capture 100%
+#     # of transactions for performance monitoring.
+#     # We recommend adjusting this value in production.
+#     traces_sample_rate=1.0
+# )
 
 
 app = Flask(__name__, static_folder="static",
@@ -71,6 +77,9 @@ def menu():
     return render_template('menu.html', arena_fio=arena_fio)
 
 
+
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
     app.run(host='0.0.0.0', port=9000)
+    
+
