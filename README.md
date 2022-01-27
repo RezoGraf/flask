@@ -31,8 +31,11 @@
 
 Запуск uWSGI:
 
-    $ uwsgi --socket 0.0.0.0:7000 --protocol=http -w wsgi:app
+    $ uwsgi --socket 0.0.0.0:9000 --protocol=http -w wsgi:app
 
+Запуск Gunicorn:
+
+    $ gunicorn -w 6 -b 0.0.0.0:9000 wsgi:app 
 
 Dockerfile:
 
