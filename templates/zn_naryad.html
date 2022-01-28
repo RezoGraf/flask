@@ -17,12 +17,13 @@
                     <table class="table" style="border: none">
                         
                         <tbody>
-                            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh, nlpu in zn_naryad_list %}
+                            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nom_nteh, nlit, nom_nlit, 
+                                npolir, nom_npolir, nvarh, nom_nvarh, nlpu in zn_naryad_list %}
                             <tr style = "line-height: 15px; min-height: 15px; height: 15px; border: none">
                                 <td><span class="font-weight-bold"><u>Номер наряда:</u></span> {{nkv}}</td> 
                                 <td> 
-                                    <span class="font-weight-bold">Статус: </span> 
-                                    <span class="{{'text-success' if dzr != None else 'text-danger'}}"> {{'Закрыт' if dzr != None else 'Открыт'}}</span>
+                                    <span class="font-weight-bold">Статус: </span>  
+                                    <span class="{{'text-danger' if dzr != None else 'text-success'}}"> {{'Закрыт' if dzr != None else 'Открыт'}}</span>
                                 </td> 
                                 <td><span class="font-weight-bold">Вид оплаты:</span> {{nopl}}</td>                                
                             </tr>        
@@ -64,27 +65,33 @@
                 
                 </td>
 
-                <td> 
-                    <br/> <br/> 
-                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary" {{'disabled' if dzr != None else ''}}>Редактировать</button>
-                    <br/> <br/>
-                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary" >Кнопка 2</button>
-
-
-                </td>
-
-                {% endfor %} 
+                <td style="text-align: center;">
+                    <div style="width:50%; margin: 0 auto;">
+                        <br/> <br/>
+                        <button 
+                            hx-get="zn_modal_edit?idkv={{idkv}}&nom_nteh={{nom_nteh}}&nom_nlit={{nom_nlit}}&nom_npolir={{nom_npolir}}&nom_nvarh={{nom_nvarh}}" 
+                            hx-target="#modals-here" 
+                            hx-trigger="click"
+                            class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}
+                            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Изменить
+                        </button>
+                        <br/>
+                        <button 
+                            hx-get="zn_modal_close?idkv={{idkv}}&nkv={{nkv}}" 
+                            hx-target="#modals-here1" 
+                            hx-trigger="click"
+                            class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}
+                            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Закрыть наряд
+                        </button>
+                        <br/>
+                        <button type="button submit" name="btn" value="selectNew" class="btn btn-primary btn-block" >Кнопка 2</button>
+                    </div>
+                </td>                 
         </table>
-
-        <button 
-            hx-get="/zn_modal_edit" 
-            hx-target="#modals-here" 
-            hx-trigger="click"
-            class="btn btn-primary"
-            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Open Modal</button>
-    
         <div id="modals-here"></div>
-
+        <div id="modals-here1"></div> 
+        
+        {% endfor %}
 
         
         
@@ -96,28 +103,28 @@
     <table id="Table_usl" class="table table-striped">
         <thead>
             <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                <th>№</th>
-                <th>Подразделение</th>
-                <th>Открытие</th>
-                <th>Закрытие</th>
-                <th>Сумма</th>
+                <th style="text-align: center;">Код услуги</th>
+                <th style="text-align: center;">Наименование</th>
+                <th style="text-align: center;">Цена</th>
+                <th style="text-align: center;">Количество</th>
+                <th style="text-align: center;">Сумма</th>
             </tr>
 
             <tr>
-                <th>         
+                <th style="width:10%;">         
                     <input name="otd_filter" list="datalistOptions" class="form-control" id="idSerch0" placeholder="Поиск" autocomplete="off">         
                 </th>
-                <th>         
+                <th style="width:60%;">         
                     <input name="otd_filter" list="datalistOptions" class="form-control" id="idSerch1" placeholder="Поиск" autocomplete="off">         
                 </th>
-                <th>
-                    <input class="form-control" type="date" id="idSerch2">
+                <th style="width:10%;">
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch2" placeholder="Поиск" autocomplete="off">
                 </th>
-                <th>
-                    <input class="form-control" type="date" id="idSerch4">
+                <th style="width:10%;">
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch3" placeholder="Поиск" autocomplete="off">
                 </th>
-                <th>
-                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch6" placeholder="Поиск" autocomplete="off"> 
+                <th style="width:10%;">
+                    <input name="reason_filter" list="datalistOptions" class="form-control" id="idSerch4" placeholder="Поиск" autocomplete="off"> 
                 </th>
             </tr>
 
@@ -126,14 +133,23 @@
         <tbody>
             {% for usl, kusl, nusl, price, kol, stu in result_usl %}            
             <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                <td>{{ kusl or '' }}</td>
+                <td style="text-align: center;">{{ kusl or '' }}</td>
                 <td>{{ nusl or '' }}</td>
-                <td>{{ price or '' }}</td>
-                <td>{{ kol or '' }}</td>
-                <td>{{ stu or '' }}</td> 
+                <td style="text-align: center;">{{ price or '' }}</td>
+                <td style="text-align: center;">{{ kol or '' }}</td>
+                <td style="text-align: center;">{{ stu or '' }}</td> 
             </tr>
             {% endfor %}
-        </tbody>        
+        </tbody>
+        <tfoot>
+            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
+                <th style="text-align: center;">Код услуги</th>
+                <th style="text-align: center;">Наименование</th>
+                <th style="text-align: center;">Цена</th>
+                <th style="text-align: center;">Количество</th>
+                <th style="text-align: center;">Сумма</th>
+            </tr>
+        </tfoot>            
     </table>
 </body>
 
@@ -141,7 +157,7 @@
 
     function filterTable0(event) {
         var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
+        var rows = document.querySelector("#Table_usl tbody").rows;
 
         for (var i = 0; i < rows.length; i++) {
             var firstCol = rows[i].cells[0].textContent.toUpperCase();
@@ -158,7 +174,7 @@
 
     function filterTable1(event) {
         var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
+        var rows = document.querySelector("#Table_usl tbody").rows;
 
         for (var i = 0; i < rows.length; i++) {
             var secondCol = rows[i].cells[1].textContent.toUpperCase();
@@ -174,7 +190,7 @@
 
     function filterTable2(event) {
         var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
+        var rows = document.querySelector("#Table_usl tbody").rows;
 
         for (var i = 0; i < rows.length; i++) {
             var secondCol = rows[i].cells[2].textContent.toUpperCase();
@@ -186,11 +202,28 @@
         }
     }
 
-    document.querySelector('#idSerch2').addEventListener('change', filterTable2, false);
+    document.querySelector('#idSerch2').addEventListener('keyup', filterTable2, false);
+
+    function filterTable3(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#Table_usl tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var secondCol = rows[i].cells[3].textContent.toUpperCase();
+            if (secondCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#idSerch3').addEventListener('keyup', filterTable3, false);
+
 
     function filterTable4(event) {
         var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
+        var rows = document.querySelector("#Table_usl tbody").rows;
 
         for (var i = 0; i < rows.length; i++) {
             var secondCol = rows[i].cells[4].textContent.toUpperCase();
@@ -202,26 +235,36 @@
         }
     }
 
-    document.querySelector('#idSerch4').addEventListener('change', filterTable4, false);
+    document.querySelector('#idSerch4').addEventListener('keyup', filterTable4, false);
 
-
-    function filterTable6(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[6].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
+    function closeModal() {
+        var container = document.getElementById("modals-here")
+        var backdrop = document.getElementById("modal-backdrop")
+        var modal = document.getElementById("modal")
+    
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+    
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
+        }, 200)
     }
 
-    document.querySelector('#idSerch6').addEventListener('keyup', filterTable6, false);
-
-
+    function closeModal1() {
+        var container = document.getElementById("modals-here1")
+        var backdrop = document.getElementById("modal-backdrop1")
+        var modal = document.getElementById("modal1")
+    
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+    
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
+        }, 200)
+    }
+ 
 </script>
 
 {% endblock %}
