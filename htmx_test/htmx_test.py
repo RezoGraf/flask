@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Blueprint
+from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
 import json
 import os.path
 import db, sql
@@ -50,42 +50,65 @@ def index():
     return render_template("htmx_test.html", items=data)
 
 
-@htmx_test.route("/table_view")
-def table_view():
-    """отображение таблицы с расписанием, ничего интересного
-    Returns:
-        html страницу (htmx_tableview.html) с таблицей, смотреть внимательно
-    """    
-    current_date = date.today()
-    current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
-    current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
-    all_day = calendar.monthrange(int(current_year), int(current_month))[1]
-    # result_otd = db.select(sql.sql_allOtd) 
-    russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
-    
-    result_th = {}
-    for i in range(all_day):
+
+# функция формирования заголовка таблицы
+def create_th(cur_year,cur_month):
+   all_day = calendar.monthrange(int(cur_year), int(cur_month))[1] 
+   result_th_ = {}
+   for i in range(all_day):
             i+=1
-            dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
-            ans = parser.parse(dt).strftime("%a")
-            pa = russianDayWeek[ans]
+            current_data = f'{str(i)}.{str(cur_month)}.{str(cur_year)}'           
+            color_day_week = utils.date_color(current_data)
+            current_data_ =  f'{str(cur_month)}.{str(i)}.{str(cur_year)}'
+            russian_dayWeek = utils.russianNameDayWeek(current_data_)
             if i<10 :
                 p=f'0{i}'
             else:
                 p=str(i)  
-            value_ = f"""{p}  {pa}""" 
-            key_ = f'day{str(i)}'
-            if pa=='Вс.' or pa=='Сб.' :
-                class_th='table-success'
-            else:
-                class_th='table-light'
-            result_th[key_] = [class_th,value_]  
-    otd=12           
-    # table_view_all = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
-    table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))      
+            value_ = f"""{p}  {russian_dayWeek}""" 
+            key_ = f'day{str(i)}'                
+            result_th_[key_] = [color_day_week,value_]  
+   return result_th_
+
+@htmx_test.route("/table_view", methods=["GET", "POST"])
+def table_view():
+    """отображение таблицы с расписанием, ничего интересного
+    Returns:
+        html страницу (htmx_tableview.html) с таблицей, смотреть внимательно
+    """
+    current_date = date.today()
+    current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
+    current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
+    otd=12 
+    result_th = {}  
+    result_th = create_th(current_year,current_month).copy()          
+    result_otd = db.select(sql.sql_allOtd) #список отделений
+    
+    if request.method == 'POST':
+        if request.form['btn'] == 'selectNew':
+            otd=request.form.get('otd')
+            notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
+            current_year=request.form.get('year')
+            current_month=request.form.get('month')
+            result_th = {}
+            result_th = create_th(current_year,current_month).copy() 
+            
+        if request.form['btn'] == 'sotrudnikNew':
+            otd=request.form.get('otd')
+            notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
+            current_year=request.form.get('year')
+            current_month=request.form.get('month')
+            result_th = {}
+            result_th = create_th(current_year,current_month).copy()     
+                  
+    table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month)) 
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,
-                           result_th = result_th)
+                           result_th = result_th,
+                           result_otd=result_otd,
+                           year = current_year,
+                           month = current_month,
+                           NOTD = notd)
 
 
 @htmx_test.route("/table_view/edit", methods=["GET", "POST"])
@@ -106,8 +129,6 @@ def table_edit():
     if request.method == 'POST':
         id_td = request.args.get('id_td')
         s_id_td = id_td[2:4]
-        # if int(s_id_td)<10 :
-        # s_id_td = s_id_td[1:2]
         s_id_td = f'day{s_id_td}'    
         id_grf = request.args.get('id_grf')
         rasp_id = request.form.get('rasp_id')
