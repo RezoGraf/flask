@@ -38,8 +38,7 @@ def check_credentials(username, password):
     s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
     # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1])
     # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1][''])
-    d = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs2)[0][0])
-    auth_group = ""
+    d = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs2)[0][0]) 
     for x in s:
         x = str(x, 'utf-8')
         chars1 = "CN="
@@ -48,29 +47,25 @@ def check_credentials(username, password):
         if "web_hs" in auth_group:
             print(f'Состоит в группе: { auth_group }')
             session['auth_group'] = auth_group
-            
         else:
-            print(f'Не состоит в группах web_hs')
-            
+            print(f'Не состоит в группах web_hs')   
     char_start = 'CN='
     char_end = ','
     arena_fio = d[d.find(char_start)+3 : d.find(char_end)]
     print(f'ФИО: {arena_fio}')
     arena_mpp = 000
-    
     try:
         f = db.select(sql.sql_ad_arena_username.format(username))
         arena_username = f[0][0]
         if arena_username != None:
             session['arena_user'] = arena_username
     except BaseException:
-        pass
-    
+        print(BaseException)
     try:
         arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
         session['arena_mpp'] = arena_mpp[0][0]
     except BaseException:
-        pass
+        print(BaseException)
     arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
     session['arena_fio'] = arena_fio
     session['arena_mpp'] = arena_mpp

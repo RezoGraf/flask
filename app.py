@@ -70,12 +70,14 @@ def menu():
         auth_group = session.get('auth_group')
     else:
         auth_group = 'none'
+    if auth_group == 'web_hs_admin':
+        """html"""
     return render_template('menu.html', arena_fio=arena_fio)
 
 
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run(host='0.0.0.0', port=9000)
+    app.run(host='0.0.0.0', port=2000)
     
 
