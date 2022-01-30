@@ -222,7 +222,8 @@ def zn_modal_close():
     else:
         idkv = request.args.get('idkv')
         nkv = request.args.get('nkv')
-        dtn = datetime.today().strftime('%Y-%m-%d')
+        dt_close = request.form.get('dt_close')
+        dt_today = datetime.today().strftime('%Y-%m-%d')
         response = f"""<div id="modal-backdrop1" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal1" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered">
@@ -237,7 +238,7 @@ def zn_modal_close():
                                 <div class="modal-body" style="text-align: center;">
                                 
                                     <form method="POST">
-                                        <input type="date" value="{dtn}" name="date_closed" />
+                                        <input type="date" value="{dt_today}" name="dt_close" />
                                     </form>   
                                      
                                 </div>
@@ -245,10 +246,16 @@ def zn_modal_close():
                                     <table class="table table-borderless">
                                         <tr>
                                             <td style="text-align: left;">
-                                                <button type="button" class="btn btn-success" onclick="closeModal1()">Сохранить</button>
+                                                <button 
+                                                    hx-get="zn_modal_close_btn?idkv={idkv}&dt_close={dt_close}" 
+                                                    hx-target="#modals-here1" 
+                                                    hx-trigger="click"
+                                                    class="btn btn-primary btn-block"
+                                                    _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Сохранить11
+                                                </button>
                                             </td>                                            
                                             <td style="text-align: right;"> 
-                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button> 
+                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
                                             </td>                                            
                                         </tr>
                                     </table>    
@@ -257,3 +264,18 @@ def zn_modal_close():
                             </div>
                         </div>"""
         return response
+
+# Модальное на закрытие---------------------------------------------------------------------------------------------------------------------------------
+@zakaz_naryad.route('/zn_modal_close_btn', methods=['GET', 'POST'])
+def zn_modal_close_btn():
+        
+    if request.method == 'POST':
+        idkv = request.args.get('idkv')
+        dt_close = request.args.get('dt_close')
+        return redirect(url_for('zakaz_naryad.zn_modal_close_btn', idkv=idkv, dt_close=dt_close))
+    else:
+        idkv = request.args.get('idkv')
+        dt_close = request.args.get('dt_close')
+        response = f"""{idkv} {dt_close} """
+        return response, "12312"
+    

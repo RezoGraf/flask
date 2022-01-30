@@ -31,6 +31,14 @@ def list_to_str(list_result):
     #string_result = string_result.append(s)
     return string_result
 
+def russianNameDayWeek(day_week):
+    russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
+    latin_name_dayweek = parser.parse(day_week).strftime("%a")
+    result = russianDayWeek[latin_name_dayweek]
+    print(day_week)
+    print(latin_name_dayweek)
+    return result
+    
 def date_color(current_date):
     dt = parser.parse(current_date)
     current_day = parser.parse(dt.strftime('%m/%d/%y')).strftime("%d")
