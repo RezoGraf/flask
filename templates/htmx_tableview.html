@@ -3,6 +3,59 @@
             {% endwith %}
 
 {% block content %}
+{#ОКНО ДОБАВЛЕНИЯ НОВОГО СОТРУДНИКА#}
+<form method="post">
+ <div class="modal fade" id="InsGrfModal"  tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" data-backdrop="static" data-keyboard="false">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Сотрудник</h5>
+         <input type="text" name="UpdId" value="{{ ID }}" class="col-form-label" style="display: none;">
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+       <div class="modal-body">
+        <form>
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelectUpdTimeDuty" >Сотрудник:</label>
+            <select class="form-select" id="inputFIOSotrudnika" name="UpdMpp" value={{ ID }} required>
+              {% for doc, ndoc in result_alldoc %}
+                <option value="{{ doc }}"{% if loop.first %} SELECTED{% endif %}>{{ ndoc or ""}} </option>
+              {% endfor %}
+              <option selected>{{ ndoc }}</option>
+            </select>
+          </div>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelectUpdTimeDuty" >нечетный день:</label>
+            <select class="form-select" id="intervalTime" name="UpdMpp" value={{ ID }} required>
+              {% for ID, INTEVAL_TIME in result_time %}
+                <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
+              {% endfor %}
+              <option selected>{{ TIME_DUTY }}</option>
+            </select>
+          </div>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelectUpdTimeDuty" >четный день:</label>
+            <select class="form-select" id="intervalTime" name="UpdMpp" value={{ ID }} required>
+              {% for ID, INTEVAL_TIME in result_time %}
+                <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
+              {% endfor %}
+              <option selected>{{ TIME_DUTY }}</option>
+            </select>
+          </div>          
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary" name="btn" value="UpdDuty">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
 
 <div class="container">
   <h4 class="text-primary">График учета рабочего времени</h4>
@@ -30,7 +83,7 @@
     </div>
 
     <div class="form-group">
-      <button type="button submit" name="btn" value="sotrudnikNew" class="btn btn-primary">Добавить сотрудника</button>
+      <button type="button" class="btn btn-primary" data-toggle="modal" title="Добавить сотрудника" data-target="#InsGrfModal">Добавить сотрудника</button>
     </div>
 
    </form>

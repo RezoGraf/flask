@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
 import json
 import os.path
@@ -8,11 +9,12 @@ from datetime import date
 import calendar
 import utils
 
+
 data = ["Один", "Тор"]
 
 htmx_test = Blueprint('htmx_test', __name__)
 
-
+            
 @htmx_test.route("/name/create", methods=["POST"])
 def name_create():
     name = request.form["create"]
@@ -49,8 +51,6 @@ def name_order():
 def index():
     return render_template("htmx_test.html", items=data)
 
-
-
 # функция формирования заголовка таблицы
 def create_th(cur_year,cur_month):
    all_day = calendar.monthrange(int(cur_year), int(cur_month))[1] 
@@ -76,14 +76,30 @@ def table_view():
     Returns:
         html страницу (htmx_tableview.html) с таблицей, смотреть внимательно
     """
+    if 'arena_user' in session:
+        arena_user = session.get('arena_user')
+    else:
+        arena_user = 0
+    print(arena_user)
+    result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
+    if  result_accessotd != '0':
+        select_otd=f' and otd in({result_accessotd})'
+    else:
+        select_otd = ''   
     current_date = date.today()
     current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
-    otd=12 
-    result_th = {}  
-    result_th = create_th(current_year,current_month).copy()          
-    result_otd = db.select(sql.sql_allOtd) #список отделений
     
+    otd= db.select(sql.sql_randomOtd1.format(select_otd=select_otd))[0][0]
+    notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
+    
+    result_th = {}  
+    result_th = create_th(current_year,current_month).copy()         
+    
+    result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
+    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    result_time = db.select(sql.sql_interval_time) #интервал времени
+    print(result_alldoc)
     if request.method == 'POST':
         if request.form['btn'] == 'selectNew':
             otd=request.form.get('otd')
@@ -91,15 +107,17 @@ def table_view():
             current_year=request.form.get('year')
             current_month=request.form.get('month')
             result_th = {}
-            result_th = create_th(current_year,current_month).copy() 
+            result_th = create_th(current_year,current_month).copy()
+            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей 
             
         if request.form['btn'] == 'sotrudnikNew':
             otd=request.form.get('otd')
             notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
+            print(otd)
             current_year=request.form.get('year')
             current_month=request.form.get('month')
-            result_th = {}
-            result_th = create_th(current_year,current_month).copy()     
+            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+            print(result_alldoc)
                   
     table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month)) 
     return render_template("htmx_tableview.html", 
@@ -108,7 +126,8 @@ def table_view():
                            result_otd=result_otd,
                            year = current_year,
                            month = current_month,
-                           NOTD = notd)
+                           NOTD = notd,
+                           result_alldoc=result_alldoc)
 
 
 @htmx_test.route("/table_view/edit", methods=["GET", "POST"])
