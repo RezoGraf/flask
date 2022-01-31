@@ -83,8 +83,13 @@
     </div>
 
     <div class="form-group">
-      <button type="button" class="btn btn-primary" data-toggle="modal" title="Добавить сотрудника" data-target="#InsGrfModal">Добавить сотрудника</button>
-    </div>
+      <button 
+      hx-get="grf_addWorker?otd={{ NOTD }}" 
+      hx-target="#modals-here" 
+      hx-trigger="click"
+      class="btn btn-primary btn-block" >
+      Добавить сотрудника</button>
+      </div>
 
    </form>
   </div>
@@ -266,4 +271,22 @@
 
 </table>
 
+<script>
+
+  function closeModal() {
+    var container = document.getElementById("modals-here")
+    var backdrop = document.getElementById("modal-backdrop")
+    var modal = document.getElementById("modal")
+
+    modal.classList.remove("show")
+    backdrop.classList.remove("show")
+
+    setTimeout(function() {
+        container.removeChild(backdrop)
+        container.removeChild(modal)
+    }, 200)
+  }
+</script>
+
 {% endblock %}
+

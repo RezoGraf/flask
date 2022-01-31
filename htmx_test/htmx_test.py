@@ -182,3 +182,88 @@ def table_edit():
                 </div>
             """
         return response
+    
+#Модальное на редактирование наряда-------------------------------------------------------------------------------------------- 
+@htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
+def modal_addWorker():
+        
+    # if request.method == 'POST':
+    #     otd = request.form.get('otd')
+    #     result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    #     result_time = db.select(sql.sql_interval_time) #интервал времени
+  
+    #     return redirect(url_for('htmx_test.modal_addWorker',otd=otd, idkv=idkv, nom_nteh=nom_nteh,
+    #                             nom_nlit=nom_nlit, nom_npolir=nom_npolir, nom_nvarh=nom_nvarh))    
+   
+    # else:
+    otd = request.form.get('otd')
+    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    result_time = db.select(sql.sql_interval_time) #интервал времени
+
+    sel_ = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_alldoc)):
+        sel_vol = f"""<option value="{result_alldoc[i][0]}">{result_alldoc[i][1]}</option>"""
+        sel_.append(sel_vol)
+#    for i in range(1, len(sel_4)):   
+#        if str(nom_nvarh) in sel_4[i]:
+#             sel_4[i] = f"""<option value="{nom_nvarh}" selected>{nvar_db[i][1]}</option>"""
+    sel_1 = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_time)):
+        sel1_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+        sel_1.append(sel1_vol)
+        
+    sel_2 = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_time)):
+        sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+        sel_2.append(sel2_vol)
+            
+    response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
+                    <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title">Сотрудник</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">    
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td style="text-align: center; width:50%;">
+                                                <label class="custom-select-label" for="worker_select">Сотрудники</label> 
+                                                <select class="custom-select" id="worker_select">                                                
+                                                    {sel_}
+                                                </select>
+                                            </td>
+                                            <td style="text-align: center; width:50%;">
+                                                <label class="custom-select-label" for="noeven_day">нечетный день</label>
+                                                <select class="custom-select" id="noeven_day_select">                                                
+                                                    {sel_1}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; width:50%;">
+                                                <label class="custom-select-label" for="even_day">четный день</label>
+                                                <select class="custom-select" id="even_day_select">
+                                                    {sel_2}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </form>    
+                            </div>
+                            <div class="modal-footer">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td style="text-align: left;">
+                                            <button type="button" class="btn btn-success" onclick="closeModal()">Сохранить</button>
+                                        </td>                                            
+                                        <td style="text-align: right;"> 
+                                            <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
+                                        </td>                                            
+                                    </tr>
+                            </div>
+                        </div>
+                        </div>
+                    </div>"""
+    return response
