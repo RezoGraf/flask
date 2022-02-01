@@ -11,12 +11,16 @@ FROM RSP_BLC, N_DOC
 WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
-# Выбор списка отделений
-sql_allOtd = "select otd,notd from np_otd where notd is not null order by ps"
+# Выбор списка доступных отделений
+sql_allOtd = "select otd, notd from np_otd where notd is not null {select_otd} order by ps"
 # Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
+
 # Выборка первого попавшегося отделения
 sql_randomOtd = """select first 1 otd from np_otd where otd>0 order by otd"""
+sql_randomOtd1 = "select otd, notd, lpu from np_otd where otd>0 {select_otd}"
+# Выборка доступных отделений
+sql_accessOtd = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20000 """
 
 # Выборка всех ФИО врачей по коду отделения
 sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """

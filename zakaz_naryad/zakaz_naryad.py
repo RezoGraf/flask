@@ -1,15 +1,10 @@
 
-from werkzeug.wrappers import response
+# from werkzeug.wrappers import response
 import db
 import sql
-from api.api import api
-from data_input.data_input import data_input
 from flask import render_template, request, url_for, redirect, Blueprint
 # регистрируем схему `Blueprint`
-from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
-from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty
 from . import zakaz_naryad
-import pandas as pd
 from datetime import datetime
 from menu_script import generate_menu
 
@@ -228,13 +223,20 @@ def zn_modal_close():
     if request.method == 'POST':
         idkv = request.args.get('idkv')
         nkv = request.args.get('nkv')
-        return redirect(url_for('zakaz_naryad.zn_modal_close', idkv=idkv, nkv=nkv))    
+        dt_close = request.form.get('dt_close')
+        print(dt_close)
+        if dt_close is None:
+            dt_close = datetime.today().strftime('%Y-%m-%d')
+            
+        print(dt_close)
+        return redirect(url_for('zakaz_naryad.zn_modal_close', idkv=idkv, dt_close=dt_close))    
    
     else:
         idkv = request.args.get('idkv')
         nkv = request.args.get('nkv')
-        dt_close = request.form.get('dt_close')
+        dt_close = request.args.get('dt_close')
         dt_today = datetime.today().strftime('%Y-%m-%d')
+        # print(dt_close)
         response = f"""<div id="modal-backdrop1" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal1" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered">
@@ -248,26 +250,24 @@ def zn_modal_close():
                                 </div>
                                 <div class="modal-body" style="text-align: center;">
                                 
-                                    <form method="POST">
-                                        <input type="date" value="{dt_today}" name="dt_close" />
-                                    </form>   
-                                     
-                                </div>
+                                    <form hx-post="zn_modal_close_btn" hx-swap="outerHTML">
+                                        <input type="date" value="{dt_today}" name="dt_close" id="dt_close" />
+                                        <button class="btn btn-primary btn-block" type="submit">Изменить</button>
+                                </div>     
+                                
                                 <div class="modal-footer">
                                     <table class="table table-borderless">
                                         <tr>
                                             <td style="text-align: left;">
-                                                <button 
-                                                    hx-get="zn_modal_close_btn?idkv={idkv}&dt_close={dt_close}" 
-                                                    hx-target="#modals-here1" 
-                                                    hx-trigger="click"
-                                                    class="btn btn-primary btn-block"
-                                                    _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Сохранить11
-                                                </button>
+                                                
                                             </td>                                            
                                             <td style="text-align: right;"> 
+                                            
+                                                <button type="button" class="btn">Тест</button> 
                                                 <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
-                                            </td>                                            
+                                            </td>
+                                         </form>   
+                                                                                        
                                         </tr>
                                     </table>    
                                 </div>
@@ -282,11 +282,44 @@ def zn_modal_close_btn():
         
     if request.method == 'POST':
         idkv = request.args.get('idkv')
-        dt_close = request.args.get('dt_close')
+        dt_close = request.form.get('dt_close')
+        print(dt_close)
         return redirect(url_for('zakaz_naryad.zn_modal_close_btn', idkv=idkv, dt_close=dt_close))
     else:
         idkv = request.args.get('idkv')
         dt_close = request.args.get('dt_close')
-        response = f"""{idkv} {dt_close} """
-        return response, "12312"
+        # dt_close = request.form.get('dt_close')
+        response = f"""<div id="modal-backdrop1" class="modal-backdrop fade show" style="display:block;"></div>
+                        <div id="modal1" class="modal fade show" tabindex="-1" style="display:block;">
+                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header align-self-center">
+                                    <div class="row">
+                                        <div class="col align-self-center">
+                                            <h4 class="modal-title">{idkv} {dt_close}</h4>
+                                        </div>
+                                    </div>                            
+                                </div>
+                                <div class="modal-body" style="text-align: center;">
+                                
+                                    <form method="POST">
+                                        <input type="date" value="" name="dt_close" id="dt_close" />
+                                    </form>   
+                                     
+                                </div>
+                                <div class="modal-footer">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td style="text-align: left;">
+                                            </td>                                            
+                                            <td style="text-align: right;">
+                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
+                                            </td>                                            
+                                        </tr>
+                                    </table>    
+                                </div>
+                            </div>
+                            </div>
+                        </div>"""
+        return response
     
