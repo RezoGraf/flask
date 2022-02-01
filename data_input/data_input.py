@@ -60,9 +60,27 @@ def wtf_template2():
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
-    result_otd = db.select(sql.sql_randomOtd)
+    if 'arena_user' in session:
+        arena_user = session.get('arena_user')
+    else:
+        arena_user = 0
+    result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
+    result_accessSdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
+    
+    if  result_accessotd != '0':
+        select_otd=f' and otd in({result_accessotd})'
+    else:
+        select_otd = ''
+        
+    if  result_accessSdl != '0':
+        select_sdl=f' and n_doc.sdl in({result_accessSdl})'
+    else:
+        select_sdl = ''    
+    
+    result_otd = db.select(sql.sql_randomOtd.format(select_otd=select_otd))
     otd = request.args.get('otd') or utils.list_to_int(result_otd)  
     result_notd = db.select(sql.sql_currentOtd.format(otd=otd))
+
     notd = result_notd[0]
     
     result_doc = db.select(sql.sql_randomDoc.format(otd=otd))
@@ -72,12 +90,16 @@ def wtf_template3():
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
     visible_ = ''
     if result_rasp == []:
-        result_rasp.append('')
-        result_rasp.append('')
-        result_rasp.append('')
-        result_rasp.append('0')
-        result_rasp.append('0')
-        result_rasp.append('')
+        result_rasp.append('0') #ROOM
+        result_rasp.append('')  #NROOM_KR
+        result_rasp.append('0') #ID_INTERVAL1
+        result_rasp.append('')  #NOEVEN_DAY
+        result_rasp.append('0') #ID_INTERVAL2
+        result_rasp.append('')  #EVEN_DAY
+        result_rasp.append('0') #NTV
+        result_rasp.append('0') #NLIST
+        result_rasp.append('0') #SPZ
+        result_rasp.append('')  #NSPZ
         result_rasp = (result_rasp, )
     else:
         visible_ = 'style=display:none;'
@@ -138,19 +160,25 @@ def wtf_template3():
             room = request.form.get('UpdRoom')
             if room == "":
                 room = 0
+                
             interval1 = request.form.get('UpdNoEvenDay')
             if interval1 == "":
                 interval1 = 0
+              
             interval2 = request.form.get('UpdEvenDay')
             if interval2 == "":
                 interval2 = 0
+            print(interval2) 
+               
             ntv = request.form.get('UpdNtv')
             nlist = request.form.get('UpdNlist')
             visible_ = 'style=display:none;'
             db.write(sql_del_it_rasp.format(doc=doc))
+            
             print(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
+         
             db.write(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
-            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_))
+            return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_ ))
 
         if request.form['btn'] == 'DelRegimeWork':
             visible_ = ''
@@ -166,20 +194,22 @@ def wtf_template3():
 
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
     result_time = db.select(sql.sql_interval_time)
+    result_time2 = db.select(sql.sql_interval_time)
 
-    result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+    result_fio = db.select(sql.sql_allDoc.format(otd=otd, select_sdl=select_sdl))
+    
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
     fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
     fioSotrudnika = utils.list_to_str(fioSotrudnika)
     result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-    result_podr2 = db.select(sql.sql_allOtd)
+    result_podr2 = db.select(sql.sql_allOtd.format(select_otd=select_otd))
 
     form = WtfTemplate3()
     if 'arena_fio' in session:
         arena_fio = session.get('arena_fio')
     else:
         arena_fio = "Не пользователь домена"
-    print(visible_)
+
     return render_template('wtf_template3.html',
                            result_fio=result_fio,
                            result_rsn=result_rsn,
@@ -187,6 +217,7 @@ def wtf_template3():
                            result_rasp=result_rasp,
                            result_duty=result_duty,
                            result_time=result_time,
+                           result_time2=result_time2,
                            result_room=result_room,
                            result_spz=result_spz,
                            fioSotrudnika=fioSotrudnika,
