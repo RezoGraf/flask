@@ -2,9 +2,13 @@ from flask import session
 def generate_menu():
     menu = ''
     if 'auth_group' in session:
-        auth_group = session.get('auth_group')
+      auth_group = session.get('auth_group')
+    else:
+      auth_group = 'web_hs_user'
     if 'arena_fio' in session:
         arena_fio = session.get('arena_fio')
+    else:
+      'Неавторизованный пользователь'
     if auth_group == "web_hs_admin":
         menu = f"""<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Переключатель навигации">
