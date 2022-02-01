@@ -248,28 +248,28 @@ def zn_modal_close():
                                         </div>
                                     </div>                            
                                 </div>
+                                <form hx-post="zn_modal_close_btn?idkv={idkv}" hx-swap="outerHTML">
                                 <div class="modal-body" style="text-align: center;">
                                 
-                                    <form hx-post="zn_modal_close_btn" hx-swap="outerHTML">
+                                    
                                         <input type="date" value="{dt_today}" name="dt_close" id="dt_close" />
-                                        <button class="btn btn-primary btn-block" type="submit">Изменить</button>
+                                        
                                 </div>     
                                 
                                 <div class="modal-footer">
                                     <table class="table table-borderless">
                                         <tr>
                                             <td style="text-align: left;">
-                                                
+                                                <button class="btn btn-primary btn-success" type="submit">Изменить</button>
                                             </td>                                            
-                                            <td style="text-align: right;"> 
-                                            
-                                                <button type="button" class="btn">Тест</button> 
+                                            <td style="text-align: right;">  
                                                 <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
                                             </td>
-                                         </form>   
+                                            
                                                                                         
                                         </tr>
-                                    </table>    
+                                    </table> 
+                                    </form>   
                                 </div>
                             </div>
                             </div>
@@ -283,12 +283,12 @@ def zn_modal_close_btn():
     if request.method == 'POST':
         idkv = request.args.get('idkv')
         dt_close = request.form.get('dt_close')
+        print(idkv)
         print(dt_close)
         return redirect(url_for('zakaz_naryad.zn_modal_close_btn', idkv=idkv, dt_close=dt_close))
     else:
         idkv = request.args.get('idkv')
         dt_close = request.args.get('dt_close')
-        # dt_close = request.form.get('dt_close')
         response = f"""<div id="modal-backdrop1" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal1" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered">
@@ -296,13 +296,15 @@ def zn_modal_close_btn():
                                 <div class="modal-header align-self-center">
                                     <div class="row">
                                         <div class="col align-self-center">
-                                            <h4 class="modal-title">{idkv} {dt_close}</h4>
+                                            <h4 class="modal-title">{idkv} {dt_close}</h4>                                            
                                         </div>
                                     </div>                            
                                 </div>
                                 <div class="modal-body" style="text-align: center;">
                                 
                                     <form method="POST">
+                                        <input type="date" value="" name="dt_close" id="dt_close" />
+                                        <input type="date" value="" name="dt_close" id="dt_close" />
                                         <input type="date" value="" name="dt_close" id="dt_close" />
                                     </form>   
                                      
@@ -313,6 +315,7 @@ def zn_modal_close_btn():
                                             <td style="text-align: left;">
                                             </td>                                            
                                             <td style="text-align: right;">
+                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
                                                 <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
                                             </td>                                            
                                         </tr>
