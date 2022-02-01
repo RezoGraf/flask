@@ -12,6 +12,9 @@ import calendar
 import pandas as pd
 from dateutil import parser
 from datetime import date
+from menu_script import generate_menu
+
+
 
 data_input = Blueprint('data_input', __name__)
 
@@ -180,7 +183,9 @@ def wtf_template3():
     else:
         arena_fio = "Не пользователь домена"
     print(visible_)
+    menu = generate_menu()
     return render_template('wtf_template3.html',
+                           menu = menu,
                            result_fio=result_fio,
                            result_rsn=result_rsn,
                            result_rsp_blc=result_noWork,

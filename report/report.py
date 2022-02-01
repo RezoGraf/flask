@@ -7,7 +7,8 @@ from excel.excel import excel
 from data_input.data_input import data_input
 # from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc, sql_ins_it_rasp_duty 
 from . import report
-
+import menu_script
+from menu_script import generate_menu
 import db
 import sql
 
@@ -65,6 +66,7 @@ def main():
             auth_group = 'none'
         result = db.select(sql.sql_select.format(dtn=dtn,
                                              dtk=dtk))
+        menu = generate_menu()
         return render_template("report.html",
                            my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple,
-                           arena_fio=arena_fio)
+                           arena_fio=arena_fio, menu=menu)

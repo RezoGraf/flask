@@ -11,6 +11,7 @@ from data_input.sql_data_input import sql_ins_rsp_blc, sql_ins_it_rasp_duty
 from . import zakaz_naryad
 import pandas as pd
 from datetime import datetime
+from menu_script import generate_menu
 
 
 zakaz_naryad = Blueprint('zakaz_naryad', __name__)
@@ -64,9 +65,15 @@ def main():
                                 my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
             else:
                 # print('default')
+                menu = generate_menu()
                 result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
                 return render_template("zakaz_naryad.html", 
-                                    my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple, check1='checked', check2='')
+                                    menu = menu,
+                                    my_list=result,
+                                    dtn_get=dtn_simple,
+                                    dtk_get=dtk_simple,
+                                    check1='checked',
+                                    check2='')
 #Наряд-------------------------------------------------------------------------------------------------------------------------                 
 @zakaz_naryad.route('/zn_naryad', methods=['GET', 'POST'])
 def zn_naryad():
@@ -80,8 +87,12 @@ def zn_naryad():
     else:
         idkv = request.args.get('idkv')    
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))        
-        return render_template('zn_naryad.html', result_usl = result_usl, zn_naryad_list=result, idkv=idkv)
+        result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
+        menu = generate_menu()       
+        return render_template('zn_naryad.html', menu=menu,
+                               result_usl = result_usl,
+                               zn_naryad_list=result,
+                               idkv=idkv)
 #Модальное на редактирование наряда-------------------------------------------------------------------------------------------- 
 @zakaz_naryad.route('/zn_modal_edit', methods=['GET', 'POST'])
 def zn_modal_edit():
