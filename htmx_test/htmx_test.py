@@ -8,6 +8,7 @@ from dateutil import parser
 from datetime import date
 import calendar
 import utils
+from menu_script import generate_menu
 
 
 data = ["Один", "Тор"]
@@ -49,7 +50,8 @@ def name_order():
 
 @htmx_test.route("/")
 def index():
-    return render_template("htmx_test.html", items=data)
+  menu = generate_menu()
+  return render_template("htmx_test.html", items=data, menu=menu)
 
 # функция формирования заголовка таблицы
 def create_th(cur_year,cur_month):
@@ -119,6 +121,7 @@ def table_view():
             result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
             print(result_alldoc)
                   
+    menu = generate_menu()
     table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month)) 
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,
@@ -127,7 +130,8 @@ def table_view():
                            year = current_year,
                            month = current_month,
                            NOTD = notd,
-                           result_alldoc=result_alldoc)
+                           menu = menu,
+                           result_alldoc = result_alldoc)
 
 
 @htmx_test.route("/table_view/edit", methods=["GET", "POST"])

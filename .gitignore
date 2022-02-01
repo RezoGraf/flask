@@ -11,3 +11,4 @@ report/__pycache__/
 helios/report/__pycache__/
 excel/otchet_po_otsutstviyu.xlsx
 .DS_Store
+.idea/

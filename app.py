@@ -4,10 +4,12 @@ from data_input.data_input import data_input
 from excel.excel import excel
 from report.report import report
 from zakaz_naryad.zakaz_naryad import zakaz_naryad
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import Flask, render_template, request, url_for, redirect, session, Markup
 from db_test.db_test import db_test
 import datetime
 import auth
+from menu.menu import menu
+from menu_script import generate_menu
 # import sentry_sdk
 # from sentry_sdk.integrations.flask import FlaskIntegration
 
@@ -31,6 +33,7 @@ app.register_blueprint(data_input,
                        template_folder='/templates')
 app.register_blueprint(api, url_prefix='/api')
 app.register_blueprint(excel, url_prefix='/excel')
+app.register_blueprint(menu, url_prefix='/menu')
 app.register_blueprint(report, url_prefix='/report')
 app.register_blueprint(db_test, url_prefix='/db_test')
 
@@ -50,13 +53,13 @@ def login():
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'): 
-            return redirect(url_for('menu'))
+            return redirect(url_for('menu.main_menu'))
         else:
             message = "Неверное имя пользователя или пароль"
     return render_template('login.html', message=message, message_auth=message_auth)
 
 
-@app.route('/menu')
+@app.route('/menu2')
 def menu():
     if 'arena_user' in session:
         arena_user = session.get('arena_user')
@@ -70,14 +73,19 @@ def menu():
         auth_group = session.get('auth_group')
     else:
         auth_group = 'none'
-    if auth_group == 'web_hs_admin':
-        """html"""
-    return render_template('menu.html', arena_fio=arena_fio)
+    # if auth_group == 'web_hs_admin':
+    #     web_hs_admin
+    #     web_hs_user
+    #     web_hs_kadr
+    #     web_hs_epid
+    menu2 = generate_menu
+    menu2 = Markup(menu2)
+    return render_template('menu.html', menu=menu2)
 
 
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run(host='0.0.0.0', port=2000)
+    app.run(host='0.0.0.0', port=4000)
     
 
