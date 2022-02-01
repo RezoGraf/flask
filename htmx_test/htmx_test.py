@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
 import json
 import os.path
@@ -7,12 +8,14 @@ from dateutil import parser
 from datetime import date
 import calendar
 import utils
+from menu_script import generate_menu
+
 
 data = ["Один", "Тор"]
 
 htmx_test = Blueprint('htmx_test', __name__)
 
-
+            
 @htmx_test.route("/name/create", methods=["POST"])
 def name_create():
     name = request.form["create"]
@@ -47,9 +50,8 @@ def name_order():
 
 @htmx_test.route("/")
 def index():
-    return render_template("htmx_test.html", items=data)
-
-
+  menu = generate_menu()
+  return render_template("htmx_test.html", items=data, menu=menu)
 
 # функция формирования заголовка таблицы
 def create_th(cur_year,cur_month):
@@ -76,14 +78,30 @@ def table_view():
     Returns:
         html страницу (htmx_tableview.html) с таблицей, смотреть внимательно
     """
+    if 'arena_user' in session:
+        arena_user = session.get('arena_user')
+    else:
+        arena_user = 0
+    print(arena_user)
+    result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
+    if  result_accessotd != '0':
+        select_otd=f' and otd in({result_accessotd})'
+    else:
+        select_otd = ''   
     current_date = date.today()
     current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
-    otd=12 
-    result_th = {}  
-    result_th = create_th(current_year,current_month).copy()          
-    result_otd = db.select(sql.sql_allOtd) #список отделений
     
+    otd= db.select(sql.sql_randomOtd1.format(select_otd=select_otd))[0][0]
+    notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
+    
+    result_th = {}  
+    result_th = create_th(current_year,current_month).copy()         
+    
+    result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
+    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    result_time = db.select(sql.sql_interval_time) #интервал времени
+    print(result_alldoc)
     if request.method == 'POST':
         if request.form['btn'] == 'selectNew':
             otd=request.form.get('otd')
@@ -91,16 +109,19 @@ def table_view():
             current_year=request.form.get('year')
             current_month=request.form.get('month')
             result_th = {}
-            result_th = create_th(current_year,current_month).copy() 
+            result_th = create_th(current_year,current_month).copy()
+            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей 
             
         if request.form['btn'] == 'sotrudnikNew':
             otd=request.form.get('otd')
             notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
+            print(otd)
             current_year=request.form.get('year')
             current_month=request.form.get('month')
-            result_th = {}
-            result_th = create_th(current_year,current_month).copy()     
+            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+            print(result_alldoc)
                   
+    menu = generate_menu()
     table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month)) 
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,
@@ -108,7 +129,9 @@ def table_view():
                            result_otd=result_otd,
                            year = current_year,
                            month = current_month,
-                           NOTD = notd)
+                           NOTD = notd,
+                           menu = menu,
+                           result_alldoc = result_alldoc)
 
 
 @htmx_test.route("/table_view/edit", methods=["GET", "POST"])
@@ -163,3 +186,88 @@ def table_edit():
                 </div>
             """
         return response
+    
+#Модальное на редактирование наряда-------------------------------------------------------------------------------------------- 
+@htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
+def modal_addWorker():
+        
+    # if request.method == 'POST':
+    #     otd = request.form.get('otd')
+    #     result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    #     result_time = db.select(sql.sql_interval_time) #интервал времени
+  
+    #     return redirect(url_for('htmx_test.modal_addWorker',otd=otd, idkv=idkv, nom_nteh=nom_nteh,
+    #                             nom_nlit=nom_nlit, nom_npolir=nom_npolir, nom_nvarh=nom_nvarh))    
+   
+    # else:
+    otd = request.form.get('otd')
+    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    result_time = db.select(sql.sql_interval_time) #интервал времени
+
+    sel_ = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_alldoc)):
+        sel_vol = f"""<option value="{result_alldoc[i][0]}">{result_alldoc[i][1]}</option>"""
+        sel_.append(sel_vol)
+#    for i in range(1, len(sel_4)):   
+#        if str(nom_nvarh) in sel_4[i]:
+#             sel_4[i] = f"""<option value="{nom_nvarh}" selected>{nvar_db[i][1]}</option>"""
+    sel_1 = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_time)):
+        sel1_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+        sel_1.append(sel1_vol)
+        
+    sel_2 = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_time)):
+        sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+        sel_2.append(sel2_vol)
+            
+    response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
+                    <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title">Сотрудник</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">    
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td style="text-align: center; width:50%;">
+                                                <label class="custom-select-label" for="worker_select">Сотрудники</label> 
+                                                <select class="custom-select" id="worker_select">                                                
+                                                    {sel_}
+                                                </select>
+                                            </td>
+                                            <td style="text-align: center; width:50%;">
+                                                <label class="custom-select-label" for="noeven_day">нечетный день</label>
+                                                <select class="custom-select" id="noeven_day_select">                                                
+                                                    {sel_1}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; width:50%;">
+                                                <label class="custom-select-label" for="even_day">четный день</label>
+                                                <select class="custom-select" id="even_day_select">
+                                                    {sel_2}
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </form>    
+                            </div>
+                            <div class="modal-footer">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td style="text-align: left;">
+                                            <button type="button" class="btn btn-success" onclick="closeModal()">Сохранить</button>
+                                        </td>                                            
+                                        <td style="text-align: right;"> 
+                                            <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
+                                        </td>                                            
+                                    </tr>
+                            </div>
+                        </div>
+                        </div>
+                    </div>"""
+    return response

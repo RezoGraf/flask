@@ -11,15 +11,24 @@ FROM RSP_BLC, N_DOC
 WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
-# Выбор списка отделений
-sql_allOtd = "select otd,notd from np_otd where notd is not null order by ps"
+# Выбор списка доступных отделений
+sql_allOtd = "select otd, notd from np_otd where notd is not null {select_otd} order by ps"
 # Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
+
 # Выборка первого попавшегося отделения
-sql_randomOtd = """select first 1 otd from np_otd where otd>0 order by otd"""
+sql_randomOtd = """select first 1 otd from np_otd where otd>0 {select_otd} order by otd"""
+sql_randomOtd1 = "select otd, notd, lpu from np_otd where otd>0 {select_otd}"
+# Выборка доступных отделений
+sql_accessOtd = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20000 """
+# Выборка доступных должностей
+sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20001 """
 
 # Выборка всех ФИО врачей по коду отделения
-sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.otd='{otd}' order by ndoc """
+sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj 
+                where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.pr_dlj=1 and n_doc.otd={otd}
+                {select_sdl} 
+                order by ndoc """
 # Выборка первого попавшегося врача
 sql_randomDoc = """select first 1 doc from n_doc where pv=1 and otd='{otd}' order by ndoc"""
 # Выборка ФИО по коду
@@ -35,9 +44,17 @@ sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu fr
 sql_allSpz = """select spz, nspz from n_spz where pd=1 order by nspz"""
 
 # Информация о режиме работы сотрудника
-sql_it_rasp = """Select ROOM.NROOM_KR,(select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as NOEVEN_DAY,
-                 (select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as EVEN_DAY,IT_RASP.NTV,IT_RASP.NLIST,N_SPZ.NSPZ 
-                 from IT_RASP,ROOM,N_SPZ 
+sql_it_rasp = """Select IT_RASP.ROOM,
+                        ROOM.NROOM_KR,
+                        IT_RASP.ID_INTERVAL1,
+                        (select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL1) as NOEVEN_DAY,
+                        IT_RASP.ID_INTERVAL2,
+                        (select interval_time from it_rasp_time where it_rasp_time.id=it_rasp.ID_INTERVAL2) as EVEN_DAY,
+                        IT_RASP.NTV,
+                        IT_RASP.NLIST,
+                        IT_RASP.SPZ,
+                        N_SPZ.NSPZ 
+                 from IT_RASP, ROOM, N_SPZ 
                  where (it_rasp.room=room.id) and (it_rasp.spz=n_spz.spz) and doc='{doc}'"""
 
 # Информация об отсутствии на работе

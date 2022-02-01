@@ -5,6 +5,9 @@ import numpy
 from db_test.db_test_sql import sql_visit1, sql_visit2, sql_visit3
 import db
 from . import db_test
+from menu_script import generate_menu
+
+
 db_test = Blueprint('db_test', __name__)
 
 
@@ -61,6 +64,7 @@ def main():
             arena_fio = session.get('arena_fio')
         else:
             arena_fio = "Не пользователь домена"
+        menu = generate_menu()
         return render_template('db_test.html',
                             arena_fio=arena_fio,
                             min_time=min_time,
@@ -69,5 +73,6 @@ def main():
                             select_requests=select_requests,
                             select_counts=select_counts,
                             count_select=count_select,
-                            script_select=script_select
+                            script_select=script_select,
+                            menu = menu
                             )

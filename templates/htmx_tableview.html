@@ -1,8 +1,70 @@
-{% with arena_fio=arena_fio %}
-                {% include "menu.html" %}
-            {% endwith %}
-
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    {{ menu|safe  }}
+  </head>
 {% block content %}
+{#ОКНО ДОБАВЛЕНИЯ НОВОГО СОТРУДНИКА#}
+<form method="post">
+ <div class="modal fade" id="InsGrfModal"  tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" data-backdrop="static" data-keyboard="false">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Сотрудник</h5>
+         <input type="text" name="UpdId" value="{{ ID }}" class="col-form-label" style="display: none;">
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+       <div class="modal-body">
+        <form>
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelectUpdTimeDuty" >Сотрудник:</label>
+            <select class="form-select" id="inputFIOSotrudnika" name="UpdMpp" value={{ ID }} required>
+              {% for doc, ndoc in result_alldoc %}
+                <option value="{{ doc }}"{% if loop.first %} SELECTED{% endif %}>{{ ndoc or ""}} </option>
+              {% endfor %}
+              <option selected>{{ ndoc }}</option>
+            </select>
+          </div>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelectUpdTimeDuty" >нечетный день:</label>
+            <select class="form-select" id="intervalTime" name="UpdMpp" value={{ ID }} required>
+              {% for ID, INTEVAL_TIME in result_time %}
+                <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
+              {% endfor %}
+              <option selected>{{ TIME_DUTY }}</option>
+            </select>
+          </div>
+
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelectUpdTimeDuty" >четный день:</label>
+            <select class="form-select" id="intervalTime" name="UpdMpp" value={{ ID }} required>
+              {% for ID, INTEVAL_TIME in result_time %}
+                <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ INTEVAL_TIME or ""}} </option>
+              {% endfor %}
+              <option selected>{{ TIME_DUTY }}</option>
+            </select>
+          </div>          
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary" name="btn" value="UpdDuty">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
 
 <div class="container">
   <h4 class="text-primary">График учета рабочего времени</h4>
@@ -30,8 +92,13 @@
     </div>
 
     <div class="form-group">
-      <button type="button submit" name="btn" value="sotrudnikNew" class="btn btn-primary">Добавить сотрудника</button>
-    </div>
+      <button 
+      hx-get="grf_addWorker?otd={{ NOTD }}" 
+      hx-target="#modals-here" 
+      hx-trigger="click"
+      class="btn btn-primary btn-block" >
+      Добавить сотрудника</button>
+      </div>
 
    </form>
   </div>
@@ -213,4 +280,22 @@
 
 </table>
 
+<script>
+
+  function closeModal() {
+    var container = document.getElementById("modals-here")
+    var backdrop = document.getElementById("modal-backdrop")
+    var modal = document.getElementById("modal")
+
+    modal.classList.remove("show")
+    backdrop.classList.remove("show")
+
+    setTimeout(function() {
+        container.removeChild(backdrop)
+        container.removeChild(modal)
+    }, 200)
+  }
+</script>
+
 {% endblock %}
+
