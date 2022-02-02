@@ -1,5 +1,5 @@
 import ldap
-from flask import Flask, session
+from flask import session
 import db
 import sql
 
@@ -26,14 +26,7 @@ def check_admins_auth(username, password, user_ad):
         return 'error', 'AD: Неверное имя пользователя или пароль'
     except ldap.SERVER_DOWN:
         return 'error', 'AD: Сервер не доступен'
-    # all is well
-    # get all user groups and store it in session for future use
-    #    cherrypy.session[username] = str(ldap_client.search_s(base_dn,
-    #                    ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
-    # print(str(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf']))
     s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
-    # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1])
-    # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1][''])
     d = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs2)[0][0]) 
     for x in s:
         x = str(x, 'utf-8')
@@ -95,14 +88,7 @@ def check_credentials(username, password):
         return 'error', 'AD: Неверное имя пользователя или пароль'
     except ldap.SERVER_DOWN:
         return 'error', 'AD: Сервер не доступен'
-    # all is well
-    # get all user groups and store it in session for future use
-    #    cherrypy.session[username] = str(ldap_client.search_s(base_dn,
-    #                    ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
-    # print(str(ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf']))
     s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1]['memberOf'])
-    # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1])
-    # s = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs)[0][1][''])
     d = (ldap_client.search_s(base_dn, ldap.SCOPE_SUBTREE, ldap_filter, attrs2)[0][0]) 
     for x in s:
         x = str(x, 'utf-8')
