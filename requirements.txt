@@ -33,3 +33,5 @@ Werkzeug==2.0.2
 WTForms==3.0.1
 zipp==3.7.0
 zope.interface==5.4.0
+firebird-lib==1.2.0
+firebird-driver==1.4.2
