@@ -40,13 +40,16 @@ app.register_blueprint(db_test, url_prefix='/db_test')
 app.register_blueprint(zakaz_naryad, url_prefix='/zakaz_naryad')
 app.register_blueprint(htmx_test, url_prefix='/htmx_test')
 
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     message = ""
     message_auth = ""
+    user_ad_field = ' '
     if request.method == 'POST':
         username = request.form.get('username')  # запрос к данным формы
         password = request.form.get('password')
+        
         auth_result = auth.check_credentials(username, password)
         if auth_result[0] == 'error':
             message_auth = auth_result[1]
@@ -56,32 +59,59 @@ def login():
             return redirect(url_for('menu.main_menu'))
         else:
             message = "Неверное имя пользователя или пароль"
-    return render_template('login.html', message=message, message_auth=message_auth)
+    return render_template('login.html',
+                           user_ad_field=user_ad_field,
+                           message=message,
+                           message_auth=message_auth)
 
 
-@app.route('/menu2')
-def menu():
-    if 'arena_user' in session:
-        arena_user = session.get('arena_user')
-    else:
-        arena_user = 'none'
-    if 'arena_fio' in session:
-        arena_fio = session.get('arena_fio')
-    else:
-        arena_fio = "Не пользователь домена"
-    if 'auth_group' in session:
-        auth_group = session.get('auth_group')
-    else:
-        auth_group = 'none'
-    # if auth_group == 'web_hs_admin':
-    #     web_hs_admin
-    #     web_hs_user
-    #     web_hs_kadr
-    #     web_hs_epid
-    menu2 = generate_menu
-    menu2 = Markup(menu2)
-    return render_template('menu.html', menu=menu2)
+@app.route('/aalksdhl28kdhalu8', methods=['GET', 'POST'])
+def login_for_test():
+    message = ""
+    message_auth = ""
+    user_ad_field = """<input type="text" id="userAD" name="user_ad" placeholder="Пользователь" />
+        <i class="fa fa-user "></i>"""
+    if request.method == 'POST':
+        username = request.form.get('username')  # запрос к данным формы
+        password = request.form.get('password')
+        user_ad = request.form.get('user_ad')
+        auth_result = auth.check_admins_auth(username, password, user_ad)
+        if auth_result[0] == 'error':
+            message_auth = auth_result[1]
+        if auth_result[0] == 'ok':
+            message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
+        if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'): 
+            return redirect(url_for('menu.main_menu'))
+        else:
+            message = "Неверное имя пользователя или пароль"
+    return render_template('login.html',
+                           user_ad_field=user_ad_field,
+                           message=message,
+                           message_auth=message_auth)
 
+
+# @app.route('/menu2')
+# def menu():
+#     if 'arena_user' in session:
+#         arena_user = session.get('arena_user')
+#     else:
+#         arena_user = 'none'
+#     if 'arena_fio' in session:
+#         arena_fio = session.get('arena_fio')
+#     else:
+#         arena_fio = "Не пользователь домена"
+#     if 'auth_group' in session:
+#         auth_group = session.get('auth_group')
+#     else:
+#         auth_group = 'none'
+#     # if auth_group == 'web_hs_admin':
+#     #     web_hs_admin
+#     #     web_hs_user
+#     #     web_hs_kadr
+#     #     web_hs_epid
+#     menu2 = generate_menu
+#     menu2 = Markup(menu2)
+#     return render_template('menu.html', menu=menu2)
 
 
 if __name__ == "__main__":

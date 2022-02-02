@@ -2,9 +2,13 @@ from flask import session
 def generate_menu():
     menu = ''
     if 'auth_group' in session:
-        auth_group = session.get('auth_group')
+      auth_group = session.get('auth_group')
+    else:
+      auth_group = 'web_hs_user'
     if 'arena_fio' in session:
         arena_fio = session.get('arena_fio')
+    else:
+      'Неавторизованный пользователь'
     if auth_group == "web_hs_admin":
         menu = f"""<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Переключатель навигации">
@@ -19,7 +23,7 @@ def generate_menu():
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" >Сотрудники</a>
         <div class="dropdown-menu">
           <a class="dropdown-item text-primary" href="/data_input/wtf_template3">График работы</a>
-          <a class="dropdown-item text-primary" href="/data_input/wtf_template4">Табель учета рабочего времени</a>  
+          <a class="dropdown-item text-primary" href="/htmx_test/table_view">Табель учета рабочего времени</a>  
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -38,6 +42,8 @@ def generate_menu():
           <a class="dropdown-item text-primary" href="/db_test">Тестирование БД Firebird</a>
           <a class="dropdown-item text-primary" href="/htmx_test">Тест HTMX</a>
           <a class="dropdown-item text-primary" href="/htmx_test/table_view">Таблица HTMX</a>
+          <a class="dropdown-item text-primary" href="/aalksdhl28kdhalu8">Авторизация от лица пользователя</a>
+          
         </div>
       </li>
     </ul>
