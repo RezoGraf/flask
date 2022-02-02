@@ -195,6 +195,7 @@ def table_edit():
             """
         return response
     
+    
 #Модальное на редактирование наряда-------------------------------------------------------------------------------------------- 
 @htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
 def modal_addWorker():
