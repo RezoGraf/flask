@@ -40,6 +40,7 @@ app.register_blueprint(db_test, url_prefix='/db_test')
 app.register_blueprint(zakaz_naryad, url_prefix='/zakaz_naryad')
 app.register_blueprint(htmx_test, url_prefix='/htmx_test')
 
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     message = ""
@@ -111,7 +112,6 @@ def login_for_test():
 #     menu2 = generate_menu
 #     menu2 = Markup(menu2)
 #     return render_template('menu.html', menu=menu2)
-
 
 
 if __name__ == "__main__":

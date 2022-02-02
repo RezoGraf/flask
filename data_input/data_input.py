@@ -192,30 +192,23 @@ def wtf_template3():
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_))
 
         result_rsn = db.select(sql.sql_rsp_rsn)
-        
         result_noWork = db.select(sql.sql_noWork.format(doc=doc))
-        
         result_room = db.select(sql.sql_room.format(doc=doc))
         result_spz = db.select(sql.sql_allSpz)
-
         result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
         result_time = db.select(sql.sql_interval_time)
         result_time2 = db.select(sql.sql_interval_time)
-
         result_fio = db.select(sql.sql_allDoc.format(otd=otd, select_sdl=select_sdl))
-        
         result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
         fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
         fioSotrudnika = utils.list_to_str(fioSotrudnika)
         result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
         result_podr2 = db.select(sql.sql_allOtd.format(select_otd=select_otd))
-
         form = WtfTemplate3()
         if 'arena_fio' in session:
             arena_fio = session.get('arena_fio')
         else:
             arena_fio = "Не пользователь домена"
-
         print(visible_)
         menu = generate_menu()
         return render_template('wtf_template3.html',
@@ -238,7 +231,7 @@ def wtf_template3():
                             result_podr=result_podr,
                             result_podr2=result_podr2,
                             arena_fio=arena_fio)
-    else :
+    else:
         return redirect(url_for("app.login"))
     
 

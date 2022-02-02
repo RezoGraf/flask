@@ -23,7 +23,7 @@ def generate_menu():
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" >Сотрудники</a>
         <div class="dropdown-menu">
           <a class="dropdown-item text-primary" href="/data_input/wtf_template3">График работы</a>
-          <a class="dropdown-item text-primary" href="/data_input/wtf_template4">Табель учета рабочего времени</a>  
+          <a class="dropdown-item text-primary" href="/htmx_test/table_view">Табель учета рабочего времени</a>  
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -42,6 +42,8 @@ def generate_menu():
           <a class="dropdown-item text-primary" href="/db_test">Тестирование БД Firebird</a>
           <a class="dropdown-item text-primary" href="/htmx_test">Тест HTMX</a>
           <a class="dropdown-item text-primary" href="/htmx_test/table_view">Таблица HTMX</a>
+          <a class="dropdown-item text-primary" href="/aalksdhl28kdhalu8">Авторизация от лица пользователя</a>
+          
         </div>
       </li>
     </ul>
