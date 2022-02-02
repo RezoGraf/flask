@@ -44,22 +44,23 @@ def wtf_template():
                            title="Выбор подразделения")
 
 
-@data_input.route('/wtf_template2', methods=('GET', 'POST'))
-def wtf_template2():
-    otd = request.args.get('otd')
-    if request.method == 'POST':
-        doc = request.form.get('doc')
-        return redirect(url_for('data_input.wtf_template3',
-                                otd=otd,
-                                doc=doc))
-    result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-    result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-    form = WtfTemplate2()
-    #Если метод запроса - POST и если поля формы валидны
-    return render_template('wtf_template2.html',
-                           result_fio=result_fio,
-                           result_podr=result_podr,
-                           form=form)
+# @data_input.route('/wtf_template2', methods=('GET', 'POST'))
+# def wtf_template2():
+#     otd = request.args.get('otd')
+#     if request.method == 'POST':
+#         doc = request.form.get('doc')
+#         return redirect(url_for('data_input.wtf_template3',
+#                                 otd=otd,
+#                                 doc=doc))
+#     result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
+    
+#     result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+#     form = WtfTemplate2()
+#     #Если метод запроса - POST и если поля формы валидны
+#     return render_template('wtf_template2.html',
+#                            result_fio=result_fio,
+#                            result_podr=result_podr,
+#                            form=form)
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
@@ -67,27 +68,29 @@ def wtf_template3():
         arena_user = session.get('arena_user')
     else:
         arena_user = 0
-    result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
-    result_accessSdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
+        
+    result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0] #доступные отделения USERS_SET_APP
+    result_accessSdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0] #доступные должности
     
     if  result_accessotd != '0':
         select_otd=f' and otd in({result_accessotd})'
+        random_otd = db.select(sql.sql_randomOtd.format(select_otd=select_otd)) #первое попавшееся отделение    
     else:
         select_otd = ''
+        random_otd = '0'
         
     if  result_accessSdl != '0':
         select_sdl=f' and n_doc.sdl in({result_accessSdl})'
     else:
-        select_sdl = ''    
-    
-    result_otd = db.select(sql.sql_randomOtd.format(select_otd=select_otd))
-    otd = request.args.get('otd') or utils.list_to_int(result_otd)  
-    result_notd = db.select(sql.sql_currentOtd.format(otd=otd))
+        select_sdl = ''
+         
+    otd = request.args.get('otd') or utils.list_to_int(random_otd)  #код выбранного отделения
+    result_notd = db.select(sql.sql_currentOtd.format(otd=otd))     #наименование,код,код подразделения выбранного отделения
 
     notd = result_notd[0]
-    
-    result_doc = db.select(sql.sql_randomDoc.format(otd=otd))
-    doc = request.args.get('doc') or utils.list_to_int(result_doc)
+
+    random_doc = db.select(sql.sql_randomDoc.format(select_otd=select_otd)) #первый попавшийся врач в доступных отделениях
+    doc = request.args.get('doc') or utils.list_to_int(random_doc)
 
     lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
     result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
@@ -198,8 +201,13 @@ def wtf_template3():
     result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
     result_time = db.select(sql.sql_interval_time)
     result_time2 = db.select(sql.sql_interval_time)
+    print(otd)
+    if int(otd) == 0:
+        current_otd = ''
+    else:
+        current_otd = f' and otd={otd}'
 
-    result_fio = db.select(sql.sql_allDoc.format(otd=otd, select_sdl=select_sdl))
+    result_fio = db.select(sql.sql_allDoc.format(current_otd = current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
     
     result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
     fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
@@ -237,84 +245,84 @@ def wtf_template3():
                            arena_fio=arena_fio)
     
 
-@data_input.route('/wtf_template4/', methods=['GET', 'POST'])
-def WtfTemplate4():
-    # otd = request.args.get('otd')
-    # if otd is None : otd=12
-    # # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-    # result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-    otd=12  
+# @data_input.route('/wtf_template4/', methods=['GET', 'POST'])
+# def WtfTemplate4():
+#     # otd = request.args.get('otd')
+#     # if otd is None : otd=12
+#     # # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
+#     # result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+#     otd=12  
   
-    current_date = date.today()
-    # current_date_string = current_date.strftime('%m/%d/%y')   
-    current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
-    current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
-    all_day = calendar.monthrange(int(current_year), int(current_month))[1]
-    result_otd = db.select(sql.sql_allOtd) 
-    russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
+#     current_date = date.today()
+#     # current_date_string = current_date.strftime('%m/%d/%y')   
+#     current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
+#     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
+#     all_day = calendar.monthrange(int(current_year), int(current_month))[1]
+#     result_otd = db.select(sql.sql_allOtd) 
+#     russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
     
-    result_th = {}
-    for i in range(all_day):
-            i+=1
-            dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
-            ans = parser.parse(dt).strftime("%a")
-            pa = russianDayWeek[ans]
-            if i<10 :
-                p=f'0{i}'
-            else:
-                p=str(i)  
-            value_ = f'{p} <br> {pa}' 
-            key_ = f'day{str(i)}'
-            result_th[key_] = value_        
+#     result_th = {}
+#     for i in range(all_day):
+#             i+=1
+#             dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
+#             ans = parser.parse(dt).strftime("%a")
+#             pa = russianDayWeek[ans]
+#             if i<10 :
+#                 p=f'0{i}'
+#             else:
+#                 p=str(i)  
+#             value_ = f'{p} <br> {pa}' 
+#             key_ = f'day{str(i)}'
+#             result_th[key_] = value_        
         
-    print(result_th)
-    if request.method == 'POST':
-        result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-        result_otd = db.select(sql.sql_allOtd)
-        otd=request.form.get('OTD')
-        otd=12
-        current_year=request.form.get('year')
-        current_month=request.form.get('month')
-        all_day = calendar.monthrange(int(current_year), int(current_month))[1]
-        result_th = {}
-        for i in range(all_day):
-            i+=1
-            dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
-            ans = parser.parse(dt).strftime("%a")
-            pa = russianDayWeek[ans]
-            if i<10 :
-                p=f'0{i}'
-            else:
-                p=str(i)  
-            value_ = f'{p} <br> {pa}' 
-            key_ = f'day{str(i)}'
-            result_th[key_] = value_ 
+#     print(result_th)
+#     if request.method == 'POST':
+#         result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+#         result_otd = db.select(sql.sql_allOtd)
+#         otd=request.form.get('OTD')
+#         otd=12
+#         current_year=request.form.get('year')
+#         current_month=request.form.get('month')
+#         all_day = calendar.monthrange(int(current_year), int(current_month))[1]
+#         result_th = {}
+#         for i in range(all_day):
+#             i+=1
+#             dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
+#             ans = parser.parse(dt).strftime("%a")
+#             pa = russianDayWeek[ans]
+#             if i<10 :
+#                 p=f'0{i}'
+#             else:
+#                 p=str(i)  
+#             value_ = f'{p} <br> {pa}' 
+#             key_ = f'day{str(i)}'
+#             result_th[key_] = value_ 
             
-        result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
-        return render_template('wtf_template4.html',
-                               result_otd=result_otd,
-                               result_th = result_th,
-                               result_TabelWorkTime=result_TabelWorkTime)
+#         result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
+#         return render_template('wtf_template4.html',
+#                                result_otd=result_otd,
+#                                result_th = result_th,
+#                                result_TabelWorkTime=result_TabelWorkTime)
         
-    result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))         
-    return render_template('wtf_template4.html',
-                           result_otd = result_otd,
-                           result_th = result_th,
-                           result_TabelWorkTime = result_TabelWorkTime)
-                        #    result_podr=result_podr,
-                        #    result_podr2=result_podr2,
+#     result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))         
+#     return render_template('wtf_template4.html',
+#                            result_otd = result_otd,
+#                            result_th = result_th,
+#                            result_TabelWorkTime = result_TabelWorkTime)
+#                         #    result_podr=result_podr,
+#                         #    result_podr2=result_podr2,
                         
     
     
-@data_input.route('/di_frame_fio', methods=['GET', 'POST'])
-def di_frame_fio():
-    otd = request.args.get('otd')
-    result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-    result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-    result_podr2 = db.select(sql.sql_allOtd)
-    print(result_podr)
-    return render_template('wtf_iframe_left.html',
-                           result_podr=result_podr,
-                           result_podr2=result_podr2,
-                           result_fio=result_fio)
+# @data_input.route('/di_frame_fio', methods=['GET', 'POST'])
+# def di_frame_fio():
+#     otd = request.args.get('otd')
+#     result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
+#     result_fio = db.select(sql.sql_allDoc.format(otd=otd))
+#     result_podr2 = db.select(sql.sql_allOtd)
+#     print(result_podr)
+#     return render_template('wtf_iframe_left.html',
+#                            result_podr=result_podr,
+#                            result_podr2=result_podr2,
+#                            result_fio=result_fio)
     

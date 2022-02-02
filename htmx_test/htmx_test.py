@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
 import json
 import os.path
@@ -82,12 +81,20 @@ def table_view():
         arena_user = session.get('arena_user')
     else:
         arena_user = 0
-    print(arena_user)
+
     result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
+    result_accessSdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
+    
     if  result_accessotd != '0':
         select_otd=f' and otd in({result_accessotd})'
     else:
-        select_otd = ''   
+        select_otd = ''  
+        
+    if  result_accessSdl != '0':
+        select_sdl=f' and n_doc.sdl in({result_accessSdl})'
+    else:
+        select_sdl = '' 
+         
     current_date = date.today()
     current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
@@ -99,29 +106,30 @@ def table_view():
     result_th = create_th(current_year,current_month).copy()         
     
     result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
-    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей
     result_time = db.select(sql.sql_interval_time) #интервал времени
+    
     print(result_alldoc)
     if request.method == 'POST':
         if request.form['btn'] == 'selectNew':
             otd=request.form.get('otd')
+            print(otd)
             notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
             current_year=request.form.get('year')
             current_month=request.form.get('month')
             result_th = {}
             result_th = create_th(current_year,current_month).copy()
-            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей 
+            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей 
             
         if request.form['btn'] == 'sotrudnikNew':
             otd=request.form.get('otd')
             notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
-            print(otd)
             current_year=request.form.get('year')
             current_month=request.form.get('month')
-            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
-            print(result_alldoc)
+            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей
                   
     menu = generate_menu()
+    print(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
     table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month)) 
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,

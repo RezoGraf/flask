@@ -12,7 +12,7 @@ WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
 # Выбор списка доступных отделений
-sql_allOtd = "select otd, notd from np_otd where notd is not null {select_otd} order by ps"
+sql_allOtd = "select otd, notd from np_otd where otd>=0 {select_otd} order by ps"
 # Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
 
@@ -26,11 +26,11 @@ sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' a
 
 # Выборка всех ФИО врачей по коду отделения
 sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj 
-                where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.pr_dlj=1 and n_doc.otd={otd}
+                where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.pr_dlj=1 {current_otd}
                 {select_sdl} 
                 order by ndoc """
 # Выборка первого попавшегося врача
-sql_randomDoc = """select first 1 doc from n_doc where pv=1 and otd='{otd}' order by ndoc"""
+sql_randomDoc = """select first 1 doc from n_doc where pv=1 and doc>0 {select_otd} order by ndoc"""
 # Выборка ФИО по коду
 sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_doc.mpp=n_mpp.mpp) and n_doc.doc={doc} """
 

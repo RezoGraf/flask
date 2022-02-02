@@ -450,42 +450,40 @@
 <!--<div class="col col-lg-2">-->
   <div class="col">
     <div class="w-100">   <!--<div class="col-md-auto">-->
-  <div class="table-wrapper-scroll-y my-custom-scrollbar table-hover">
-  <h5 class="text-primary">
-    <form method="get" action="" id="MyForm">
-      {% for OTD, NOTD, LPU in result_podr %}
-      <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example" onchange="document.getElementById('MyForm').submit()">
-          <option value="{{ OTD }}" selected="selected">{{ NOTD }}</option>
-
-    {% for otd, notd in result_podr2 %}
-      <option value="{{ otd }}"{% if loop.first %} {% endif %}>{{ notd }}</option>
-    {% endfor %}
-    </select>
-    {% endfor %}
-  </form>
-  </h5>
-    <table id="myTable" class="table table-borderless" >
-        <thead>
-        <th>
-            <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
-        </th>
-    </thead>
-    <tbody>
-        {% for DOC, NDOC in result_fio %}
-        {% for OTD, NOTD, LPU in result_podr %}
-        <tr onclick="window.location.href='?otd={{ OTD }}&doc={{ DOC }}'; return false">
-        <td style="padding:2px">{{ NDOC }}</td>
-    </tr>
-    {% endfor %}
-    {% endfor %}
-    </tbody>
-    </table>
+      <div class="table-wrapper-scroll-y my-custom-scrollbar table-hover">
+        <h5 class="text-primary">
+        <form method="get" action="" id="MyForm">
+          {% for OTD, NOTD, LPU in result_podr %}
+            <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example" onchange="document.getElementById('MyForm').submit()">
+              <option value={{ OTD }} selected> {{ NOTD or ''}} </option>
+              {% for otd, notd in result_podr2 %}
+              <option value="{{ otd }}"{% if loop.first %} {% endif %}>{{ notd }}</option>
+              {% endfor %}
+            </select>
+          {% endfor %}
+        </form>
+        </h5>
+        <table id="myTable" class="table table-borderless" >
+          <thead>
+            <th>
+              <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
+            </th>
+          </thead>
+          <tbody>
+          {% for DOC, NDOC in result_fio %}
+            {% for OTD, NOTD, LPU in result_podr %}
+              <tr onclick="window.location.href='?otd={{ OTD }}&doc={{ DOC }}'; return false">
+                <td style="padding:2px">{{ NDOC }}</td>
+              </tr>
+            {% endfor %}
+          {% endfor %}
+          </tbody>
+        </table>
   </div>
 </div>
  
 </div>
 </div>
-
 <script>
 
   function filterTable(event) {
