@@ -51,18 +51,18 @@ def check_admins_auth(username, password, user_ad):
     print(f'ФИО: {arena_fio}')
     arena_mpp = 000
     try:
-        f = db.select(sql.sql_ad_arena_username.format(username))
+        f = db.select(sql.sql_ad_arena_username.format(user_ad))
         arena_username = f[0][0]
         if arena_username != None:
             session['arena_user'] = arena_username
     except BaseException:
         print(BaseException)
     try:
-        arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
+        arena_mpp = db.select(sql.sql_ad_arena_mpp.format(user_ad))
         session['arena_mpp'] = arena_mpp[0][0]
     except BaseException:
         print(BaseException)
-    arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
+    arena_mpp = db.select(sql.sql_ad_arena_mpp.format(user_ad))
     session['arena_fio'] = arena_fio
     session['arena_mpp'] = arena_mpp
     ldap_client.unbind()
