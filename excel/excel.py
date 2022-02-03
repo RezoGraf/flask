@@ -1,6 +1,6 @@
-import datetime
+# import datetime
 import os
-from datetime import date
+# from datetime import date
 from flask import Blueprint, send_file, request
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
@@ -12,7 +12,7 @@ excel = Blueprint('excel', __name__)
 
 def book_create(date_start, date_finish):
     data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
-    print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+    # print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     book = Workbook()
     sheet = book.active
     sheet.title = "Период отсутствия персонала"

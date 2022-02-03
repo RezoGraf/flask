@@ -1,4 +1,3 @@
-from tkinter import X
 from flask import Blueprint, render_template, abort, redirect, url_for, request, session
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
@@ -9,10 +8,10 @@ from . import data_input
 import db
 import sql
 import utils
-import calendar
+# import calendar
 import pandas as pd
-from dateutil import parser
-from datetime import date
+# from dateutil import parser
+# from datetime import date
 from menu_script import generate_menu
 
 
@@ -169,15 +168,12 @@ def wtf_template3():
                 interval2 = request.form.get('UpdEvenDay')
                 if interval2 == "":
                     interval2 = 0
-                print(interval2) 
                 
                 ntv = request.form.get('UpdNtv')
                 nlist = request.form.get('UpdNlist')
                 visible_ = 'style=display:none;'
                 db.write(sql_del_it_rasp.format(doc=doc))
-                
-                print(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
-            
+                         
                 db.write(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_ ))
 
