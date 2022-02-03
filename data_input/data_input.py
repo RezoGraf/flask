@@ -1,3 +1,4 @@
+from tkinter import X
 from flask import Blueprint, render_template, abort, redirect, url_for, request, session
 # регистрируем схему `Blueprint`
 from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
@@ -68,30 +69,7 @@ def wtf_template3():
             select_sdl = ''
             
         otd = request.args.get('otd') or utils.list_to_int(random_otd)  #код выбранного отделения
-        result_notd = db.select(sql.sql_currentOtd.format(otd=otd))     #наименование,код,код подразделения выбранного отделения
-
-        notd = result_notd[0]
-
-        random_doc = db.select(sql.sql_randomDoc.format(select_otd=select_otd)) #первый попавшийся врач в доступных отделениях
-        doc = request.args.get('doc') or utils.list_to_int(random_doc)
-
         lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
-        result_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
-        visible_ = ''
-        if result_rasp == []:
-            result_rasp.append('0') #ROOM
-            result_rasp.append('')  #NROOM_KR
-            result_rasp.append('0') #ID_INTERVAL1
-            result_rasp.append('')  #NOEVEN_DAY
-            result_rasp.append('0') #ID_INTERVAL2
-            result_rasp.append('')  #EVEN_DAY
-            result_rasp.append('0') #NTV
-            result_rasp.append('0') #NLIST
-            result_rasp.append('0') #SPZ
-            result_rasp.append('')  #NSPZ
-            result_rasp = (result_rasp, )
-        else:
-            visible_ = 'style=display:none;'
 
         if request.method == 'POST':
             if request.form['btn'] == 'DelRspBlc':
@@ -173,30 +151,51 @@ def wtf_template3():
                 visible_ = ''
                 db.write(sql_del_it_rasp.format(doc=doc))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_))
-
-        result_rsn = db.select(sql.sql_rsp_rsn)
-        
-        result_noWork = db.select(sql.sql_noWork.format(doc=doc))
-        
-        result_room = db.select(sql.sql_room.format(doc=doc))
-        result_spz = db.select(sql.sql_allSpz)
-
-        result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc))
-        result_time = db.select(sql.sql_interval_time)
-        result_time2 = db.select(sql.sql_interval_time)
-        print(otd)
+                   
         if int(otd) == 0:
             current_otd = ''
         else:
             current_otd = f' and otd={otd}'
 
         result_fio = db.select(sql.sql_allDoc.format(current_otd = current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
+        doc = request.args.get('doc') or result_fio[0][0]      #код выбранного сотрудника со wtf_template3 или первый из запроса       
+        fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))[0][0]
         
-        result_doc = db.select(sql.sql_doctod.format(otd=otd, doc=doc))
-        fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))
-        fioSotrudnika = utils.list_to_str(fioSotrudnika)
-        result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-        result_podr2 = db.select(sql.sql_allOtd.format(select_otd=select_otd))
+        result_rasp = db.select(sql.sql_it_rasp.format(doc=doc)) #режим работы сотрудника
+        visible_ = ''
+        if result_rasp == []:
+            result_rasp.append('0') #ROOM
+            result_rasp.append('')  #NROOM_KR
+            result_rasp.append('0') #ID_INTERVAL1
+            result_rasp.append('')  #NOEVEN_DAY
+            result_rasp.append('0') #ID_INTERVAL2
+            result_rasp.append('')  #EVEN_DAY
+            result_rasp.append('0') #NTV
+            result_rasp.append('0') #NLIST
+            result_rasp.append('0') #SPZ
+            result_rasp.append('')  #NSPZ
+            result_rasp = (result_rasp, )
+        else:
+            visible_ = 'style=display:none;'
+            
+        result_noWork = db.select(sql.sql_noWork.format(doc=doc)) #отсутствие на рабочем месте
+        result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc)) #работа в выходные дни
+        result_room = db.select(sql.sql_room.format(doc=doc)) #номера кабинетов
+        result_spz = db.select(sql.sql_allSpz) #список специальностей
+        result_rsn = db.select(sql.sql_rsp_rsn) #список причин отсутствия
+        result_time = db.select(sql.sql_interval_time) #интервал времени
+        result_time2 = db.select(sql.sql_interval_time)   
+        result_podr = db.select(sql.sql_currentOtd.format(otd=otd)) #список отделений
+        result_podr2 = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
+        
+        idx = 0     
+        for x in result_podr2 :            
+            if x[0] == int(otd) :
+              break
+            idx +=1  
+        else: pass             
+
+        notd = result_podr2.pop(idx)
 
         form = WtfTemplate3()
         if 'arena_fio' in session:
@@ -204,7 +203,6 @@ def wtf_template3():
         else:
             arena_fio = "Не пользователь домена"
 
-        print(visible_)
         menu = generate_menu()
         return render_template('wtf_template3.html',
                             menu = menu,
@@ -220,6 +218,7 @@ def wtf_template3():
                             fioSotrudnika=fioSotrudnika,
                             doc=doc,
                             otd=otd,
+                            notd=notd[1],
                             lpu=lpu,
                             form=form,
                             visible_=visible_,
@@ -229,85 +228,4 @@ def wtf_template3():
     else:
         return redirect(url_for("app.login"))
     
-
-# @data_input.route('/wtf_template4/', methods=['GET', 'POST'])
-# def WtfTemplate4():
-#     # otd = request.args.get('otd')
-#     # if otd is None : otd=12
-#     # # result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-#     # result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-#     otd=12  
-  
-#     current_date = date.today()
-#     # current_date_string = current_date.strftime('%m/%d/%y')   
-#     current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
-#     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
-#     all_day = calendar.monthrange(int(current_year), int(current_month))[1]
-#     result_otd = db.select(sql.sql_allOtd) 
-#     russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
-    
-#     result_th = {}
-#     for i in range(all_day):
-#             i+=1
-#             dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
-#             ans = parser.parse(dt).strftime("%a")
-#             pa = russianDayWeek[ans]
-#             if i<10 :
-#                 p=f'0{i}'
-#             else:
-#                 p=str(i)  
-#             value_ = f'{p} <br> {pa}' 
-#             key_ = f'day{str(i)}'
-#             result_th[key_] = value_        
-        
-#     print(result_th)
-#     if request.method == 'POST':
-#         result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-#         result_otd = db.select(sql.sql_allOtd)
-#         otd=request.form.get('OTD')
-#         otd=12
-#         current_year=request.form.get('year')
-#         current_month=request.form.get('month')
-#         all_day = calendar.monthrange(int(current_year), int(current_month))[1]
-#         result_th = {}
-#         for i in range(all_day):
-#             i+=1
-#             dt = f'{str(current_month)}.{str(i)}.{str(current_year)}'
-#             ans = parser.parse(dt).strftime("%a")
-#             pa = russianDayWeek[ans]
-#             if i<10 :
-#                 p=f'0{i}'
-#             else:
-#                 p=str(i)  
-#             value_ = f'{p} <br> {pa}' 
-#             key_ = f'day{str(i)}'
-#             result_th[key_] = value_ 
-            
-#         result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
-#         return render_template('wtf_template4.html',
-#                                result_otd=result_otd,
-#                                result_th = result_th,
-#                                result_TabelWorkTime=result_TabelWorkTime)
-        
-#     result_TabelWorkTime = db.select(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))         
-#     return render_template('wtf_template4.html',
-#                            result_otd = result_otd,
-#                            result_th = result_th,
-#                            result_TabelWorkTime = result_TabelWorkTime)
-#                         #    result_podr=result_podr,
-#                         #    result_podr2=result_podr2,
-                        
-    
-    
-# @data_input.route('/di_frame_fio', methods=['GET', 'POST'])
-# def di_frame_fio():
-#     otd = request.args.get('otd')
-#     result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-#     result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-#     result_podr2 = db.select(sql.sql_allOtd)
-#     print(result_podr)
-#     return render_template('wtf_iframe_left.html',
-#                            result_podr=result_podr,
-#                            result_podr2=result_podr2,
-#                            result_fio=result_fio)
     
