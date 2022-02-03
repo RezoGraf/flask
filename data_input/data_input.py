@@ -44,24 +44,6 @@ def wtf_template():
                            title="Выбор подразделения")
 
 
-# @data_input.route('/wtf_template2', methods=('GET', 'POST'))
-# def wtf_template2():
-#     otd = request.args.get('otd')
-#     if request.method == 'POST':
-#         doc = request.form.get('doc')
-#         return redirect(url_for('data_input.wtf_template3',
-#                                 otd=otd,
-#                                 doc=doc))
-#     result_podr = db.select(sql.sql_currentOtd.format(otd=otd))
-    
-#     result_fio = db.select(sql.sql_allDoc.format(otd=otd))
-#     form = WtfTemplate2()
-#     #Если метод запроса - POST и если поля формы валидны
-#     return render_template('wtf_template2.html',
-#                            result_fio=result_fio,
-#                            result_podr=result_podr,
-#                            form=form)
-
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
     if 'arena_mpp' in session:

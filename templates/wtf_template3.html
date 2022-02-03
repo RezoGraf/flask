@@ -159,14 +159,14 @@
 </div>
 </form>
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
-{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+{% for iblc, DTN, DTK, rsn, NRSN_ in result_rsp_blc %}
 <form method="post"> 
  <div class="modal fade" id="RspBlcModal{{ iblc }}" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-keyboard="false">
     <div class="modal-content">      
       <div class="modal-header">
         <h5 class="modal-title">Сведения об отсутствии сотрудника</h5>
-        <input type="text" name="UpdIblc" value={{ iblc }} class="col-form-label">
+        <input type="text" name="UpdIblc" value={{ iblc }} class="col-form-label" style="display: none;">
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">  
@@ -184,7 +184,7 @@
               {% for RSN, NRSN in result_rsn %}
                 <option value="{{ RSN }}" {% if loop.first %} SELECTED{% endif %}>{{ NRSN or ""}} </option>
               {% endfor %}
-              <option selected>{{ NRSN_ }} </option>
+              <option value = {{rsn}} selected>{{ NRSN_ }} </option>
             </select>
           </div>
       </div>
@@ -198,7 +198,7 @@
 </form>
 {% endfor %}
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
-{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+{% for iblc, DTN, DTK, rsn, NRSN_ in result_rsp_blc %}
 <form method="post">
 <div class="modal fade" id="DelRspBlcModal{{ iblc }}" tabindex="0">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-backdrop="static" data-keyboard="false">
@@ -420,7 +420,7 @@
          </th> 
          </thead>
          <tr>
-         {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+         {% for iblc, DTN, DTK, rsn, NRSN_ in result_rsp_blc %}
             <tr>
                 <td>{% if DTN != None %} {{ DTN.strftime('%d.%m.%Y') }} {% else %} {{ DTN or "" }} {%endif %} </td>
                 <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %} </td>

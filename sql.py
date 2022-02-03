@@ -26,7 +26,7 @@ sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' a
 
 # Выборка всех ФИО врачей по коду отделения
 sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj 
-                where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.pr_dlj=1 {current_otd}
+                where (n_doc.dolj=n_dlj.dlj) and (n_doc.pv=1) and (n_doc.pr_dlj=1) and (mol=1) {current_otd}
                 {select_sdl} 
                 order by ndoc """
 # Выборка первого попавшегося врача
@@ -58,7 +58,7 @@ sql_it_rasp = """Select IT_RASP.ROOM,
                  where (it_rasp.room=room.id) and (it_rasp.spz=n_spz.spz) and doc='{doc}'"""
 
 # Информация об отсутствии на работе
-sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ 
+sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), rsn, (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ 
                 from rsp_blc where doc='{doc}' order by dtn desc"""
 
 # Информация о дежурстве
