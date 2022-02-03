@@ -7,7 +7,6 @@ from excel.excel import excel
 from data_input.data_input import data_input
 # from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc, sql_ins_it_rasp_duty 
 from . import report
-import menu_script
 from menu_script import generate_menu
 import db
 import sql
