@@ -30,7 +30,7 @@ sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from
                 {select_sdl} 
                 order by ndoc """
 # Выборка первого попавшегося врача
-sql_randomDoc = """select first 1 doc from n_doc where pv=1 and doc>0 {select_otd} order by ndoc"""
+sql_randomDoc = """select first 1 doc from n_doc where pv=1 and doc>0 {select_otd} {select_sdl} order by ndoc"""
 # Выборка ФИО по коду
 sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_doc.mpp=n_mpp.mpp) and n_doc.doc={doc} """
 
@@ -288,12 +288,4 @@ sql_htmx_text_tablevew = """Select it_rasp_grf.id_grf, (select nroom_kr from roo
 sql_interval_time_list = """select id, interval_time from it_rasp_time"""
 
 sql_interval_time_current = """select interval_time from it_rasp_time where id={id}"""
-
-
-#Запрос для отсутствующих
-sql_select_otsut = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
-    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
-from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""
                 

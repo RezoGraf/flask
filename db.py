@@ -37,6 +37,7 @@ def proc(proc_name):
     cur = con.cursor()
     cur.callproc(proc_name)
     output_params = cur.fetchone()
+    con.commit()
     return output_params
 
 

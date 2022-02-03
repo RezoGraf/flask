@@ -223,15 +223,15 @@
 
 {#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 <form method="post">
- <div class="modal fade" id="InsRspDutyModal"  tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве</h5>
-        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-      </div>
-       <div class="modal-body">
-        <form>
+  <div class="modal fade" id="InsRspDutyModal" tabindex="-1" role="dialog" aria-labelledby="InsRspDutyModal" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве</h5>
+         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+       </div>
+        <div class="modal-body">
+         <form>
           <div class="mb-3">
             <label class="col-form-label">Дата:</label>
             <input type="date" class="form-control" name="InsDtnDuty" required>
@@ -245,17 +245,18 @@
               {% endfor %}
             </select>
           </div>
-        </form>
-      </div>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+         <button type="submit" class="btn btn-primary" name="btn" value="InsDuty">Сохранить</button>
+       </div>
+     </div>
+   </div>
+ </div>
+ </form>
+ 
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-        <button type="submit" class="btn btn-primary" name="btn" value="InsDuty">Сохранить</button>
-      </div>
-    </div>
-  </div>
-</div>
-</form>
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
 <form method="post">

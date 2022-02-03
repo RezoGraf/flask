@@ -70,7 +70,41 @@ def wtf_template3():
             
         otd = request.args.get('otd') or utils.list_to_int(random_otd)  #код выбранного отделения
         lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
-
+        if int(otd) == 0:
+            current_otd = ''
+        else:
+            current_otd = f' and otd={otd}'
+        result_fio = db.select(sql.sql_allDoc.format(current_otd = current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
+        doc = request.args.get('doc') or result_fio[0][0]      #код выбранного сотрудника со wtf_template3 или первый из запроса       
+        fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))[0][0]
+        
+        result_rasp = db.select(sql.sql_it_rasp.format(doc=doc)) #режим работы сотрудника
+        visible_ = ''
+        if result_rasp == []:
+            result_rasp.append('0') #ROOM
+            result_rasp.append('')  #NROOM_KR
+            result_rasp.append('0') #ID_INTERVAL1
+            result_rasp.append('')  #NOEVEN_DAY
+            result_rasp.append('0') #ID_INTERVAL2
+            result_rasp.append('')  #EVEN_DAY
+            result_rasp.append('0') #NTV
+            result_rasp.append('0') #NLIST
+            result_rasp.append('0') #SPZ
+            result_rasp.append('')  #NSPZ
+            result_rasp = (result_rasp, )
+        else:
+            visible_ = 'style=display:none;'
+        result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc)) #работа в выходные дни
+            
+        # result_noWork = db.select(sql.sql_noWork.format(doc=doc)) #отсутствие на рабочем месте
+        # result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc)) #работа в выходные дни
+        # result_room = db.select(sql.sql_room.format(doc=doc)) #номера кабинетов
+        # result_spz = db.select(sql.sql_allSpz) #список специальностей
+        # result_rsn = db.select(sql.sql_rsp_rsn) #список причин отсутствия
+        # result_time = db.select(sql.sql_interval_time) #интервал времени
+        # result_time2 = db.select(sql.sql_interval_time) 
+        
+        
         if request.method == 'POST':
             if request.form['btn'] == 'DelRspBlc':
                 DelIblc = request.form.get('DelIblc')
@@ -100,10 +134,10 @@ def wtf_template3():
                 InsTimeDuty = request.form.get('InsTimeDuty')
                 procedure_name = 'NEW_ID_RASP_DUTY'
                 output_params = db.proc(procedure_name)
-                output_params = utils.list_to_int(output_params)
+                output_params = utils.list_to_int(output_params)               
                 df = pd.Timestamp(InsDtnDuty)
                 InsNDay = df.dayofweek
-                db.write(sql_ins_it_rasp_duty.format(output_params=output_params, doc=doc, InsDtnDuty=InsDtnDuty, InsTimeDuty=InsTimeDuty, InsNDay=InsNDay))
+                db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=InsDtnDuty, UpdTimeDuty=InsTimeDuty, UpdNDay=InsNDay, UpdId=output_params))   
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'UpdDuty':
@@ -151,40 +185,15 @@ def wtf_template3():
                 visible_ = ''
                 db.write(sql_del_it_rasp.format(doc=doc))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_))
-                   
-        if int(otd) == 0:
-            current_otd = ''
-        else:
-            current_otd = f' and otd={otd}'
-
-        result_fio = db.select(sql.sql_allDoc.format(current_otd = current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
-        doc = request.args.get('doc') or result_fio[0][0]      #код выбранного сотрудника со wtf_template3 или первый из запроса       
-        fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))[0][0]
-        
-        result_rasp = db.select(sql.sql_it_rasp.format(doc=doc)) #режим работы сотрудника
-        visible_ = ''
-        if result_rasp == []:
-            result_rasp.append('0') #ROOM
-            result_rasp.append('')  #NROOM_KR
-            result_rasp.append('0') #ID_INTERVAL1
-            result_rasp.append('')  #NOEVEN_DAY
-            result_rasp.append('0') #ID_INTERVAL2
-            result_rasp.append('')  #EVEN_DAY
-            result_rasp.append('0') #NTV
-            result_rasp.append('0') #NLIST
-            result_rasp.append('0') #SPZ
-            result_rasp.append('')  #NSPZ
-            result_rasp = (result_rasp, )
-        else:
-            visible_ = 'style=display:none;'
-            
-        result_noWork = db.select(sql.sql_noWork.format(doc=doc)) #отсутствие на рабочем месте
-        result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc)) #работа в выходные дни
+ 
         result_room = db.select(sql.sql_room.format(doc=doc)) #номера кабинетов
         result_spz = db.select(sql.sql_allSpz) #список специальностей
         result_rsn = db.select(sql.sql_rsp_rsn) #список причин отсутствия
         result_time = db.select(sql.sql_interval_time) #интервал времени
         result_time2 = db.select(sql.sql_interval_time)   
+                                  
+        result_noWork = db.select(sql.sql_noWork.format(doc=doc)) #отсутствие на рабочем месте
+                
         result_podr = db.select(sql.sql_currentOtd.format(otd=otd)) #список отделений
         result_podr2 = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
         
