@@ -1,6 +1,6 @@
 import firebirdsql
 import config
-import utils
+import app.utils as utils
 from collections import defaultdict
 
 

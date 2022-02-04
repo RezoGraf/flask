@@ -1,5 +1,5 @@
 from lib2to3.pgen2.pgen import generate_grammar
-from menu_script import generate_menu
+from app.menu_script import generate_menu
 from flask import Blueprint, render_template
 
 

@@ -1,13 +1,13 @@
 from flask import render_template, request, Blueprint, session
 import json
 # import os.path
-import db, sql
+import app.db as db, app.sql as sql
 from data_input.sql_data_input import sql_upd_it_rasp_grf
 from dateutil import parser
 from datetime import date
 import calendar
-import utils
-from menu_script import generate_menu
+import app.utils as utils
+from app.menu_script import generate_menu
 
 
 data = ["Один", "Тор"]
