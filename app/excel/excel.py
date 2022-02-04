@@ -6,12 +6,12 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 import app.db as db
-from excel.excel_sql import sql_select_otsut
+from app.sql import sql_select_otsut
 
 excel = Blueprint('excel', __name__)
 
 def book_create(date_start, date_finish):
-    data = db.select(sql.sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+    data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     # print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     book = Workbook()
     sheet = book.active
@@ -89,7 +89,7 @@ def book_create(date_start, date_finish):
         for s in range(1, 5):
             sheet.cell(row=s, column=i).border = Border(top=side_top, bottom=side_top, left=side_top, right=side_top)
 
-    book.save("excel/otchet_po_otsutstviyu.xlsx")
+    book.save("app/excel/otchet_po_otsutstviyu.xlsx")
 
 
 def convert_data(conv_data):

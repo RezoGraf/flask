@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, request, session
 # регистрируем схему `Blueprint`
-from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
-from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
-from data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
-from data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp
+from app.data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
+from app.data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
+from app.data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
+from app.data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp
 from . import data_input
 import app.db as db
 import app.sql as sql

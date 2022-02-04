@@ -2,7 +2,7 @@ from flask import render_template, request, Blueprint, session
 import json
 # import os.path
 import app.db as db, app.sql as sql
-from data_input.sql_data_input import sql_upd_it_rasp_grf
+from app.data_input.sql_data_input import sql_upd_it_rasp_grf
 from dateutil import parser
 from datetime import date
 import calendar
