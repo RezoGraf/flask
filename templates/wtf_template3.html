@@ -159,14 +159,14 @@
 </div>
 </form>
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИИ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
-{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+{% for iblc, DTN, DTK, rsn, NRSN_ in result_rsp_blc %}
 <form method="post"> 
  <div class="modal fade" id="RspBlcModal{{ iblc }}" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-keyboard="false">
     <div class="modal-content">      
       <div class="modal-header">
         <h5 class="modal-title">Сведения об отсутствии сотрудника</h5>
-        <input type="text" name="UpdIblc" value={{ iblc }} class="col-form-label">
+        <input type="text" name="UpdIblc" value={{ iblc }} class="col-form-label" style="display: none;">
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">  
@@ -184,7 +184,7 @@
               {% for RSN, NRSN in result_rsn %}
                 <option value="{{ RSN }}" {% if loop.first %} SELECTED{% endif %}>{{ NRSN or ""}} </option>
               {% endfor %}
-              <option selected>{{ NRSN_ }} </option>
+              <option value = {{rsn}} selected>{{ NRSN_ }} </option>
             </select>
           </div>
       </div>
@@ -198,7 +198,7 @@
 </form>
 {% endfor %}
 {#ОКНО ДЛЯ УДАЛЕНИЯ ИНФОРМАЦИИ ОБ ОТСУТСТВИИ СОТРУДНИКА#}
-{% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+{% for iblc, DTN, DTK, rsn, NRSN_ in result_rsp_blc %}
 <form method="post">
 <div class="modal fade" id="DelRspBlcModal{{ iblc }}" tabindex="0">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" data-backdrop="static" data-keyboard="false">
@@ -223,15 +223,15 @@
 
 {#ОКНО ДЛЯ ДОБАВЛЕНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 <form method="post">
- <div class="modal fade" id="InsRspDutyModal"  tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве</h5>
-        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-      </div>
-       <div class="modal-body">
-        <form>
+  <div class="modal fade" id="InsRspDutyModal" tabindex="-1" role="dialog" aria-labelledby="InsRspDutyModal" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title">Сведения о работе сотрудника в выходные дни и дежурстве</h5>
+         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+       </div>
+        <div class="modal-body">
+         <form>
           <div class="mb-3">
             <label class="col-form-label">Дата:</label>
             <input type="date" class="form-control" name="InsDtnDuty" required>
@@ -245,17 +245,18 @@
               {% endfor %}
             </select>
           </div>
-        </form>
-      </div>
+         </form>
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+         <button type="submit" class="btn btn-primary" name="btn" value="InsDuty">Сохранить</button>
+       </div>
+     </div>
+   </div>
+ </div>
+ </form>
+ 
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-        <button type="submit" class="btn btn-primary" name="btn" value="InsDuty">Сохранить</button>
-      </div>
-    </div>
-  </div>
-</div>
-</form>
 {#ОКНО ДЛЯ РЕДАКТИРОВАНИЯ ИНФОРМАЦИИ О ДЕЖУРСТВАХ СОТРУДНИКА#}
 {% for ID,DATE_DUTY,TIME_DUTY,denNedeli in result_duty %}
 <form method="post">
@@ -420,7 +421,7 @@
          </th> 
          </thead>
          <tr>
-         {% for iblc, DTN, DTK, NRSN_ in result_rsp_blc %}
+         {% for iblc, DTN, DTK, rsn, NRSN_ in result_rsp_blc %}
             <tr>
                 <td>{% if DTN != None %} {{ DTN.strftime('%d.%m.%Y') }} {% else %} {{ DTN or "" }} {%endif %} </td>
                 <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %} </td>
@@ -450,42 +451,40 @@
 <!--<div class="col col-lg-2">-->
   <div class="col">
     <div class="w-100">   <!--<div class="col-md-auto">-->
-  <div class="table-wrapper-scroll-y my-custom-scrollbar table-hover">
-  <h5 class="text-primary">
-    <form method="get" action="" id="MyForm">
-      {% for OTD, NOTD, LPU in result_podr %}
-      <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example" onchange="document.getElementById('MyForm').submit()">
-          <option value="{{ OTD }}" selected="selected">{{ NOTD }}</option>
-
-    {% for otd, notd in result_podr2 %}
-      <option value="{{ otd }}"{% if loop.first %} {% endif %}>{{ notd }}</option>
-    {% endfor %}
-    </select>
-    {% endfor %}
-  </form>
-  </h5>
-    <table id="myTable" class="table table-borderless" >
-        <thead>
-        <th>
-            <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
-        </th>
-    </thead>
-    <tbody>
-        {% for DOC, NDOC in result_fio %}
-        {% for OTD, NOTD, LPU in result_podr %}
-        <tr onclick="window.location.href='?otd={{ OTD }}&doc={{ DOC }}'; return false">
-        <td style="padding:2px">{{ NDOC }}</td>
-    </tr>
-    {% endfor %}
-    {% endfor %}
-    </tbody>
-    </table>
+      <div class="table-wrapper-scroll-y my-custom-scrollbar table-hover">
+        <h5 class="text-primary">
+        <form method="get" action="" id="MyForm">
+          {% for OTD, NOTD, LPU in result_podr %}
+            <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example" onchange="document.getElementById('MyForm').submit()">
+              <option value={{ OTD }} selected> {{ NOTD or ''}} </option>
+              {% for otd, notd in result_podr2 %}
+              <option value="{{ otd }}"{% if loop.first %} {% endif %}>{{ notd }}</option>
+              {% endfor %}
+            </select>
+          {% endfor %}
+        </form>
+        </h5>
+        <table id="myTable" class="table table-borderless" >
+          <thead>
+            <th>
+              <input class="form-control" list="datalistOptions" id="myInput" placeholder="Пишите для поиска..." autocomplete="off">
+            </th>
+          </thead>
+          <tbody>
+          {% for DOC, NDOC in result_fio %}
+            {% for OTD, NOTD, LPU in result_podr %}
+              <tr onclick="window.location.href='?otd={{ OTD }}&doc={{ DOC }}'; return false">
+                <td style="padding:2px">{{ NDOC }}</td>
+              </tr>
+            {% endfor %}
+          {% endfor %}
+          </tbody>
+        </table>
   </div>
 </div>
  
 </div>
 </div>
-
 <script>
 
   function filterTable(event) {

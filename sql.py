@@ -12,7 +12,7 @@ WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
 # Выбор списка доступных отделений
-sql_allOtd = "select otd, notd from np_otd where notd is not null {select_otd} order by ps"
+sql_allOtd = "select otd, notd from np_otd where otd>=0 {select_otd} order by ps"
 # Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
 
@@ -26,11 +26,11 @@ sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' a
 
 # Выборка всех ФИО врачей по коду отделения
 sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj 
-                where (n_doc.dolj=n_dlj.dlj) and n_doc.pv=1 and n_doc.pr_dlj=1 and n_doc.otd={otd}
+                where (n_doc.dolj=n_dlj.dlj) and (n_doc.pv=1) and (n_doc.pr_dlj=1) and (mol=1) {current_otd}
                 {select_sdl} 
                 order by ndoc """
 # Выборка первого попавшегося врача
-sql_randomDoc = """select first 1 doc from n_doc where pv=1 and otd='{otd}' order by ndoc"""
+sql_randomDoc = """select first 1 doc from n_doc where pv=1 and doc>0 {select_otd} {select_sdl} order by ndoc"""
 # Выборка ФИО по коду
 sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_doc.mpp=n_mpp.mpp) and n_doc.doc={doc} """
 
@@ -58,7 +58,7 @@ sql_it_rasp = """Select IT_RASP.ROOM,
                  where (it_rasp.room=room.id) and (it_rasp.spz=n_spz.spz) and doc='{doc}'"""
 
 # Информация об отсутствии на работе
-sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ 
+sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), rsn, (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ 
                 from rsp_blc where doc='{doc}' order by dtn desc"""
 
 # Информация о дежурстве
@@ -295,6 +295,8 @@ sql_interval_time_list = """select id, interval_time from it_rasp_time"""
 sql_interval_time_current = """select interval_time from it_rasp_time where id={id}"""
 
 # Report.py--------------------------------------------------------------------------------------------------------
+
+#запрос для выборки отсутствующих для report
 sql_select_otsut = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
     (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
 from RSP_BLC,N_DOC
