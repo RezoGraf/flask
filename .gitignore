@@ -2,13 +2,12 @@ idea/
 __pycache__/
 app/__pycache__/
 venv/
-app/api/__pycache__/
+app/db_test/__pycache__/
 app/api/__pycache__/
 app/data_input.py/__pycache__/
 app/excel/__pycache__/
-app/excel/__pycache__/
-app/report/__pycache__/
 app/report/__pycache__/
 app/excel/otchet_po_otsutstviyu.xlsx
 .DS_Store
 .idea/
+excel/otchet_po_otsutstviyu.xlsx
