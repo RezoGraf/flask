@@ -77,7 +77,7 @@
             <td>{{ NDOC }}</td>
             <td>{{ NRSN or ""}}</td>
             <td>{{ DTN.strftime('%d.%m.%Y') }}</td>
-            <td>{{ DTK.strftime('%d.%m.%Y') }}</td>
+            <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %}</td>
         </tr>
         {% endfor %}
     </tbody>
