@@ -1,12 +1,12 @@
 
 # from werkzeug.wrappers import response
-import db
-import sql
+import app.db as db
+import app.sql as sql
 from flask import render_template, request, url_for, redirect, Blueprint
 # регистрируем схему `Blueprint`
 from . import zakaz_naryad
 from datetime import datetime
-from menu_script import generate_menu
+from app.menu_script import generate_menu
 
 
 zakaz_naryad = Blueprint('zakaz_naryad', __name__)

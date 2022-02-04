@@ -1,7 +1,7 @@
 import ldap
 from flask import session
-import db
-import sql
+import app.db as db
+import app.sql as sql
 
 
 def check_admins_auth(username, password, user_ad):

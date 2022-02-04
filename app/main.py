@@ -7,7 +7,7 @@ from zakaz_naryad.zakaz_naryad import zakaz_naryad
 from flask import Flask, render_template, request, url_for, redirect
 from db_test.db_test import db_test
 import datetime
-import auth
+import app.auth as auth
 from menu.menu import menu
 # from ctypes.util import find_library
 # from menu_script import generate_menu

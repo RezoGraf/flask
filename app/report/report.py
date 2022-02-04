@@ -4,9 +4,9 @@ import pandas as pd
 # from excel.excel import excel
 # from data_input.data_input import data_input
 from . import report
-from menu_script import generate_menu
-import db
-import sql
+from app.menu_script import generate_menu
+import app.db as db
+import app.sql as sql
 
 report = Blueprint('report', __name__)
 

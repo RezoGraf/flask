@@ -5,14 +5,14 @@ from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_
 from data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
 from data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp
 from . import data_input
-import db
-import sql
-import utils
+import app.db as db
+import app.sql as sql
+import app.utils as utils
 # import calendar
 import pandas as pd
 # from dateutil import parser
 # from datetime import date
-from menu_script import generate_menu
+from app.menu_script import generate_menu
 
 
 
