@@ -14,61 +14,63 @@ zakaz_naryad = Blueprint('zakaz_naryad', __name__)
 
 @zakaz_naryad.route('/', methods=['GET', 'POST'])
 def main():
-        if request.method == 'POST':
-                
-            dtn = request.form.get('dtn_get')
-            dtk = request.form.get('dtk_get')
-            check_open = request.form.get('check_open')
-            check_close = request.form.get('check_close')
-            return redirect(url_for('zakaz_naryad.main', dtn=dtn, dtk=dtk, check1=check_open, check2=check_close))
-    
-        else:
-            check_open = request.args.get('check1')
-            check_close = request.args.get('check2')
-            dtn_simple = request.args.get('dtn')
-            dtk_simple = request.args.get('dtk')
-            dtn = request.args.get('dtn')  # запрос к данным формы
-            dtk = request.args.get('dtk')
- 
-            if dtn is None:
-                dtn = datetime.today().strftime('%d.%m.%Y')
-                dtn_simple = datetime.today().strftime('%Y-%m-%d')
-            if dtn_simple is None:
-                dtn_simple  = datetime.today().strftime('%Y-%m-%d')
-            if dtk is None:
-                dtk_simple = datetime.today().strftime('%Y-%m-%d')
-                dtk = datetime.today().strftime('%d.%m.%Y')
-            if dtk_simple is None:
-                dtk_simple = datetime.today().strftime('%Y-%m-%d')
-                
-            if check_open and check_close:
-                # print('open and close')
-                result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
-                return render_template("zakaz_naryad.html",
-                                my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
+    menu = generate_menu()
+    if request.method == 'POST':
+            
+        dtn = request.form.get('dtn_get')
+        dtk = request.form.get('dtk_get')
+        check_open = request.form.get('check_open')
+        check_close = request.form.get('check_close')
+        return redirect(url_for('zakaz_naryad.main', dtn=dtn, dtk=dtk, check1=check_open, check2=check_close))
 
-            if check_open is None and check_close:
-                # print('close')
-                result = db.select(sql.sql_zakaz_naryad_select_close.format(dtn=dtn, dtk=dtk))
-                return render_template("zakaz_naryad.html",
-                                my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
-                
-            if check_open and check_close is None:
-                # print('open')
-                result = db.select(sql.sql_zakaz_naryad_select_open.format(dtn=dtn, dtk=dtk))
-                return render_template("zakaz_naryad.html",
-                                my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
-            else:
-                # print('default')
-                menu = generate_menu()
-                result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
-                return render_template("zakaz_naryad.html", 
-                                    menu = menu,
-                                    my_list=result,
-                                    dtn_get=dtn_simple,
-                                    dtk_get=dtk_simple,
-                                    check1='checked',
-                                    check2='')
+    else:
+        check_open = request.args.get('check1')
+        check_close = request.args.get('check2')
+        dtn_simple = request.args.get('dtn')
+        dtk_simple = request.args.get('dtk')
+        dtn = request.args.get('dtn')  # запрос к данным формы
+        dtk = request.args.get('dtk')
+
+        if dtn is None:
+            dtn = datetime.today().strftime('%d.%m.%Y')
+            dtn_simple = datetime.today().strftime('%Y-%m-%d')
+        if dtn_simple is None:
+            dtn_simple  = datetime.today().strftime('%Y-%m-%d')
+        if dtk is None:
+            dtk_simple = datetime.today().strftime('%Y-%m-%d')
+            dtk = datetime.today().strftime('%d.%m.%Y')
+        if dtk_simple is None:
+            dtk_simple = datetime.today().strftime('%Y-%m-%d')
+            
+        if check_open and check_close:
+            # print('open and close')
+            
+            result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
+            return render_template("zakaz_naryad.html",
+                            my_list=result, menu=menu, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
+
+        if check_open is None and check_close:
+            # print('close')
+            result = db.select(sql.sql_zakaz_naryad_select_close.format(dtn=dtn, dtk=dtk))
+            return render_template("zakaz_naryad.html",
+                            my_list=result, menu=menu, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
+            
+        if check_open and check_close is None:
+            # print('open')
+            result = db.select(sql.sql_zakaz_naryad_select_open.format(dtn=dtn, dtk=dtk))
+            return render_template("zakaz_naryad.html",
+                            my_list=result, menu=menu, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
+        else:
+            # print('default')
+            menu = generate_menu()
+            result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
+            return render_template("zakaz_naryad.html", 
+                                menu = menu,
+                                my_list=result,
+                                dtn_get=dtn_simple,
+                                dtk_get=dtk_simple,
+                                check1='checked',
+                                check2='')
 #Наряд-------------------------------------------------------------------------------------------------------------------------                 
 @zakaz_naryad.route('/zn_naryad', methods=['GET', 'POST'])
 def zn_naryad():
@@ -108,7 +110,7 @@ def zn_modal_edit():
         nom_nlit = request.args.get("nom_nlit")
         nom_npolir = request.args.get("nom_npolir")
         nom_nvarh = request.args.get("nom_nvarh")
-        result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
+        result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))        
         nteh_db = db.select(sql.sql_zn_naryad_select_teh)
         nlit_db = db.select(sql.sql_zn_naryad_select_lit)
         npol_db = db.select(sql.sql_zn_naryad_select_pol)
@@ -260,7 +262,7 @@ def zn_modal_close():
                                     <table class="table table-borderless">
                                         <tr>
                                             <td style="text-align: left;">
-                                                <button class="btn btn-primary btn-success" type="submit">Изменить</button>
+                                                <button class="btn btn-primary btn-success" type="submit">Сохранить</button>
                                             </td>                                            
                                             <td style="text-align: right;">  
                                                 <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
@@ -283,46 +285,33 @@ def zn_modal_close_btn():
     if request.method == 'POST':
         idkv = request.args.get('idkv')
         dt_close = request.form.get('dt_close')
-        print(idkv)
-        print(dt_close)
+        # print(idkv)
+        # print(dt_close)
         return redirect(url_for('zakaz_naryad.zn_modal_close_btn', idkv=idkv, dt_close=dt_close))
     else:
         idkv = request.args.get('idkv')
         dt_close = request.args.get('dt_close')
-        response = f"""<div id="modal-backdrop1" class="modal-backdrop fade show" style="display:block;"></div>
+        # check_zn = db.select(sql.sql_zn_naryad_select_check.format(idkv=idkv))
+        check_zn = db.select(sql.sql_zn_naryad_select_info1.format(idkv=idkv)) 
+        print(check_zn)
+        # teh = 
+        # lit = 
+        # varh = 
+        # polir = 
+        # dzr = 
+        # if check_zn == []:
+                # ({idkv},{teh},{lit},{varh},{polir},{dzr})
+            # print(db.select(sql.sql_zn_naryad_insert_naryad.format(idkv=idkv, teh=teh, lit=lit, varh=varh,polir=polir,dzr=dzr)))
+        response = f"""<div id="modal-backdrop11" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal1" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header align-self-center">
-                                    <div class="row">
-                                        <div class="col align-self-center">
-                                            <h4 class="modal-title">{idkv} {dt_close}</h4>                                            
-                                        </div>
-                                    </div>                            
+                                <div class="modal-body" style="text-align: center;">  
+                                    <button type="button" class="btn btn-danger" onclick="closeModal1()">Сохранено</button>                                     
                                 </div>
-                                <div class="modal-body" style="text-align: center;">
-                                
-                                    <form method="POST">
-                                        <input type="date" value="" name="dt_close" id="dt_close" />
-                                        <input type="date" value="" name="dt_close" id="dt_close" />
-                                        <input type="date" value="" name="dt_close" id="dt_close" />
-                                    </form>   
-                                     
-                                </div>
-                                <div class="modal-footer">
-                                    <table class="table table-borderless">
-                                        <tr>
-                                            <td style="text-align: left;">
-                                            </td>                                            
-                                            <td style="text-align: right;">
-                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
-                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
-                                            </td>                                            
-                                        </tr>
-                                    </table>    
                                 </div>
                             </div>
-                            </div>
-                        </div>"""
+                        </div>
+                        """
         return response
     

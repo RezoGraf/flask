@@ -64,8 +64,8 @@ def main():
             auth_group = session.get('auth_group')
         else:
             auth_group = 'none'
-        result = db.select(sql.sql_select.format(dtn=dtn,
-                                             dtk=dtk))
+        # result = db.select(sql.sql_select.format(dtn=dtn, dtk=dtk))
+        result = db.select(sql.sql_select_otsut.format(date_start=dtn, date_finish=dtk))
         menu = generate_menu()
         return render_template("report.html",
                            my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple,

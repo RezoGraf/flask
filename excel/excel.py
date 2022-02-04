@@ -6,13 +6,14 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 import db
-from excel.excel_sql import sql_select_otsut
+# from excel.excel_sql import sql_select_otsut
+import sql
 
 excel = Blueprint('excel', __name__)
 
 def book_create(date_start, date_finish):
-    data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
-    print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+    data = db.select(sql.sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+    # print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     book = Workbook()
     sheet = book.active
     sheet.title = "Период отсутствия персонала"
