@@ -37,6 +37,13 @@ def generate_menu():
         </div>
       </li>
       <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Вакцинация</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/epid">Заполнение карточек вакцинации</a>
+          <a class="dropdown-item text-primary" href="/epid/report">Отчет о вакцинации</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Сервис</a>
         <div class="dropdown-menu">
           <a class="dropdown-item text-primary" href="/db_test">Тестирование БД Firebird</a>

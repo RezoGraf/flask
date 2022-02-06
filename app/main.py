@@ -39,11 +39,9 @@ app.register_blueprint(excel, url_prefix='/excel')
 app.register_blueprint(menu, url_prefix='/menu')
 app.register_blueprint(report, url_prefix='/report')
 app.register_blueprint(db_test, url_prefix='/db_test')
-
 app.register_blueprint(zakaz_naryad, url_prefix='/zakaz_naryad')
 app.register_blueprint(htmx_test, url_prefix='/htmx_test')
-app.register_blueprint(epid, url_prefix='/epid',
-                        template_folder='/epid/templates')
+app.register_blueprint(epid, url_prefix='/epid')
 
 
 @app.route('/', methods=['GET', 'POST'])
