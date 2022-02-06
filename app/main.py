@@ -9,6 +9,7 @@ from app.db_test.db_test import db_test
 import datetime
 import app.auth as auth
 from app.menu.menu import menu
+from app.epid.epid import epid
 # from ctypes.util import find_library
 # from menu_script import generate_menu
 
@@ -41,6 +42,8 @@ app.register_blueprint(db_test, url_prefix='/db_test')
 
 app.register_blueprint(zakaz_naryad, url_prefix='/zakaz_naryad')
 app.register_blueprint(htmx_test, url_prefix='/htmx_test')
+app.register_blueprint(epid, url_prefix='/epid',
+                        template_folder='/epid/templates')
 
 
 @app.route('/', methods=['GET', 'POST'])

@@ -1,8 +1,34 @@
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-import psycopg2
+import pg8000
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+app = Flask(__name__)
+
+# Base = automap_base()
+
+engine = create_engine("postgresql+pg8000://postgres:Gecnjq01!@192.168.100.52/helios", client_encoding='utf8')
+# Base.prepare(engine, reflect=True)
+
+
+# session = Session(engine)
+
+db = SQLAlchemy(app)
+
+# worker = db.Table('epid_Worker', db.metadata, autoload=True, autoload_with=db.engine)
+# session.add(Address(email_address="foo@bar.com", user=User(name="foo")))
+# session.commit()
 
 Base = automap_base()
+Base.prepare(db.engine, reflect=True)
+Worker = Base.classes.epid_Worker
 
-engine = create_engine("postgresql+psycopg2://root:pass@localhost/mydb")
+@app.route('/')
+def index():
+    # db.session.query(worker).all()
+    # worker.session.all()
+    results = db.session.query(Worker).all()
+    for r in results:
+        print(r.IDW)
+    return ''
