@@ -6,7 +6,7 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 import app.db as db
-from app.sql import sql_select_otsut
+# from app.sql import sql_select_otsut
 
 excel = Blueprint('excel', __name__)
 

@@ -8,7 +8,7 @@ from dateutil import parser
 from datetime import date
 import calendar
 import app.utils as utils
-from menu_script import generate_menu
+from app.menu_script import generate_menu
 
 
 data = ["Один", "Тор"]
