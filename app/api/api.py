@@ -1,8 +1,8 @@
 from flask import Blueprint, Flask, jsonify, request
-import db
+import app.db as db
 import datetime
 import json
-from api.sql_api import sql_prov, sql_api_ins, sql_api_upd2
+from app.api.sql_api import sql_prov, sql_api_ins, sql_api_upd2
 
 api = Blueprint('api', __name__)
 

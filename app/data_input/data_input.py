@@ -1,19 +1,18 @@
-from tkinter import X
 from flask import Blueprint, render_template, abort, redirect, url_for, request, session
 # регистрируем схему `Blueprint`
-from data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
-from data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
-from data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
-from data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp
+from app.data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
+from app.data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
+from app.data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
+from app.data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp
 from . import data_input
-import db
-import sql
-import utils
-import calendar
+import app.db as db
+import app.sql as sql
+import app.utils as utils
+# import calendar
 import pandas as pd
-from dateutil import parser
-from datetime import date
-from menu_script import generate_menu
+# from dateutil import parser
+# from datetime import date
+from app.menu_script import generate_menu
 
 
 
@@ -47,7 +46,9 @@ def wtf_template():
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
-    if 'arena_mpp' in session:
+    if 'arena_mpp' not in session:
+        return redirect(url_for("login"))
+    else:
         if 'arena_user' in session:
             arena_user = session.get('arena_user')
         else:
@@ -178,15 +179,12 @@ def wtf_template3():
                 interval2 = request.form.get('UpdEvenDay')
                 if interval2 == "":
                     interval2 = 0
-                print(interval2) 
                 
                 ntv = request.form.get('UpdNtv')
                 nlist = request.form.get('UpdNlist')
                 visible_ = 'style=display:none;'
                 db.write(sql_del_it_rasp.format(doc=doc))
-                
-                print(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
-            
+                         
                 db.write(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_ ))
 
@@ -243,7 +241,4 @@ def wtf_template3():
                             result_podr=result_podr,
                             result_podr2=result_podr2,
                             arena_fio=arena_fio)
-    else:
-        return redirect(url_for("app.login"))
-    
     

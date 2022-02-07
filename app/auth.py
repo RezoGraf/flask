@@ -1,7 +1,7 @@
 import ldap
 from flask import session
-import db
-import sql
+import app.db as db
+import app.sql as sql
 
 
 def check_admins_auth(username, password, user_ad):
@@ -34,14 +34,15 @@ def check_admins_auth(username, password, user_ad):
         chars2 = ","
         auth_group = x[x.find(chars1)+3 : x.find(chars2)]
         if "web_hs" in auth_group:
-            print(f'Состоит в группе: { auth_group }')
+            # print(f'Состоит в группе: { auth_group }')
             session['auth_group'] = auth_group
         else:
-            print(f'Не состоит в группах web_hs')   
+            pass
+            # print(f'Не состоит в группах web_hs')   
     char_start = 'CN='
     char_end = ','
     arena_fio = d[d.find(char_start)+3 : d.find(char_end)]
-    print(f'ФИО: {arena_fio}')
+    # print(f'ФИО: {arena_fio}')
     arena_mpp = 000
     try:
         f = db.select(sql.sql_ad_arena_username.format(user_ad))

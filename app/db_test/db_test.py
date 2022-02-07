@@ -2,10 +2,10 @@
 from flask import Blueprint, g, session, render_template, request, redirect, url_for
 from time import time
 import numpy
-from db_test.db_test_sql import sql_visit1, sql_visit2, sql_visit3
-import db
+from app.db_test.db_test_sql import sql_visit1, sql_visit2, sql_visit3
+import app.db as db
 from . import db_test
-from menu_script import generate_menu
+from app.menu_script import generate_menu
 
 
 db_test = Blueprint('db_test', __name__)
