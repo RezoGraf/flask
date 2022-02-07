@@ -23,22 +23,25 @@
         <div class="row">
 
             <div class="col-md-auto">
+                <div class="input-group mb-3">
+                    <label class="form-label">Отделение: </label>
+                    <select class="form-select" id="select_otd" name="select_otd">
+                      {% for ID, NAME, LPU in result_select %}
+                        <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ NAME or ""}} </option>
+                      {% endfor %}
+                      {% for ID, NAME, LPU in select_current_ord %}
+                      <option value = {{ ID or 0 }} selected> {{ NAME }} </option>
+                      {% endfor %}
+                    </select>
+                  </div>
 
                 <label for="datepicker" class="form-label">Дата начала</label>
                 <input type="date" value="{{ dtn_get }}" name="dtn_get" />
 
-            </div>
-            <div class="col-md-auto">
-
-                    <label for="datepicker2" class="form-label">Окончание</label>
-                    <input type="date" value="{{ dtk_get }}" name="dtk_get" />
-            </div>
-            <div class="col-md-auto">
-                    <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Сформировать</button>
-            </div>
-
-            <div class="col-md-auto">
-                    <button type="submit" class="btn btn-primary" name="btn" value="saveToPdf">Выгрузить в Excel</button>
+                <label for="datepicker2" class="form-label">Окончание</label>
+                <input type="date" value="{{ dtk_get }}" name="dtk_get" />
+                <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Сформировать</button>
+                <button type="submit" class="btn btn-primary" name="btn" value="saveToPdf">Выгрузить в Excel</button>
             </div>
   
         </div>

@@ -24,6 +24,7 @@ from app.menu.menu import menu
 
 app = Flask(__name__, static_folder="static",
             template_folder='templates')
+app.permanent_session_lifetime = datetime.timedelta(days=365)
 app.config["SECRET_KEY"] = '79537d00f4834892986f09a100aa1edf'
 app.jinja_env.auto_reload = True
 app.config["TEMPLATES_AUTO_RELOAD"] = True
