@@ -147,6 +147,10 @@ from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
   and (pl_uslk.idkv = {idkv})
 order by idkv,dou"""
+
+sql_zn_naryad_select_info_isp = """Select pl_uslt.idkv,pl_uslt.teh,pl_uslt.lit,pl_uslt.varh,pl_uslt.dzr
+from pl_uslt
+Where (pl_uslt.idkv = {idkv})"""
 # Услуги по наряду--------------------------------------------------------------------------------------------------------
 sql_zn_naryad_select_usl = """select pl_uslp.usl,pl_uslp.kusl,n_usl.nusl,pl_uslp.price,pl_uslp.kol,pl_uslp.stu
                                from pl_uslp, n_usl
@@ -169,6 +173,15 @@ sql_zn_naryad_select_var = """Select distinct mpp, ndoc
                               from n_doc
                               where pv=1 and (dolj=164 or doc=0)
                               order by ndoc"""
+sql_zn_naryad_select_check = """Select idkv from pl_uslt where idkv={idkv}"""
+sql_zn_naryad_insert_isp = """INSERT INTO PL_USLT (idkv,teh,lit,varh,polir,dzr) values({idkv},{nom_teh},{nom_lit},{nom_var},{nom_pol},{dzr})"""
+sql_zn_naryad_update_isp = """Update pl_uslt 
+                              set teh={nom_teh}, 
+                                  lit={nom_lit},                                   
+                                  varh={nom_var},
+                                  polir={nom_pol}, 
+                                  dzr={dzr}
+                              where idkv={idkv}"""
 
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
@@ -291,4 +304,14 @@ sql_htmx_text_tablevew = """Select it_rasp_grf.id_grf, (select nroom_kr from roo
 sql_interval_time_list = """select id, interval_time from it_rasp_time"""
 
 sql_interval_time_current = """select interval_time from it_rasp_time where id={id}"""
+                
+
+  # Report.py--------------------------------------------------------------------------------------------------------
+
+#запрос для выборки отсутствующих для report
+sql_select_otsut = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
+    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
+from RSP_BLC,N_DOC
+where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
+    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""
                 

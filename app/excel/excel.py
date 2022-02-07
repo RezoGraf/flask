@@ -6,7 +6,7 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 import app.db as db
-# from app.sql import sql_select_otsut
+from app.sql import sql_select_otsut
 
 excel = Blueprint('excel', __name__)
 
@@ -156,7 +156,7 @@ def cleanup(path):
 @excel.route('/', methods=['GET', 'POST'])
 def excel_ots():
     name_xlsx = "otchet_po_otsutstviyu.xlsx"
-    path_xlsx = f"app/excel/{name_xlsx}"
+    path_xlsx = f"excel/{name_xlsx}"
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
 
