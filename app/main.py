@@ -10,8 +10,7 @@ from app.db_test.db_test import db_test
 import datetime
 import app.auth as auth
 from app.menu.menu import menu
-# from ctypes.util import find_library
-# from menu_script import generate_menu
+
 
 # import sentry_sdk
 # from sentry_sdk.integrations.flask import FlaskIntegration
