@@ -38,7 +38,7 @@ sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_do
 sql_rsp_rsn = """select rsn, nrsn from rsp_rsn order by rsn"""
 
 # Номера кабинетов
-sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc={doc}) order by id"""
+sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc={doc}) order by nroom_kr """
 
 # Выборка всех специальностей сотрудников
 sql_allSpz = """select spz, nspz from n_spz where pd=1 order by nspz"""
@@ -62,8 +62,11 @@ sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), rsn, (selec
                 from rsp_blc where doc={doc} {period} order by dtn desc"""
 
 # Информация о дежурстве
-sql_it_rasp_duty = """Select ID,DATE_DUTY, 
-                 (select interval_time from it_rasp_time where it_rasp_time.id=IT_RASP_DUTY.ID_INTERVAL_TIME) as TIME_DUTY,
+sql_it_rasp_duty = """Select id as id_duty, date_duty, 
+                 it_rasp_duty.id_interval_time,
+                 (select interval_time from it_rasp_time where it_rasp_time.id=IT_RASP_DUTY.ID_INTERVAL_TIME) as time_duty,
+                 it_rasp_duty.room,
+                 (select nroom_kr from room where room.id=IT_RASP_DUTY.room) as nroom,
                  CASE EXTRACT (WEEKDAY FROM date_duty)  
                      WHEN 1 THEN 'Понедельник'
                      WHEN 2 THEN 'Вторник'
@@ -74,7 +77,7 @@ sql_it_rasp_duty = """Select ID,DATE_DUTY,
                      WHEN 0 THEN 'Воскресенье'
                  END as denNedeli
                  from IT_RASP_DUTY 
-                 where doc={doc} {period} order by DATE_DUTY"""
+                 where doc={doc} {period} order by DATE_DUTY desc"""
 
 # Время работы
 sql_interval_time = """select id, case when interval_time is null THEN 'нет приема' else interval_time END from it_rasp_time order by id"""
