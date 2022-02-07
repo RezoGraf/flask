@@ -81,45 +81,34 @@ def table_view():
         arena_user = session.get('arena_user')
     else:
         arena_user = 0
-
-    result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
-    result_accessSdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
     
-    if  result_accessotd != '0':
-        select_otd=f' and otd in({result_accessotd})'
-    else:
-        select_otd = ''  
-        
-    if  result_accessSdl != '0':
-        select_sdl=f' and n_doc.sdl in({result_accessSdl})'
-    else:
-        select_sdl = '' 
-         
-    current_date = date.today()
-    current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")
-    current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m")
+    select_otd = utils.access_user_otd(arena_user)  #доступные отделения
+    select_sdl = utils.access_user_sdl(arena_user)  #доступные должности
+    current_date = date.today()                     #текущая дата
+    current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")  #текущий год
+    current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m") #текущий месяц
+    result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd))           #список отделений доступных пользователю
+    # otd= db.select(sql.sql_randomOtd1.format(select_otd=select_otd))[0][0] 
+    otd = request.form.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
+    notd = result_otd[0][1] #наименование выбранного отделения
+    current_otd = f' and otd={otd}'
     
-    otd= db.select(sql.sql_randomOtd1.format(select_otd=select_otd))[0][0]
-    notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
-    
-    result_th = {}  
+    result_th = {}  #список для построения заголовка таблицы
     result_th = create_th(current_year,current_month).copy()         
-    
-    result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
-    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей
+      
+    result_alldoc = db.select(sql.sql_allDoc.format(current_otd=current_otd, select_sdl = select_sdl)) #список врачей
     result_time = db.select(sql.sql_interval_time) #интервал времени
     
-    print(result_alldoc)
     if request.method == 'POST':
         if request.form['btn'] == 'selectNew':
             otd=request.form.get('otd')
-            print(otd)
             notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1]
+            current_otd = f' and otd={otd}'
             current_year=request.form.get('year')
             current_month=request.form.get('month')
             result_th = {}
             result_th = create_th(current_year,current_month).copy()
-            result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей 
+            result_alldoc = db.select(sql.sql_allDoc.format(current_otd=current_otd, select_sdl = select_sdl)) #список врачей 
             
         if request.form['btn'] == 'sotrudnikNew':
             otd=request.form.get('otd')

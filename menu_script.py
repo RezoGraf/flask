@@ -23,7 +23,7 @@ def generate_menu():
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" >Сотрудники</a>
         <div class="dropdown-menu">
           <a class="dropdown-item text-primary" href="/data_input/wtf_template3">График работы</a>
-          <a class="dropdown-item text-primary" href="/htmx_test/table_view">Табель учета рабочего времени</a>  
+          <a class="dropdown-item text-primary" href="/htmx_test/table_view">График учета рабочего времени</a>  
         </div>
       </li>
       <li class="nav-item dropdown">
