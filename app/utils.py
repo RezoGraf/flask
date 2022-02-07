@@ -1,17 +1,7 @@
-# def list_to_int(list_result):
-#     for s in list_result:
-#         string_result = ''.join(str(e) for e in list_result)
-#         string_result = string_result.replace('(', '')
-#         string_result = string_result.replace(')', '')
-#         string_result = string_result.replace(',', '')
-#         string_result = int(string_result)
-#         #string_result = string_result.append(s)
-#     return string_results
-
 from flask import session
 from unittest import result
 from dateutil import parser
-import db, sql
+import app.db, app.sql
 
 def list_to_int(list_result):
     string_result = ''.join(str(e) for e in list_result)
@@ -61,7 +51,7 @@ def access_user_otd(arena_user):
     else:
         arena_user = 0  
     
-    result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
+    result_accessotd = app.db.select(app.sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
     
     if  result_accessotd != '0':
         select_otd=f' and otd in({result_accessotd})' #доступные отделения
@@ -76,7 +66,7 @@ def access_user_sdl(arena_user):
     else:
         arena_user = 0  
     
-    result_accessSdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
+    result_accessSdl = app.db.select(app.sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
     
     if  result_accessSdl != '0':
         select_sdl=f' and n_doc.sdl in ({result_accessSdl})' #доступные отделения

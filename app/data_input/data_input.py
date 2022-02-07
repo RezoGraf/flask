@@ -10,8 +10,8 @@ import app.sql as sql
 import app.utils as utils
 # import calendar
 import pandas as pd
-# from dateutil import parser
-# from datetime import date
+from dateutil import parser
+from datetime import date
 from app.menu_script import generate_menu
 
 

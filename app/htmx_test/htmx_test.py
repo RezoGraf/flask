@@ -1,13 +1,14 @@
-from flask import render_template, request, Blueprint, session
+from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
 import json
-# import os.path
-import app.db as db, app.sql as sql
+import os.path
+import app.db as db
+import app.sql as sql
 from app.data_input.sql_data_input import sql_upd_it_rasp_grf
 from dateutil import parser
 from datetime import date
 import calendar
 import app.utils as utils
-from app.menu_script import generate_menu
+from menu_script import generate_menu
 
 
 data = ["Один", "Тор"]
@@ -33,7 +34,7 @@ def name_create():
 @htmx_test.route("/name/delete", methods=["POST"])
 def name_delete():
     name = request.form["delete"]
-    # print(f"{name} removed")
+    print(f"{name} removed")
     data.remove(name)
     return ""
 
@@ -43,7 +44,7 @@ def name_order():
     global data
     order = request.form.keys()
     data = list(order)
-    # print(data)
+    print(data)
     return f"Stages reordered - "
 
 
@@ -118,7 +119,7 @@ def table_view():
             result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей
                   
     menu = generate_menu()
-    # print(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
+    print(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
     table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month)) 
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,
