@@ -46,7 +46,9 @@ def wtf_template():
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
-    if 'arena_mpp' in session:
+    if 'arena_mpp' not in session:
+        return redirect(url_for("login"))
+    else:
         if 'arena_user' in session:
             arena_user = session.get('arena_user')
         else:
@@ -230,7 +232,4 @@ def wtf_template3():
                             result_podr=result_podr,
                             result_podr2=result_podr2,
                             arena_fio=arena_fio)
-    else:
-        return redirect(url_for("app.login"))
-    
     

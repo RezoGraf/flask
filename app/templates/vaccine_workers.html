@@ -13,10 +13,20 @@
   </head>
 {% block content %}
 
-    <title>Отчет по отсутствующим</title>
+    <title>Ввод данных</title>
 </head>
 
 <body>
+  <div hx-get="/vaccine/lpu_list" swap="outerHTML" trigger="select">
+    {% for OTD, NOTD, LPU in result_podr %}
+      <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example">
+        <option value={{ OTD }} selected> {{ NOTD or ''}} </option>
+        {% for otd, notd in result_podr2 %}
+        <option value="{{ otd }}"{% if loop.first %} {% endif %}>{{ notd }}</option>
+        {% endfor %}
+      </select>
+    {% endfor %}
+  </div>
 
     <form method=post>
         

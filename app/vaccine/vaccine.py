@@ -2,19 +2,15 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from app.menu_script import generate_menu
 from webargs import fields, validate
 from webargs.flaskparser import use_args
+from . import vaccine
+from flask import render_template, request, url_for, redirect, Blueprint, session
 
-epid = Blueprint('epid', __name__)
+
+vaccine = Blueprint('vaccine', __name__)
 
 
-
-@epid.route('/<podr>/<otd>')
-def epid_workers(podr = 0, otd = 0):
-    menu = generate_menu()
-    print(f'podr= {podr}, otd= {otd}')
-    return render_template('epid_workers.html', menu=menu)
-
-@epid.route('/')
-@use_args({"name": fields.Str(validate=[validate.Range(min=1, max=999)],required=True)}, location="query", location='form')
+@vaccine.route('/')
+# @use_args({"name": fields.Str(validate=[validate.Range(min=1, max=999)],required=True)}, location="query", location='form')
 def main(args):
     menu = generate_menu()
     args['name']
@@ -30,4 +26,4 @@ def main(args):
         #     'username': fields.Str(required=True),
         #     'select_otd': fields.Str(required=True)}
         return redirect(url_for('login'))
-    return render_template('epid_workers.html', menu=menu)
+    return render_template('vaccine_workers.html', menu=menu)
