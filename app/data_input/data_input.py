@@ -142,21 +142,23 @@ def wtf_template3():
             if request.form['btn'] == 'InsDuty':
                 InsDtnDuty = request.form.get('InsDtnDuty')
                 InsTimeDuty = request.form.get('InsTimeDuty')
+                InsRoomDuty = request.form.get('InsRoomDuty') #номер кабинета
                 procedure_name = 'NEW_ID_RASP_DUTY'
                 output_params = db.proc(procedure_name)
                 output_params = utils.list_to_int(output_params)               
                 df = pd.Timestamp(InsDtnDuty)
                 InsNDay = df.dayofweek
-                db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=InsDtnDuty, UpdTimeDuty=InsTimeDuty, UpdNDay=InsNDay, UpdId=output_params))   
+                db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=InsDtnDuty, UpdTimeDuty=InsTimeDuty, UpdNDay=InsNDay, UpdRoomDuty=InsRoomDuty, UpdId=output_params))   
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'UpdDuty':
-                UpdId = request.form.get('UpdId')
+                UpdId = request.form.get('UpdId') #уникальный код записи
+                UpdRoomDuty = request.form.get('UpdRoomDuty') #номер кабинета
                 UpdDtnDuty = request.form.get('UpdDtnDuty')
                 UpdTimeDuty = request.form.get('UpdTimeDuty')
                 df = pd.Timestamp(UpdDtnDuty)
                 UpdNDay = df.dayofweek
-                db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdId=UpdId))
+                db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdRoomDuty=UpdRoomDuty, UpdId=UpdId))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'DelDuty':

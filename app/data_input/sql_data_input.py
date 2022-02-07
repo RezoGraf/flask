@@ -8,7 +8,7 @@ sql_upd_rsp_blc = """UPDATE RSP_BLC SET dtn='{UpdDtn}', dtk='{UpdDtk}', rsn={Upd
 sql_ins_it_rasp_duty = """INSERT INTO IT_RASP_DUTY (ID,DOC,DATE_DUTY,ID_INTERVAL_TIME,NDAY) 
                              VALUES({output_params},{doc},'{InsDtnDuty}',{InsTimeDuty},{InsNDay})"""
 
-sql_upd_it_rasp_duty = """UPDATE IT_RASP_DUTY SET DATE_DUTY='{UpdDtnDuty}',ID_INTERVAL_TIME={UpdTimeDuty},NDAY={UpdNDay},DOC={doc}
+sql_upd_it_rasp_duty = """UPDATE IT_RASP_DUTY SET DATE_DUTY='{UpdDtnDuty}',ID_INTERVAL_TIME={UpdTimeDuty},NDAY={UpdNDay},DOC={doc},ROOM={UpdRoomDuty}
                           WHERE ID={UpdId} """
 
 sql_del_it_rasp_duty = """DELETE FROM IT_RASP_DUTY WHERE ID={DelId} """

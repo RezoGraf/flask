@@ -82,7 +82,7 @@
                     <div style="width:50%; margin: 0 auto;">
                         <br/> <br/>
                         <button 
-                            hx-get="zn_modal_edit?idkv={{idkv}}&nom_nteh={{nom_nteh}}&nom_nlit={{nom_nlit}}&nom_npolir={{nom_npolir}}&nom_nvarh={{nom_nvarh}}" 
+                            hx-get="zn_modal_edit?idkv={{idkv}}&nom_nteh={{nom_nteh}}&nom_nlit={{nom_nlit}}&nom_npolir={{nom_npolir}}&nom_nvarh={{nom_nvarh}}&dzr={{dzr}}" 
                             hx-target="#modals-here" 
                             hx-trigger="click"
                             class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}

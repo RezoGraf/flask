@@ -38,7 +38,7 @@ sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_do
 sql_rsp_rsn = """select rsn, nrsn from rsp_rsn order by rsn"""
 
 # Номера кабинетов
-sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc={doc}) order by id"""
+sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc={doc}) order by nroom_kr """
 
 # Выборка всех специальностей сотрудников
 sql_allSpz = """select spz, nspz from n_spz where pd=1 order by nspz"""
@@ -62,8 +62,11 @@ sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), rsn, (selec
                 from rsp_blc where doc={doc} {period} order by dtn desc"""
 
 # Информация о дежурстве
-sql_it_rasp_duty = """Select ID,DATE_DUTY, 
-                 (select interval_time from it_rasp_time where it_rasp_time.id=IT_RASP_DUTY.ID_INTERVAL_TIME) as TIME_DUTY,
+sql_it_rasp_duty = """Select id as id_duty, date_duty, 
+                 it_rasp_duty.id_interval_time,
+                 (select interval_time from it_rasp_time where it_rasp_time.id=IT_RASP_DUTY.ID_INTERVAL_TIME) as time_duty,
+                 it_rasp_duty.room,
+                 (select nroom_kr from room where room.id=IT_RASP_DUTY.room) as nroom,
                  CASE EXTRACT (WEEKDAY FROM date_duty)  
                      WHEN 1 THEN 'Понедельник'
                      WHEN 2 THEN 'Вторник'
@@ -74,7 +77,7 @@ sql_it_rasp_duty = """Select ID,DATE_DUTY,
                      WHEN 0 THEN 'Воскресенье'
                  END as denNedeli
                  from IT_RASP_DUTY 
-                 where doc={doc} {period} order by DATE_DUTY"""
+                 where doc={doc} {period} order by DATE_DUTY desc"""
 
 # Время работы
 sql_interval_time = """select id, case when interval_time is null THEN 'нет приема' else interval_time END from it_rasp_time order by id"""
@@ -144,6 +147,10 @@ from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
   and (pl_uslk.idkv = {idkv})
 order by idkv,dou"""
+
+sql_zn_naryad_select_info_isp = """Select pl_uslt.idkv,pl_uslt.teh,pl_uslt.lit,pl_uslt.varh,pl_uslt.dzr
+from pl_uslt
+Where (pl_uslt.idkv = {idkv})"""
 # Услуги по наряду--------------------------------------------------------------------------------------------------------
 sql_zn_naryad_select_usl = """select pl_uslp.usl,pl_uslp.kusl,n_usl.nusl,pl_uslp.price,pl_uslp.kol,pl_uslp.stu
                                from pl_uslp, n_usl
@@ -166,6 +173,15 @@ sql_zn_naryad_select_var = """Select distinct mpp, ndoc
                               from n_doc
                               where pv=1 and (dolj=164 or doc=0)
                               order by ndoc"""
+sql_zn_naryad_select_check = """Select idkv from pl_uslt where idkv={idkv}"""
+sql_zn_naryad_insert_isp = """INSERT INTO PL_USLT (idkv,teh,lit,varh,polir,dzr) values({idkv},{nom_teh},{nom_lit},{nom_var},{nom_pol},{dzr})"""
+sql_zn_naryad_update_isp = """Update pl_uslt 
+                              set teh={nom_teh}, 
+                                  lit={nom_lit},                                   
+                                  varh={nom_var},
+                                  polir={nom_pol}, 
+                                  dzr={dzr}
+                              where idkv={idkv}"""
 
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,

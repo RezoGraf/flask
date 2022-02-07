@@ -1,4 +1,3 @@
-
 # from werkzeug.wrappers import response
 import app.db as db
 import app.sql as sql
@@ -77,9 +76,10 @@ def zn_naryad():
         
     if request.method == 'POST':
         idkv = request.form.get('idkv')
-        result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
-        return redirect(url_for('zakaz_naryad.zn_naryad', result_usl = result_usl, zn_naryad_list=result, idkv=idkv))    
+        # result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
+        # result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
+        # return redirect(url_for('zakaz_naryad.zn_naryad', result_usl = result_usl, zn_naryad_list=result, idkv=idkv))
+        return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))    
    
     else:
         idkv = request.args.get('idkv')    
@@ -100,6 +100,7 @@ def zn_modal_edit():
         nom_nlit = request.args.get("nom_nlit")
         nom_npolir = request.args.get("nom_npolir")
         nom_nvarh = request.args.get("nom_nvarh")
+        dzr = request.args.get("dzr")
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
         return redirect(url_for('zakaz_naryad.zn_modal_edit', zn_naryad_list=result, idkv=idkv, nom_nteh=nom_nteh,
                                 nom_nlit=nom_nlit, nom_npolir=nom_npolir, nom_nvarh=nom_nvarh))    
@@ -110,24 +111,16 @@ def zn_modal_edit():
         nom_nlit = request.args.get("nom_nlit")
         nom_npolir = request.args.get("nom_npolir")
         nom_nvarh = request.args.get("nom_nvarh")
+        dzr = request.args.get("dzr")
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))        
         nteh_db = db.select(sql.sql_zn_naryad_select_teh)
         nlit_db = db.select(sql.sql_zn_naryad_select_lit)
         npol_db = db.select(sql.sql_zn_naryad_select_pol)
         nvar_db = db.select(sql.sql_zn_naryad_select_var)
-           
-        # nteh_list = list('',)
-        # sel_1 = ['<option value="0">Не назначено</option>', ] 
-        # for nteh_vol in nteh_db:
-        #     nteh_list.append(nteh_vol)
-        # for i in range(1, len(nteh_list)):
-        #     sel_1_vol = f"""<option value="{nteh_list[i][0]}">{nteh_list[i][1]}</option>"""
-        #     sel_1.append(sel_1_vol)
-        # for i in range(1, len(sel_1)):   
-        #     if str(nom_nteh) in sel_1[i]:
-        #         sel_1[i] = f"""<option value="{nom_nteh}" selected>{nteh_list[i][1]}</option>"""
         
-
+        # if dzr == 'None':
+        #     dzr = datetime.today().strftime('%Y-%m-%d')
+# Построение выпадающего списка-----------------------------------------------------------------------------------------------------
         sel_1 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nteh_db)):
             sel_1_vol = f"""<option value="{nteh_db[i][0]}">{nteh_db[i][1]}</option>"""
@@ -168,132 +161,93 @@ def zn_modal_edit():
                                 <h5 class="modal-title">{result}</h5>
                                 <h5 class="modal-title">{nom_nteh} {nom_nlit} {nom_npolir} {nom_nvarh}</h5>                                
                                 </div>
+                                <form hx-post="zn_modal_close_btn?idkv={idkv}" hx-swap="outerHTML">
                                 <div class="modal-body">
-                                    <form method="POST">    
+                                        
                                         <table class="table table-borderless">
                                             <tr>
                                                 <td style="text-align: center; width:50%;">
-                                                    <label class="custom-select-label" for="tehnik_select">Зубной техник</label> 
-                                                    <select class="custom-select" id="tehnik_select">                                                
+                                                    <label class="custom-select-label" for="nom_teh">Зубной техник</label> 
+                                                    <select class="custom-select" id="nom_teh" name="nom_teh">                                                
                                                         {sel_1}
                                                     </select>
                                                 </td>
                                                 <td style="text-align: center; width:50%;">
-                                                    <label class="custom-select-label" for="lit_select">Литейщик</label>
-                                                    <select class="custom-select" id="lit_select">                                                
+                                                    <label class="custom-select-label" for="nom_lit">Литейщик</label>
+                                                    <select class="custom-select" id="nom_lit" name="nom_lit">                                                
                                                         {sel_2}
                                                     </select>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="text-align: center; width:50%;">
-                                                    <label class="custom-select-label" for="polir_select">Полировщик</label>
-                                                    <select class="custom-select" id="polir_select">
+                                                    <label class="custom-select-label" for="nom_pol">Полировщик</label>
+                                                    <select class="custom-select" id="nom_pol" name="nom_pol">
                                                         {sel_3}
                                                     </select>
                                                 </td>
                                                 <td style="text-align: center; width:50%;">
-                                                    <label class="custom-select-label" for="varh_select">Варщик</label>
-                                                    <select class="custom-select" id="varh_select">
+                                                    <label class="custom-select-label" for="nom_var">Варщик</label>
+                                                    <select class="custom-select" id="nom_var" name="nom_var">
                                                         {sel_4}
                                                     </select>
                                                 </td>
                                             </tr>
+                                                    
                                         </table>
-                                    </form>    
+                                        <div class="row">
+                                            <div class="mx-auto">
+                                                <input type="date" value="{dzr}" name="dzr" id="dzr" />
+                                            </div>
+                                        </div>
+                                      
                                 </div>
                                 <div class="modal-footer">
                                     <table class="table table-borderless">
                                         <tr>
                                             <td style="text-align: left;">
-                                                <button type="button" class="btn btn-success" onclick="closeModal()">Сохранить</button>
+                                            <button class="btn btn-primary btn-success" type="submit" onclick="closeModal()">Сохранить</button>
                                             </td>                                            
                                             <td style="text-align: right;"> 
                                                 <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
                                             </td>                                            
                                         </tr>
                                 </div>
+                                
                             </div>
                             </div>
-                        </div>"""
+                        </div>
+                        </form>  """
         return response
     
-# Модальное на закрытие---------------------------------------------------------------------------------------------------------------------------------
-@zakaz_naryad.route('/zn_modal_close', methods=['GET', 'POST'])
-def zn_modal_close():
-        
-    if request.method == 'POST':
-        idkv = request.args.get('idkv')
-        nkv = request.args.get('nkv')
-        dt_close = request.form.get('dt_close')
-        print(dt_close)
-        if dt_close is None:
-            dt_close = datetime.today().strftime('%Y-%m-%d')
-            
-        print(dt_close)
-        return redirect(url_for('zakaz_naryad.zn_modal_close', idkv=idkv, dt_close=dt_close))    
-   
-    else:
-        idkv = request.args.get('idkv')
-        nkv = request.args.get('nkv')
-        dt_close = request.args.get('dt_close')
-        dt_today = datetime.today().strftime('%Y-%m-%d')
-        # print(dt_close)
-        response = f"""<div id="modal-backdrop1" class="modal-backdrop fade show" style="display:block;"></div>
-                        <div id="modal1" class="modal fade show" tabindex="-1" style="display:block;">
-                            <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header align-self-center">
-                                    <div class="row">
-                                        <div class="col align-self-center">
-                                            <h4 class="modal-title">Закрытие наряда № {nkv}</h4>
-                                        </div>
-                                    </div>                            
-                                </div>
-                                <form hx-post="zn_modal_close_btn?idkv={idkv}" hx-swap="outerHTML">
-                                <div class="modal-body" style="text-align: center;">
-                                
-                                    
-                                        <input type="date" value="{dt_today}" name="dt_close" id="dt_close" />
-                                        
-                                </div>     
-                                
-                                <div class="modal-footer">
-                                    <table class="table table-borderless">
-                                        <tr>
-                                            <td style="text-align: left;">
-                                                <button class="btn btn-primary btn-success" type="submit">Сохранить</button>
-                                            </td>                                            
-                                            <td style="text-align: right;">  
-                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
-                                            </td>
-                                            
-                                                                                        
-                                        </tr>
-                                    </table> 
-                                    </form>   
-                                </div>
-                            </div>
-                            </div>
-                        </div>"""
-        return response
-
 # Модальное на закрытие---------------------------------------------------------------------------------------------------------------------------------
 @zakaz_naryad.route('/zn_modal_close_btn', methods=['GET', 'POST'])
 def zn_modal_close_btn():
         
     if request.method == 'POST':
         idkv = request.args.get('idkv')
-        dt_close = request.form.get('dt_close')
-        # print(idkv)
-        # print(dt_close)
-        return redirect(url_for('zakaz_naryad.zn_modal_close_btn', idkv=idkv, dt_close=dt_close))
+        dzr = request.form.get('dzr')
+        nom_teh = request.form.get('nom_teh')
+        nom_lit = request.form.get('nom_lit')
+        nom_pol = request.form.get('nom_pol')
+        nom_var = request.form.get('nom_var')
+        return redirect(url_for('zakaz_naryad.zn_modal_close_btn', idkv=idkv, dzr=dzr, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var))
     else:
         idkv = request.args.get('idkv')
-        dt_close = request.args.get('dt_close')
-        # check_zn = db.select(sql.sql_zn_naryad_select_check.format(idkv=idkv))
-        check_zn = db.select(sql.sql_zn_naryad_select_info1.format(idkv=idkv)) 
+        dzr = request.args.get('dzr')
+        nom_teh = request.args.get('nom_teh')
+        nom_lit = request.args.get('nom_lit')
+        nom_pol = request.args.get('nom_pol')
+        nom_var = request.form.get('nom_var')
+        check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))
         print(check_zn)
+        print(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
+        if check_zn == []:
+            print(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
+        else:
+            print(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
+        # check_zn = db.select(sql.sql_zn_naryad_select_info1.format(idkv=idkv)) 
+        # print(tehnik_sel)
         # teh = 
         # lit = 
         # varh = 
@@ -302,16 +256,8 @@ def zn_modal_close_btn():
         # if check_zn == []:
                 # ({idkv},{teh},{lit},{varh},{polir},{dzr})
             # print(db.select(sql.sql_zn_naryad_insert_naryad.format(idkv=idkv, teh=teh, lit=lit, varh=varh,polir=polir,dzr=dzr)))
-        response = f"""<div id="modal-backdrop11" class="modal-backdrop fade show" style="display:block;"></div>
-                        <div id="modal1" class="modal fade show" tabindex="-1" style="display:block;">
-                            <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-body" style="text-align: center;">  
-                                    <button type="button" class="btn btn-danger" onclick="closeModal1()">Сохранено</button>                                     
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                        """
-        return response
+
+        return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
     
+    
+  
