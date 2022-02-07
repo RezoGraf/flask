@@ -145,7 +145,7 @@ Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_
   and (pl_uslk.idkv = {idkv})
 order by idkv,dou"""
 
-sql_zn_naryad_select_info1 = """Select pl_uslt.idkv,pl_uslt.teh,pl_uslt.lit,pl_uslt.varh,pl_uslt.dzr
+sql_zn_naryad_select_info_isp = """Select pl_uslt.idkv,pl_uslt.teh,pl_uslt.lit,pl_uslt.varh,pl_uslt.dzr
 from pl_uslt
 Where (pl_uslt.idkv = {idkv})"""
 # Услуги по наряду--------------------------------------------------------------------------------------------------------
@@ -171,7 +171,14 @@ sql_zn_naryad_select_var = """Select distinct mpp, ndoc
                               where pv=1 and (dolj=164 or doc=0)
                               order by ndoc"""
 sql_zn_naryad_select_check = """Select idkv from pl_uslt where idkv={idkv}"""
-sql_zn_naryad_insert_naryad = """INSERT INTO PL_USLT (idkv,teh,lit,varh,polir,dzr) values({idkv},{teh},{lit},{varh},{polir},{dzr})"""
+sql_zn_naryad_insert_isp = """INSERT INTO PL_USLT (idkv,teh,lit,varh,polir,dzr) values({idkv},{nom_teh},{nom_lit},{nom_var},{nom_pol},{dzr})"""
+sql_zn_naryad_update_isp = """Update pl_uslt 
+                              set teh={nom_teh}, 
+                                  lit={nom_lit},                                   
+                                  varh={nom_var},
+                                  polir={nom_pol}, 
+                                  dzr={dzr}
+                              where idkv={idkv}"""
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
 #        (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
