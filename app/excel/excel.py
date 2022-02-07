@@ -156,7 +156,7 @@ def cleanup(path):
 @excel.route('/', methods=['GET', 'POST'])
 def excel_ots():
     name_xlsx = "otchet_po_otsutstviyu.xlsx"
-    path_xlsx = f"app/excel/{name_xlsx}"
+    path_xlsx = f"excel/{name_xlsx}"
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
 

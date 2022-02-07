@@ -12,7 +12,7 @@ WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
 # Выбор списка доступных отделений
-sql_allOtd = "select otd, notd from np_otd where otd>=0 {select_otd} order by ps"
+sql_allOtd = "select otd, notd, lpu from np_otd where otd>=0 {select_otd} order by ps"
 # Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
 
@@ -59,7 +59,7 @@ sql_it_rasp = """Select IT_RASP.ROOM,
 
 # Информация об отсутствии на работе
 sql_noWork = """Select iblc, CAST (dtn AS date), CAST (dtk AS date), rsn, (select nrsn from rsp_rsn where rsp_rsn.rsn=rsp_blc.rsn) as nrsn_ 
-                from rsp_blc where doc='{doc}' order by dtn desc"""
+                from rsp_blc where doc={doc} {period} order by dtn desc"""
 
 # Информация о дежурстве
 sql_it_rasp_duty = """Select ID,DATE_DUTY, 
@@ -74,7 +74,7 @@ sql_it_rasp_duty = """Select ID,DATE_DUTY,
                      WHEN 0 THEN 'Воскресенье'
                  END as denNedeli
                  from IT_RASP_DUTY 
-                 where doc='{doc}' order by DATE_DUTY"""
+                 where doc={doc} {period} order by DATE_DUTY"""
 
 # Время работы
 sql_interval_time = """select id, case when interval_time is null THEN 'нет приема' else interval_time END from it_rasp_time order by id"""
@@ -179,6 +179,7 @@ sql_zn_naryad_update_isp = """Update pl_uslt
                                   polir={nom_pol}, 
                                   dzr={dzr}
                               where idkv={idkv}"""
+
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
 #        (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
@@ -300,8 +301,9 @@ sql_htmx_text_tablevew = """Select it_rasp_grf.id_grf, (select nroom_kr from roo
 sql_interval_time_list = """select id, interval_time from it_rasp_time"""
 
 sql_interval_time_current = """select interval_time from it_rasp_time where id={id}"""
+                
 
-# Report.py--------------------------------------------------------------------------------------------------------
+  # Report.py--------------------------------------------------------------------------------------------------------
 
 #запрос для выборки отсутствующих для report
 sql_select_otsut = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),

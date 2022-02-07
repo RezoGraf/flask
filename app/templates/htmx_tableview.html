@@ -27,7 +27,7 @@
       </div>
       <label for="otd" class="form-label">Отделение</label>
       <select name="otd" class="form-select" aria-label="Default select example">
-        {% for OTD, NOTD in result_otd %}
+        {% for OTD, NOTD, LPU in result_otd %}
           <option value="{{ OTD }}"{% if loop.first %} SELECTED {% endif %}>{{ NOTD }}</option>
         {% endfor %}
         <option value = {{ OTD }} selected>{{ NOTD }}</option>

@@ -2,6 +2,7 @@ from app.api.api import api
 from app.htmx_test.htmx_test import htmx_test
 from app.data_input.data_input import data_input
 from app.excel.excel import excel
+from app.vaccine.vaccine import vaccine
 from app.report.report import report
 from app.zakaz_naryad.zakaz_naryad import zakaz_naryad
 from flask import Flask, render_template, request, url_for, redirect
@@ -9,8 +10,7 @@ from app.db_test.db_test import db_test
 import datetime
 import app.auth as auth
 from app.menu.menu import menu
-# from ctypes.util import find_library
-# from menu_script import generate_menu
+
 
 # import sentry_sdk
 # from sentry_sdk.integrations.flask import FlaskIntegration
@@ -38,9 +38,9 @@ app.register_blueprint(excel, url_prefix='/excel')
 app.register_blueprint(menu, url_prefix='/menu')
 app.register_blueprint(report, url_prefix='/report')
 app.register_blueprint(db_test, url_prefix='/db_test')
-
 app.register_blueprint(zakaz_naryad, url_prefix='/zakaz_naryad')
 app.register_blueprint(htmx_test, url_prefix='/htmx_test')
+app.register_blueprint(vaccine, url_prefix='/vaccine')
 
 
 @app.route('/', methods=['GET', 'POST'])

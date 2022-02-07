@@ -13,7 +13,9 @@ report = Blueprint('report', __name__)
 
 @report.route('/', methods=['GET', 'POST'])
 def main():
-    if 'arena_mpp' in session:
+    if 'arena_mpp' not in session:
+        return redirect(url_for("login"))
+    else:
         if request.method == 'POST':
             # dtn = request.form.get('dtn')
             dtn = request.form.get('dtn_get')
@@ -66,5 +68,3 @@ def main():
             return render_template("report.html",
                                    my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple,
                                    arena_fio=arena_fio, menu=menu)
-    else:
-        return redirect(url_for("app.login"))

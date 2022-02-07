@@ -10,8 +10,8 @@ import app.sql as sql
 import app.utils as utils
 # import calendar
 import pandas as pd
-# from dateutil import parser
-# from datetime import date
+from dateutil import parser
+from datetime import date
 from app.menu_script import generate_menu
 
 
@@ -46,34 +46,43 @@ def wtf_template():
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 def wtf_template3():
-    if 'arena_mpp' in session:
+    if 'arena_mpp' not in session:
+        return redirect(url_for("login"))
+    else:
         if 'arena_user' in session:
             arena_user = session.get('arena_user')
         else:
             arena_user = 0
             
-        result_accessotd = db.select(sql.sql_accessOtd.format(arena_user=arena_user))[0][0] #доступные отделения USERS_SET_APP
-        result_accessSdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0] #доступные должности
+        select_otd = utils.access_user_otd(arena_user)  #доступные отделения
+        select_sdl = utils.access_user_sdl(arena_user)  #доступные должности
+        result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd)) 
+        if select_otd != '':
+            otd = request.args.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
+        else :   
+            otd = '0'
+            
+        otd1 = request.args.get('otd')
+        print(otd1)
         
-        if  result_accessotd != '0':
-            select_otd=f' and otd in({result_accessotd})'
-            random_otd = db.select(sql.sql_randomOtd.format(select_otd=select_otd)) #первое попавшееся отделение    
-        else:
-            select_otd = ''
-            random_otd = '0'
-            
-        if  result_accessSdl != '0':
-            select_sdl=f' and n_doc.sdl in({result_accessSdl})'
-        else:
-            select_sdl = ''
-            
-        otd = request.args.get('otd') or utils.list_to_int(random_otd)  #код выбранного отделения
-        lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
+        notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1] #наименование выбранного отделения
+        lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])  
+        
+        current_date = date.today()  #текущая дата
+        current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")  #текущий год
+        current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m") #текущий месяц
+        
+        select_period_blc = f" and (rsp_blc.dtk>='01.01.{current_year}' and rsp_blc.dtk<='31.12.{current_year}')"
+        select_period_duty = f" and (it_rasp_duty.date_duty>='01.01.{current_year}' and it_rasp_duty.date_duty<='31.12.{current_year}')"
+
+        
+        
         if int(otd) == 0:
-            current_otd = ''
+            select_current_otd = ''
         else:
-            current_otd = f' and otd={otd}'
-        result_fio = db.select(sql.sql_allDoc.format(current_otd = current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
+            select_current_otd = f' and otd={otd}'
+            
+        result_fio = db.select(sql.sql_allDoc.format(current_otd = select_current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
         doc = request.args.get('doc') or result_fio[0][0]      #код выбранного сотрудника со wtf_template3 или первый из запроса       
         fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))[0][0]
         
@@ -93,7 +102,9 @@ def wtf_template3():
             result_rasp = (result_rasp, )
         else:
             visible_ = 'style=display:none;'
-        result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc)) #работа в выходные дни
+        
+        result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc, period = select_period_duty)) #работа в выходные дни
+        result_noWork = db.select(sql.sql_noWork.format(doc = doc, period = select_period_blc)) #отсутствие на рабочем месте
             
         # result_noWork = db.select(sql.sql_noWork.format(doc=doc)) #отсутствие на рабочем месте
         # result_duty = db.select(sql.sql_it_rasp_duty.format(doc=doc)) #работа в выходные дни
@@ -188,7 +199,7 @@ def wtf_template3():
         result_time = db.select(sql.sql_interval_time) #интервал времени
         result_time2 = db.select(sql.sql_interval_time)   
                                   
-        result_noWork = db.select(sql.sql_noWork.format(doc=doc)) #отсутствие на рабочем месте
+        # result_noWork = db.select(sql.sql_noWork.format(doc = doc, period = select_period)) #отсутствие на рабочем месте
                 
         result_podr = db.select(sql.sql_currentOtd.format(otd=otd)) #список отделений
         result_podr2 = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
@@ -230,7 +241,4 @@ def wtf_template3():
                             result_podr=result_podr,
                             result_podr2=result_podr2,
                             arena_fio=arena_fio)
-    else:
-        return redirect(url_for("app.login"))
-    
     

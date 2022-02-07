@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    {{ menu|safe  }}
+  </head>
+{% block content %}
+
+    <title>Ввод данных</title>
+</head>
+
+<body>
+  <div hx-get="/vaccine/lpu_list" swap="outerHTML" trigger="select">
+    {% for OTD, NOTD, LPU in result_podr %}
+      <select name="otd" class="custom-select custom-select-lg mb-3" aria-label="Default select example">
+        <option value={{ OTD }} selected> {{ NOTD or ''}} </option>
+        {% for otd, notd in result_podr2 %}
+        <option value="{{ otd }}"{% if loop.first %} {% endif %}>{{ notd }}</option>
+        {% endfor %}
+      </select>
+    {% endfor %}
+  </div>
+
+    <form method=post>
+        
+      <p><input type=submit value=Register></p>
+    </form>
+</body>
+
+
+{% endblock %}
