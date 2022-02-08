@@ -82,8 +82,10 @@ def zn_naryad():
         return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))    
    
     else:
+        print('blbnt')
         idkv = request.args.get('idkv')    
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
+        print(result)
         result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
         menu = generate_menu()       
         return render_template('zn_naryad.html', menu=menu,
@@ -96,21 +98,23 @@ def zn_modal_edit():
         
     if request.method == 'POST':
         idkv = request.args.get('idkv')
-        nom_nteh = request.args.get("nom_nteh")
-        nom_nlit = request.args.get("nom_nlit")
-        nom_npolir = request.args.get("nom_npolir")
-        nom_nvarh = request.args.get("nom_nvarh")
+        nom_teh = request.args.get("nom_teh")
+        nom_lit = request.args.get("nom_lit")
+        nom_polir = request.args.get("nom_polir")
+        nom_var = request.args.get("nom_var")
         dzr = request.args.get("dzr")
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        return redirect(url_for('zakaz_naryad.zn_modal_edit', zn_naryad_list=result, idkv=idkv, nom_nteh=nom_nteh,
-                                nom_nlit=nom_nlit, nom_npolir=nom_npolir, nom_nvarh=nom_nvarh))    
+        return redirect(url_for('zakaz_naryad.zn_modal_edit', zn_naryad_list=result, idkv=idkv, nom_teh=nom_teh,
+                                nom_lit=nom_lit, nom_polir=nom_polir, nom_var=nom_var))    
    
     else:
         idkv = request.args.get('idkv')
-        nom_nteh = request.args.get("nom_nteh")
-        nom_nlit = request.args.get("nom_nlit")
-        nom_npolir = request.args.get("nom_npolir")
-        nom_nvarh = request.args.get("nom_nvarh")
+        nom_teh = request.args.get("nom_teh")
+        nom_lit = request.args.get("nom_lit")
+        nom_polir = request.args.get("nom_polir")
+        nom_var = request.args.get("nom_var")
+        # if nom_var is None:
+        #     nom_var=0
         dzr = request.args.get("dzr")
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))        
         nteh_db = db.select(sql.sql_zn_naryad_select_teh)
@@ -126,32 +130,32 @@ def zn_modal_edit():
             sel_1_vol = f"""<option value="{nteh_db[i][0]}">{nteh_db[i][1]}</option>"""
             sel_1.append(sel_1_vol)
         for i in range(1, len(sel_1)):   
-            if str(nom_nteh) in sel_1[i]:
-                sel_1[i] = f"""<option value="{nom_nteh}" selected>{nteh_db[i][1]}</option>"""
+            if str(nom_teh) in sel_1[i]:
+                sel_1[i] = f"""<option value="{nom_teh}" selected>{nteh_db[i][1]}</option>"""
                 
         sel_2 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nlit_db)):
             sel_2_vol = f"""<option value="{nlit_db[i][0]}">{nlit_db[i][1]}</option>"""
             sel_2.append(sel_2_vol)
         for i in range(1, len(sel_2)):   
-            if str(nom_nlit) in sel_2[i]:
-                sel_2[i] = f"""<option value="{nom_nlit}" selected>{nlit_db[i][1]}</option>"""
+            if str(nom_lit) in sel_2[i]:
+                sel_2[i] = f"""<option value="{nom_lit}" selected>{nlit_db[i][1]}</option>"""
                 
         sel_3 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(npol_db)):
             sel_3_vol = f"""<option value="{npol_db[i][0]}">{npol_db[i][1]}</option>"""
             sel_3.append(sel_3_vol)
         for i in range(1, len(sel_3)):   
-            if str(nom_npolir) in sel_3[i]:
-                sel_3[i] = f"""<option value="{nom_npolir}" selected>{npol_db[i][1]}</option>"""
+            if str(nom_polir) in sel_3[i]:
+                sel_3[i] = f"""<option value="{nom_polir}" selected>{npol_db[i][1]}</option>"""
         
         sel_4 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nvar_db)):
             sel_4_vol = f"""<option value="{nvar_db[i][0]}">{nvar_db[i][1]}</option>"""
             sel_4.append(sel_4_vol)
         for i in range(1, len(sel_4)):   
-            if str(nom_nvarh) in sel_4[i]:
-                sel_4[i] = f"""<option value="{nom_nvarh}" selected>{nvar_db[i][1]}</option>"""
+            if str(nom_var) in sel_4[i]:
+                sel_4[i] = f"""<option value="{nom_var}" selected>{nvar_db[i][1]}</option>"""
                 
         response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
@@ -159,9 +163,9 @@ def zn_modal_edit():
                             <div class="modal-content">
                                 <div class="modal-header">
                                 <h5 class="modal-title">{result}</h5>
-                                <h5 class="modal-title">{nom_nteh} {nom_nlit} {nom_npolir} {nom_nvarh}</h5>                                
+                                <h5 class="modal-title">{nom_teh} {nom_lit} {nom_polir} {nom_var}</h5>                                
                                 </div>
-                                <form hx-post="zn_modal_close_btn?idkv={idkv}" hx-swap="outerHTML">
+                                <form hx-post="zn_modal_close_btn?idkv={idkv}" action="">
                                 <div class="modal-body">
                                         
                                         <table class="table table-borderless">
@@ -239,25 +243,26 @@ def zn_modal_close_btn():
         nom_lit = request.args.get('nom_lit')
         nom_pol = request.args.get('nom_pol')
         nom_var = request.form.get('nom_var')
+        if nom_teh is None:    
+            nom_teh = "0"
+        if nom_lit is None:    
+            nom_lit = "0"
+        if nom_pol is None:    
+            nom_pol = "0"
+        if nom_var is None:    
+            nom_var = "0"
+        if dzr is None or dzr == "":   
+            dzr = "null"    
         check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))
-        print(check_zn)
-        print(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
         if check_zn == []:
-            print(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
+            db.write(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
         else:
-            print(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
-        # check_zn = db.select(sql.sql_zn_naryad_select_info1.format(idkv=idkv)) 
-        # print(tehnik_sel)
-        # teh = 
-        # lit = 
-        # varh = 
-        # polir = 
-        # dzr = 
-        # if check_zn == []:
-                # ({idkv},{teh},{lit},{varh},{polir},{dzr})
-            # print(db.select(sql.sql_zn_naryad_insert_naryad.format(idkv=idkv, teh=teh, lit=lit, varh=varh,polir=polir,dzr=dzr)))
+            db.write(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
 
-        return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
+        # return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
+    
+        return render_template('zn_naryad.html', idkv=idkv)
+        # return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
     
     
   
