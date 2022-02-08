@@ -13,11 +13,12 @@ excel = Blueprint('excel', __name__)
 def book_create(date_start, date_finish, select_otd):
     print(select_otd)
     if select_otd is not None:
-        select_otd2 = f' and otd in ({select_otd})'
-        print(sql_select_otsut_otd.format(date_start=date_start, date_finish=date_finish, otd=select_otd2))
-        data  = db.select(sql_select_otsut_otd.format(date_start=date_start, date_finish=date_finish, otd=select_otd2))
+        if select_otd != '0':
+            select_otd2 = f' and otd in ({select_otd})'
+            data  = db.select(sql_select_otsut_otd.format(date_start=date_start, date_finish=date_finish, otd=select_otd2))
+        else:
+            data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     else:
-        print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
         data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     # print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     book = Workbook()
