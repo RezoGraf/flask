@@ -30,8 +30,8 @@
                     <table class="table" style="border: none">
                         
                         <tbody>
-                            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nom_nteh, nlit, nom_nlit, 
-                                npolir, nom_npolir, nvarh, nom_nvarh, nlpu in zn_naryad_list %}
+                            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nom_teh, nlit, nom_lit, 
+                                npolir, nom_pol, nvarh, nom_var,nlpu in zn_naryad_list %}
                             <tr style = "line-height: 15px; min-height: 15px; height: 15px; border: none">
                                 <td><span class="font-weight-bold"><u>Номер наряда:</u></span> {{nkv}}</td> 
                                 <td> 
@@ -82,7 +82,7 @@
                     <div style="width:50%; margin: 0 auto;">
                         <br/> <br/>
                         <button 
-                            hx-get="zn_modal_edit?idkv={{idkv}}&nom_nteh={{nom_nteh}}&nom_nlit={{nom_nlit}}&nom_npolir={{nom_npolir}}&nom_nvarh={{nom_nvarh}}&dzr={{dzr}}" 
+                            hx-get="zn_modal_edit?idkv={{idkv}}&nom_teh={{nom_teh}}&nom_lit={{nom_lit}}&nom_pol={{nom_pol}}&nom_var={{nom_var}}&dzr={{dzr}}" 
                             hx-target="#modals-here" 
                             hx-trigger="click"
                             class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}
