@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, abort, redirect, url_for, request,
 from app.data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from app.data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
 from app.data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
-from app.data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp
+from app.data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp,sql_del_sms_send,sql_upd_pspo_s
 from . import data_input
 import app.db as db
 import app.sql as sql
@@ -118,7 +118,12 @@ def wtf_template3():
         if request.method == 'POST':
             if request.form['btn'] == 'DelRspBlc':
                 DelIblc = request.form.get('DelIblc')
+                dtn = request.form.get('DelDtn')
+                dtk =request.form.get('DelDtk')
+                
                 db.write(sql_del_rsp_blc.format(DelIblc=DelIblc))
+                db.write(sql_upd_pspo_s.format(dtn=dtn, dtk=dtk, doc=doc))
+                db.write(sql_del_sms_send.format(dtn=dtn, dtk=dtk, doc=doc))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'UpdRspBlc':
