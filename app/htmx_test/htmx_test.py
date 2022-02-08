@@ -186,6 +186,19 @@ def table_edit():
         return response
     
     
+@htmx_test.route('/grf_NewWork', methods=['GET', 'POST'])
+def NewWork():
+    otd = request.args.get('otd')
+    response = f"""
+     <button 
+      hx-get="grf_addWorker?otd={ otd }" 
+      hx-target="#modals-here" 
+      hx-trigger="click"
+      class="btn btn-primary btn-block" >Добавить сотрудника</button>
+      </div>"""
+    return response
+    
+    
 #Модальное на редактирование наряда-------------------------------------------------------------------------------------------- 
 @htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
 def modal_addWorker():
@@ -199,8 +212,14 @@ def modal_addWorker():
     #                             nom_nlit=nom_nlit, nom_npolir=nom_npolir, nom_nvarh=nom_nvarh))    
    
     # else:
-    otd = request.form.get('otd')
-    result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
+    if 'arena_user' in session:
+        arena_user = session.get('arena_user')
+    else:
+        arena_user = 0 
+    select_sdl = utils.access_user_sdl(arena_user = arena_user)
+    
+    otd = request.args.get('otd')
+    result_alldoc = db.select(sql.sql_allDoc.format(current_otd=f' and otd={ otd }',select_sdl=select_sdl)) #список врачей
     result_time = db.select(sql.sql_interval_time) #интервал времени
 
     sel_ = ['<option value="0">Не назначен</option>', ] 

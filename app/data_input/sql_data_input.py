@@ -19,3 +19,12 @@ sql_ins_it_rasp = """INSERT INTO IT_RASP (LPU,OTD,SPZ,DOC,ROOM,NTV,ID_INTERVAL1,
 sql_del_it_rasp = """DELETE FROM IT_RASP WHERE DOC={doc} """
 
 sql_upd_it_rasp_grf = "UPDATE IT_RASP_GRF set {day_col}={day_zn} where id_grf={id_grf}"
+
+#запись через интернет убираем
+sql_upd_pspo_s = """ UPDATE PSPO_S SET BLC=0 WHERE (UID=0) AND (BLC=1) 
+                     AND UIP IN (SELECT DISTINCT UIP FROM PSPO WHERE PSPO.MPP={doc} 
+                     AND (PSPO.DV>='{dtn}' AND PSPO.DV<='{dtk}'))"""        
+# убираем СМС рассылки
+sql_del_sms_send = """DELETE FROM SMS_SEND WHERE STATUS=0 and 
+                        UIP IN (SELECT DISTINCT UIP FROM PSPO WHERE PSPO.MPP={doc} 
+                        AND (PSPO.DV>='{dtn}' AND PSPO.DV<='{dtk}'))"""
