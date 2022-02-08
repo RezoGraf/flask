@@ -6,12 +6,19 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 import app.db as db
-from app.sql import sql_select_otsut
+from app.sql import sql_select_otsut, sql_select_otsut_otd
 
 excel = Blueprint('excel', __name__)
 
-def book_create(date_start, date_finish):
-    data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+def book_create(date_start, date_finish, select_otd):
+    print(select_otd)
+    if select_otd is not None:
+        select_otd2 = f' and otd in ({select_otd})'
+        print(sql_select_otsut_otd.format(date_start=date_start, date_finish=date_finish, otd=select_otd2))
+        data  = db.select(sql_select_otsut_otd.format(date_start=date_start, date_finish=date_finish, otd=select_otd2))
+    else:
+        print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+        data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     # print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     book = Workbook()
     sheet = book.active
@@ -159,12 +166,13 @@ def excel_ots():
     path_xlsx = f"excel/{name_xlsx}"
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
+    selected_otd = request.args.get('select_otd')
 
     # cleanup(path_xlsx)
     # dtn = request.args.get('dtn')
     # dtk = request.args.get('dtk')
 
-    book_create(dtn, dtk)
+    book_create(dtn, dtk, selected_otd)
 
     return send_file(path_xlsx,
                      mimetype='xlsx',
