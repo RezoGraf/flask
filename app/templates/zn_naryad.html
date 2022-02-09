@@ -152,7 +152,7 @@
                 <td style="text-align: center;">{{ kol or '' }}</td>
                 <td style="text-align: center;">{{ stu or '' }}</td> 
             </tr>
-            {% endfor %}
+            
         </tbody>
         <tfoot>
             <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
@@ -261,6 +261,7 @@
         setTimeout(function() {
             container.removeChild(backdrop)
             container.removeChild(modal)
+            window.location = 'zn_naryad?idkv={{idkv}}'
         }, 200)
     }
 
@@ -275,9 +276,10 @@
         setTimeout(function() {
             container.removeChild(backdrop)
             container.removeChild(modal)
+            window.location = 'zn_naryad?idkv={{idkv}}'
         }, 200)
     }
  
 </script>
-
+{% endfor %}
 {% endblock %}

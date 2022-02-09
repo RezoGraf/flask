@@ -82,10 +82,8 @@ def zn_naryad():
         return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))    
    
     else:
-        print('blbnt')
         idkv = request.args.get('idkv')    
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        print(result)
         result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
         menu = generate_menu()       
         return render_template('zn_naryad.html', menu=menu,
@@ -100,18 +98,18 @@ def zn_modal_edit():
         idkv = request.args.get('idkv')
         nom_teh = request.args.get("nom_teh")
         nom_lit = request.args.get("nom_lit")
-        nom_polir = request.args.get("nom_polir")
+        nom_pol = request.args.get("nom_pol")
         nom_var = request.args.get("nom_var")
         dzr = request.args.get("dzr")
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
         return redirect(url_for('zakaz_naryad.zn_modal_edit', zn_naryad_list=result, idkv=idkv, nom_teh=nom_teh,
-                                nom_lit=nom_lit, nom_polir=nom_polir, nom_var=nom_var))    
+                                nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var))    
    
     else:
         idkv = request.args.get('idkv')
         nom_teh = request.args.get("nom_teh")
         nom_lit = request.args.get("nom_lit")
-        nom_polir = request.args.get("nom_polir")
+        nom_pol = request.args.get("nom_pol")
         nom_var = request.args.get("nom_var")
         # if nom_var is None:
         #     nom_var=0
@@ -121,6 +119,7 @@ def zn_modal_edit():
         nlit_db = db.select(sql.sql_zn_naryad_select_lit)
         npol_db = db.select(sql.sql_zn_naryad_select_pol)
         nvar_db = db.select(sql.sql_zn_naryad_select_var)
+        print(npol_db)
         
         # if dzr == 'None':
         #     dzr = datetime.today().strftime('%Y-%m-%d')
@@ -131,23 +130,23 @@ def zn_modal_edit():
             sel_1.append(sel_1_vol)
         for i in range(1, len(sel_1)):   
             if str(nom_teh) in sel_1[i]:
-                sel_1[i] = f"""<option value="{nom_teh}" selected>{nteh_db[i][1]}</option>"""
-                
+                sel_1[i] = f"""<option value="{nom_teh}" selected>{nteh_db[i][1]}</option>"""       
         sel_2 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nlit_db)):
             sel_2_vol = f"""<option value="{nlit_db[i][0]}">{nlit_db[i][1]}</option>"""
             sel_2.append(sel_2_vol)
         for i in range(1, len(sel_2)):   
             if str(nom_lit) in sel_2[i]:
-                sel_2[i] = f"""<option value="{nom_lit}" selected>{nlit_db[i][1]}</option>"""
-                
+                sel_2[i] = f"""<option value="{nom_lit}" selected>{nlit_db[i][1]}</option>"""        
+        print(nom_pol)        
         sel_3 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(npol_db)):
             sel_3_vol = f"""<option value="{npol_db[i][0]}">{npol_db[i][1]}</option>"""
             sel_3.append(sel_3_vol)
         for i in range(1, len(sel_3)):   
-            if str(nom_polir) in sel_3[i]:
-                sel_3[i] = f"""<option value="{nom_polir}" selected>{npol_db[i][1]}</option>"""
+            if str(nom_pol) in sel_3[i]:
+                sel_3[i] = f"""<option value="{nom_pol}" selected>{npol_db[i][1]}</option>"""
+        print(nom_pol)
         
         sel_4 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nvar_db)):
@@ -156,6 +155,7 @@ def zn_modal_edit():
         for i in range(1, len(sel_4)):   
             if str(nom_var) in sel_4[i]:
                 sel_4[i] = f"""<option value="{nom_var}" selected>{nvar_db[i][1]}</option>"""
+        
                 
         response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
@@ -163,7 +163,7 @@ def zn_modal_edit():
                             <div class="modal-content">
                                 <div class="modal-header">
                                 <h5 class="modal-title">{result}</h5>
-                                <h5 class="modal-title">{nom_teh} {nom_lit} {nom_polir} {nom_var}</h5>                                
+                                <h5 class="modal-title">{nom_teh} {nom_lit} {nom_pol} {nom_var}</h5>                                
                                 </div>
                                 <form hx-post="zn_modal_close_btn?idkv={idkv}" action="">
                                 <div class="modal-body">
@@ -259,9 +259,9 @@ def zn_modal_close_btn():
         else:
             db.write(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
 
-        # return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
+        return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
     
-        return render_template('zn_naryad.html', idkv=idkv)
+        # return render_template('zn_naryad.html',_external=True, idkv=idkv)
         # return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
     
     
