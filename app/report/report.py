@@ -19,24 +19,28 @@ def main():
             # dtn = request.form.get('dtn')
             dtn = request.form.get('dtn_get')
             dtk = request.form.get('dtk_get')
+            podr_select = request.form.get('podr_select')
             select_otd = request.form.get('select_otd')
             dtn_simple = pd.Timestamp(request.form.get('dtn_get'))
             dtk_simple = pd.Timestamp(request.form.get('dtk_get'))
             if request.form['btn'] == 'saveToPdf':
                 return redirect(url_for('excel.excel_ots', _external=True, dtn=dtn_simple.strftime("%d.%m.%Y"),
                                         dtk=dtk_simple.strftime("%d.%m.%Y"),
-                                        select_otd=select_otd))
+                                        select_otd=select_otd,
+                                        podr_select=podr_select))
             else:
                 return redirect(url_for('report.main',
                                         dtn=dtn,
                                         dtk=dtk,
-                                        select_otd=select_otd))
+                                        select_otd=select_otd,
+                                        podr_select=podr_select))
         else:
             dtn_simple = request.args.get('dtn')
             dtk_simple = request.args.get('dtk')
             dtn = request.args.get('dtn')
             dtk = request.args.get('dtk')
             select_otd = request.args.get('select_otd')
+            podr_select = request.args.get('podr_select')
             result = ''
             select_current_ord = ''
             result = ('','','','','')
@@ -49,6 +53,11 @@ def main():
                 dtk = datetime.today().strftime('%d.%m.%Y')
             if dtk_simple is None:
                 dtk_simple = datetime.today().strftime('%Y-%m-%d')
+            podr_all = db.select(sql.sql_select_podr)
+            if podr_select is None or podr_select == 0 or podr_select == '0':
+                podr_select = ([0, "Все подразделения"],)
+            else :
+                podr_select = db.select(sql.sql_select_podr_one.format(lpu=podr_select))
             if select_otd is None or select_otd == 0 or select_otd == '0':
                 select_current_ord = ([0, "Все отделения", 0],)
                 result = db.select(sql.sql_select_otsut.format(date_start=dtn, date_finish=dtk))
@@ -61,6 +70,7 @@ def main():
             select_allow_otd = db.select(sql.sql_allOtd.format(select_otd=allow_otd))
             menu = generate_menu()
             return render_template("report.html",
-                                   my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple,
-                                   menu=menu, result_select=select_allow_otd,
-                                   select_current_ord=select_current_ord)
+                                    podr_select=podr_select,
+                                    my_list=result, dtn_get=dtn_simple, dtk_get=dtk_simple,
+                                    menu=menu, result_select=select_allow_otd,
+                                    select_current_ord=select_current_ord,podr_all=podr_all)

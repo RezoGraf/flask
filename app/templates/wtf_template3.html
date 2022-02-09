@@ -476,7 +476,7 @@
             </th>
           </thead>
           <tbody>
-            {% for DOC, NDOC in result_fio %}
+            {% for DOC, NDOC, SPZ in result_fio %}
               {% for OTD, NOTD, LPU in result_podr %}
               <tr onmouseover="this.style.backgroundColor='#BADAFF';" onmouseout="this.style.backgroundColor='#fff';" 
                onclick="window.location.href='?otd={{ OTD }}&doc={{ DOC }}'; return false">

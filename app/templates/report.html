@@ -24,6 +24,15 @@
 
             <div class="col-md-auto">
                 <div class="input-group mb-3">
+                    <label class="form-label">Подразделение: </label>
+                    <select class="form-select" id="podr_select" name="podr_select">
+                      {% for ID, NAME in podr_select %}
+                        <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ NAME or ""}} </option>
+                      {% endfor %}
+                      {% for ID, NAME in podr_all %}
+                      <option value = {{ ID or 0 }} selected> {{ NAME }} </option>
+                      {% endfor %}
+                    </select>
                     <label class="form-label">Отделение: </label>
                     <select class="form-select" id="select_otd" name="select_otd">
                       {% for ID, NAME, LPU in result_select %}
@@ -52,6 +61,7 @@
     <thead>
         <tr>
             <th>ФИО</th>
+            <th>Подразделение</th>
             <th>Отделение</th>
             <th>Причина</th>
             <th>Отстутствует с</th>
@@ -74,10 +84,11 @@
         </tr>
     </thead>
     <tbody>
-        {% for SNLPU, NDOC, NRSN, DTN, DTK in my_list %}
+        {% for NDOC, SNLPU, NOTD, NRSN, DTN, DTK in my_list %}
         <tr>
-            <td>{{ SNLPU }}</td>
             <td>{{ NDOC }}</td>
+            <td>{{ SNLPU }}</td>
+            <td>{{ NOTD }}</td>
             <td>{{ NRSN or ""}}</td>
             <td>{{ DTN.strftime('%d.%m.%Y') }}</td>
             <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %}</td>
@@ -86,8 +97,9 @@
     </tbody>
     <tfoot>
         <tr>
-            <th>Отделение</th>
             <th>ФИО</th>
+            <th>Подразделение</th>
+            <th>Отделение</th>
             <th>Причина</th>
             <th>Отстутствует с</th>
             <th>Отсутствует по</th>

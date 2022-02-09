@@ -15,7 +15,6 @@ AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 sql_allOtd = "select otd, notd, lpu from np_otd where otd>=0 {select_otd} order by ps"
 # Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
-
 # Выборка первого попавшегося отделения
 sql_randomOtd = """select first 1 otd from np_otd where otd>0 {select_otd} order by otd"""
 sql_randomOtd1 = "select otd, notd, lpu from np_otd where otd>0 {select_otd}"
@@ -23,9 +22,8 @@ sql_randomOtd1 = "select otd, notd, lpu from np_otd where otd>0 {select_otd}"
 sql_accessOtd = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20000 """
 # Выборка доступных должностей
 sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20001 """
-
 # Выборка всех ФИО врачей по коду отделения
-sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from n_doc, n_dlj 
+sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc, spz from n_doc, n_dlj 
                 where (n_doc.dolj=n_dlj.dlj) and (n_doc.pv=1) and (n_doc.pr_dlj=1) and (mol=1) {current_otd}
                 {select_sdl} 
                 order by ndoc """
@@ -33,13 +31,11 @@ sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc from
 sql_randomDoc = """select first 1 doc from n_doc where pv=1 and doc>0 {select_otd} {select_sdl} order by ndoc"""
 # Выборка ФИО по коду
 sql_fio_sotrudnika = """select distinct n_mpp.nmpp from n_doc, n_mpp where (n_doc.mpp=n_mpp.mpp) and n_doc.doc={doc} """
-
 # Причина отсутствия на рабочем месте
 sql_rsp_rsn = """select rsn, nrsn from rsp_rsn order by rsn"""
-
 # Номера кабинетов
 sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where doc={doc}) order by nroom_kr """
-
+sql_room_mpp = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where mpp={mpp}) order by nroom_kr """
 # Выборка всех специальностей сотрудников
 sql_allSpz = """select spz, nspz from n_spz where pd=1 order by nspz"""
 
@@ -82,7 +78,8 @@ sql_it_rasp_duty = """Select id as id_duty, date_duty,
 # Время работы
 sql_interval_time = """select id, case when interval_time is null THEN 'нет приема' else interval_time END from it_rasp_time order by id"""
 
-sql_doctod = """ select doc, ndoc from n_doc where pv=1 and doc='{doc}' and otd='{otd}'"""
+sql_doctod = """ select doc, ndoc, spz from n_doc where pv=1 and doc='{doc}' and otd='{otd}'"""
+sql_interval_time_id = """select id from it_rasp_time where interval_time='{rasp_time}'"""
 
 sql_otd_for_report = """"""
 
@@ -258,10 +255,8 @@ sql_TabelWorkTime = """Select it_rasp_grf.id_grf, it_rasp_grf.yearwork, it_rasp_
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day25) as day25, 
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day26) as day26, 
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day27) as day27, 
-                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day28) as day28, 
-                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29, 
-                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day30) as day30,
-                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day31) as day31
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day28) as day28 
+                {sel_dop_day}
                 from it_rasp_grf,n_doc,n_spz
                 where (it_rasp_grf.doc=n_doc.doc) and (it_rasp_grf.spz=n_spz.spz)
                 and it_rasp_grf.YEARWORK={EYear}
@@ -318,15 +313,42 @@ sql_interval_time_current = """select interval_time from it_rasp_time where id={
   # Report.py--------------------------------------------------------------------------------------------------------
 
 #запрос для выборки отсутствующих для report
-sql_select_otsut = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
-    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
+sql_select_otsut = """Select N_DOC.NDOC, 
+    (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
+    (SELECT NOTD FROM NP_OTD WHERE NP_OTD.OTD=N_DOC.OTD),
+    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),
+    RSP_BLC.DTN,
+    RSP_BLC.DTK
 from RSP_BLC,N_DOC
 where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
     and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""
 
 
-sql_select_otsut_otd = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
-    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
+sql_select_otsut_otd = """Select N_DOC.NDOC, 
+    (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
+    (SELECT NOTD FROM NP_OTD WHERE NP_OTD.OTD=N_DOC.OTD),
+    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),
+    RSP_BLC.DTN,
+    RSP_BLC.DTK
 from RSP_BLC,N_DOC
 where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
     and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) {otd}"""
+
+sql_select_podr = """SELECT LPU,SNLPU FROM N_LPU,N_SLP WHERE (N_SLP.SLP=N_LPU.LPU) and (N_SLP.TER=N_LPU.TER)"""
+
+sql_select_podr_one = """SELECT LPU,SNLPU FROM N_LPU,N_SLP WHERE (N_SLP.SLP=N_LPU.LPU) and (N_SLP.TER=N_LPU.TER) where lpu ={lpu}"""
+# sql_select_otsut_otd = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
+#     (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
+# from RSP_BLC,N_DOC
+# where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
+#     and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) {otd}"""
+
+# sql_select_otsut = """Select N_DOC.NDOC, 
+#     (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
+#     (SELECT NOTD FROM NP_OTD WHERE NP_OTD.OTD=N_OTD.OTD),
+#     (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),
+#     RSP_BLC.DTN,
+#     RSP_BLC.DTK
+# from RSP_BLC,N_DOC
+# where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
+#     and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""

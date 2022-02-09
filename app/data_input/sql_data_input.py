@@ -17,9 +17,10 @@ sql_ins_it_rasp = """INSERT INTO IT_RASP (LPU,OTD,SPZ,DOC,ROOM,NTV,ID_INTERVAL1,
                              VALUES({lpu},{otd},{spz},{doc},{room},{ntv},{interval1},{interval2},{nlist})"""
 
 sql_del_it_rasp = """DELETE FROM IT_RASP WHERE DOC={doc} """
-
+#обновление данных в графике работы время работы
 sql_upd_it_rasp_grf = "UPDATE IT_RASP_GRF set {day_col}={day_zn} where id_grf={id_grf}"
-
+#обновление данных в графике работы
+sql_upd_it_rasp_grf_ = "UPDATE IT_RASP_GRF set {new_data} where id_grf={id_grf}"
 #запись через интернет убираем
 sql_upd_pspo_s = """ UPDATE PSPO_S SET BLC=0 WHERE (UID=0) AND (BLC=1) 
                      AND UIP IN (SELECT DISTINCT UIP FROM PSPO WHERE PSPO.MPP={doc} 
