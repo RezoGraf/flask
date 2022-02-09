@@ -52,6 +52,7 @@
     <thead>
         <tr>
             <th>ФИО</th>
+            <th>Подразделение</th>
             <th>Отделение</th>
             <th>Причина</th>
             <th>Отстутствует с</th>
@@ -74,10 +75,11 @@
         </tr>
     </thead>
     <tbody>
-        {% for SNLPU, NDOC, NRSN, DTN, DTK in my_list %}
+        {% for NDOC, SNLPU, NOTD, NRSN, DTN, DTK in my_list %}
         <tr>
-            <td>{{ SNLPU }}</td>
             <td>{{ NDOC }}</td>
+            <td>{{ SNLPU }}</td>
+            <td>{{ NOTD }}</td>
             <td>{{ NRSN or ""}}</td>
             <td>{{ DTN.strftime('%d.%m.%Y') }}</td>
             <td>{% if DTK != None %} {{ DTK.strftime('%d.%m.%Y') }} {% else %} {{ DTK or "" }} {%endif %}</td>
@@ -86,8 +88,9 @@
     </tbody>
     <tfoot>
         <tr>
-            <th>Отделение</th>
             <th>ФИО</th>
+            <th>Подразделение</th>
+            <th>Отделение</th>
             <th>Причина</th>
             <th>Отстутствует с</th>
             <th>Отсутствует по</th>

@@ -43,7 +43,7 @@ def check_admins_auth(username, password, user_ad):
     char_end = ','
     arena_fio = d[d.find(char_start)+3 : d.find(char_end)]
     # print(f'ФИО: {arena_fio}')
-    arena_mpp = 000
+    arena_mpp = ([0],)
     try:
         f = db.select(sql.sql_ad_arena_username.format(user_ad))
         arena_username = f[0][0]
@@ -58,7 +58,7 @@ def check_admins_auth(username, password, user_ad):
         print(BaseException)
     arena_mpp = db.select(sql.sql_ad_arena_mpp.format(user_ad))
     session['arena_fio'] = arena_fio
-    session['arena_mpp'] = arena_mpp
+    session['arena_mpp'] = arena_mpp[0][0]
     ldap_client.unbind()
     return "ok", arena_fio, auth_group
 
@@ -105,7 +105,7 @@ def check_credentials(username, password):
     char_end = ','
     arena_fio = d[d.find(char_start)+3 : d.find(char_end)]
     print(f'ФИО: {arena_fio}')
-    arena_mpp = 000
+    arena_mpp = ([0],)
     try:
         f = db.select(sql.sql_ad_arena_username.format(username))
         arena_username = f[0][0]
@@ -120,6 +120,6 @@ def check_credentials(username, password):
         print(BaseException)
     arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
     session['arena_fio'] = arena_fio
-    session['arena_mpp'] = arena_mpp
+    session['arena_mpp'] = arena_mpp[0][0]
     ldap_client.unbind()
     return "ok", arena_fio, auth_group
