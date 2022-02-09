@@ -61,9 +61,6 @@ def wtf_template3():
             otd = request.args.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
         else :   
             otd = '0'
-            
-        otd1 = request.args.get('otd')
-        print(otd1)
         
         notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1] #наименование выбранного отделения
         lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])  

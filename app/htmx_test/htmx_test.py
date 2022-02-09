@@ -1,9 +1,10 @@
+from pydoc import doc
 from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
 import json
 import os.path
 import app.db as db
 import app.sql as sql
-from app.data_input.sql_data_input import sql_upd_it_rasp_grf
+from app.data_input.sql_data_input import sql_upd_it_rasp_grf, sql_upd_it_rasp_grf_
 from dateutil import parser
 from datetime import date
 import calendar
@@ -88,10 +89,10 @@ def table_view():
     current_date = date.today()                     #текущая дата
     current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")  #текущий год
     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m") #текущий месяц
+    last_day = calendar.monthrange(int(current_year), int(current_month))[1]
     result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd))           #список отделений доступных пользователю
-    # otd= db.select(sql.sql_randomOtd1.format(select_otd=select_otd))[0][0] 
     otd = request.form.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
-    notd = result_otd[0][1] #наименование выбранного отделения
+    notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1] #наименование выбранного отделения
     current_otd = f' and otd={otd}'
     
     result_th = {}  #список для построения заголовка таблицы
@@ -117,17 +118,28 @@ def table_view():
             current_year=request.form.get('year')
             current_month=request.form.get('month')
             result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей
-                  
-    menu = generate_menu()
-    print(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month))
-    table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month)) 
+    sel_dop_day='';
+    if last_day==29:
+        sel_dop_day = """,(select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29 """ 
+    if last_day==30:
+        sel_dop_day = """,(select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day30) as day30 """ 
+    if last_day==31:
+        sel_dop_day = """,(select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29, 
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day30) as day30,
+                (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day31) as day31 """ 
+     
+    menu = generate_menu
+    print(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month, sel_dop_day=sel_dop_day))
+    table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month, sel_dop_day=sel_dop_day)) 
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,
                            result_th = result_th,
                            result_otd=result_otd,
                            year = current_year,
                            month = current_month,
-                           NOTD = notd,
+                           notd = notd,
+                           otd = otd,
                            menu = menu,
                            result_alldoc = result_alldoc)
 
@@ -189,9 +201,11 @@ def table_edit():
 @htmx_test.route('/grf_NewWork', methods=['GET', 'POST'])
 def NewWork():
     otd = request.args.get('otd')
+    y = request.args.get('year') #год
+    m = request.args.get('month') #месяц   
     response = f"""
      <button 
-      hx-get="grf_addWorker?otd={ otd }" 
+      hx-get="grf_addWorker?otd={otd}&year={y}&month={m}" 
       hx-target="#modals-here" 
       hx-trigger="click"
       class="btn btn-primary btn-block" >Добавить сотрудника</button>
@@ -199,93 +213,149 @@ def NewWork():
     return response
     
     
-#Модальное на редактирование наряда-------------------------------------------------------------------------------------------- 
+#Модальное на добавление сотрудника в график работы-------------------------------------------------------------------------------------------- 
 @htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
 def modal_addWorker():
         
-    # if request.method == 'POST':
-    #     otd = request.form.get('otd')
-    #     result_alldoc = db.select(sql.sql_allDoc.format(otd=otd)) #список врачей
-    #     result_time = db.select(sql.sql_interval_time) #интервал времени
-  
-    #     return redirect(url_for('htmx_test.modal_addWorker',otd=otd, idkv=idkv, nom_nteh=nom_nteh,
-    #                             nom_nlit=nom_nlit, nom_npolir=nom_npolir, nom_nvarh=nom_nvarh))    
-   
-    # else:
-    if 'arena_user' in session:
-        arena_user = session.get('arena_user')
+    if request.method == 'POST':
+        #добавить новую запись в таблицу IT_RASP_GRF
+        # procedure_name = 'NEW_GEN_IT_RASP_GRF_ID'
+        # output_params = db.proc(procedure_name)[0][0]
+        #  output_params = utils.list_to_int(output_params)  
+        # doc = request.args.get('doc') #код сотрудника
+        # db.write(sql_upd_it_rasp_grf_.format(day_col=s_id_td, day_zn=rasp_id, id_grf=output_params))
+        id_td = request.args.get('id_td')
+        s_id_td = id_td[2:4]
+        s_id_td = f'day{s_id_td}'    
+        id_grf = request.args.get('id_grf')
+        rasp_id = request.form.get('rasp_id')
+        rasp_id_visible =db.select( sql.sql_interval_time_current.format(id=rasp_id))
+        rasp_id_visible = rasp_id_visible[0][0] 
+        response = f"""
+            <div name="id_grf" 
+                hx-target="#{id_td}" 
+                hx-swap="innerHTML" hx-get="table_view/edit?id_td={id_td}&id_grf={id_grf}">{rasp_id_visible}
+            </div>
+        """
+        return response  
     else:
-        arena_user = 0 
-    select_sdl = utils.access_user_sdl(arena_user = arena_user)
-    
-    otd = request.args.get('otd')
-    result_alldoc = db.select(sql.sql_allDoc.format(current_otd=f' and otd={ otd }',select_sdl=select_sdl)) #список врачей
-    result_time = db.select(sql.sql_interval_time) #интервал времени
-
-    sel_ = ['<option value="0">Не назначен</option>', ] 
-    for i in range(1, len(result_alldoc)):
-        sel_vol = f"""<option value="{result_alldoc[i][0]}">{result_alldoc[i][1]}</option>"""
-        sel_.append(sel_vol)
-#    for i in range(1, len(sel_4)):   
-#        if str(nom_nvarh) in sel_4[i]:
-#             sel_4[i] = f"""<option value="{nom_nvarh}" selected>{nvar_db[i][1]}</option>"""
-    sel_1 = ['<option value="0">Не назначен</option>', ] 
-    for i in range(1, len(result_time)):
-        sel1_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
-        sel_1.append(sel1_vol)
-        
-    sel_2 = ['<option value="0">Не назначен</option>', ] 
-    for i in range(1, len(result_time)):
-        sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
-        sel_2.append(sel2_vol)
+        if 'arena_user' in session:
+            arena_user = session.get('arena_user')
+        else:
+            arena_user = 0
+             
+        if 'arena_mpp' in session:
+            arena_mpp = session.get('arena_mpp')
+        else:
+            arena_mpp = 0
             
-    response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
-                    <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h5 class="modal-title">Сотрудник</h5>
-                            </div>
-                            <div class="modal-body">
-                                <form method="POST">    
-                                    <table class="table table-borderless">
-                                        <tr>
-                                            <td style="text-align: center; width:50%;">
-                                                <label class="custom-select-label" for="worker_select">Сотрудники</label> 
-                                                <select class="custom-select" id="worker_select">                                                
-                                                    {sel_}
-                                                </select>
-                                            </td>
-                                            <td style="text-align: center; width:50%;">
-                                                <label class="custom-select-label" for="noeven_day">нечетный день</label>
-                                                <select class="custom-select" id="noeven_day_select">                                                
-                                                    {sel_1}
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="text-align: center; width:50%;">
-                                                <label class="custom-select-label" for="even_day">четный день</label>
-                                                <select class="custom-select" id="even_day_select">
-                                                    {sel_2}
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </form>    
-                            </div>
-                            <div class="modal-footer">
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td style="text-align: left;">
-                                            <button type="button" class="btn btn-success" onclick="closeModal()">Сохранить</button>
-                                        </td>                                            
-                                        <td style="text-align: right;"> 
-                                            <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
-                                        </td>                                            
-                                    </tr>
+        select_sdl = utils.access_user_sdl(arena_user = arena_user)
+        
+        otd = request.args.get('otd')
+        
+        y = request.args.get('year') #год
+        m = request.args.get('month') #месяц
+        current_otd=f' and otd={ otd }'
+        result_alldoc = db.select(sql.sql_allDoc.format(current_otd=current_otd,select_sdl=select_sdl)) #список врачей
+        result_time = db.select(sql.sql_interval_time) #интервал времени
+        
+        sql_room = db.select(sql.sql_room_mpp.format(mpp = arena_mpp)) #кабинеты
+
+        sel_doc = ['<option value="0">Не назначен</option>', ] 
+        for i in range(1, len(result_alldoc)):
+            sel_vol = f"""<option value="{result_alldoc[i][0]}">{result_alldoc[i][1]}</option>"""
+            sel_doc.append(sel_vol)
+
+        sel_room = ['<option value="0">Не назначен</option>', ] 
+        for i in range(1, len(sql_room)):
+            sel1_vol = f"""<option value="{sql_room[i][0]}">{sql_room[i][1]}</option>"""
+            sel_room.append(sel1_vol)
+            
+        sel_2 = ['<option value="0">Не назначен</option>', ] 
+        for i in range(1, len(result_time)):
+            sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+            sel_2.append(sel2_vol)
+                
+        response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
+                        <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <h5 class="modal-title">Сотрудник</h5>
+                                </div>
+                                <form hx-post="grf_insWorkerTable?otd={otd}&year={y}&month={m}" action=""> 
+                                <div class="modal-body">
+                                       
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <td style="text-align: center; width:50%;">
+                                                    <label class="custom-select-label" for="worker_select">Сотрудник</label> 
+                                                    <select class="custom-select" id="worker_select"  name = "worker_select">                                                
+                                                        {sel_doc}
+                                                    </select>
+                                                    
+                                                    <label class="custom-select-label" for="room_select">№ кабинета</label> 
+                                                    <select class="custom-select" id="room_select"  name = "room_select">                                                
+                                                        {sel_room}
+                                                    </select>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label class="col-form-label">Норма часов в месяц:</label>
+                                                        <input type="number" class="form-control" name="UpdNclock">
+                                                    </div>    
+                                                </td>                                                
+                                            </tr>
+                                        </table>
+   
+                                        </div>
+                                        <div class="modal-footer">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td style="text-align: left;">
+                                                      <button class="btn btn-primary btn-success" type="submit" onclick="closeModal()">Сохранить</button>  
+                                                    </td>                                            
+                                                    <td style="text-align: right;"> 
+                                                        <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
+                                                    </td>                                            
+                                                </tr>
+                                        </div>
+                                         
+                                </div>                                  
                             </div>
                         </div>
-                        </div>
-                    </div>"""
-    return response
+                     </div>
+                     </form>
+                     </div>"""
+        return response
+
+@htmx_test.route('/grf_insWorkerTable', methods=['GET', 'POST'])
+def grf_insWorkerTable():
+        #добавить новую запись в таблицу IT_RASP_GRF
+        procedure_name = 'NEW_GEN_IT_RASP_GRF_ID'
+        output_params = db.proc(procedure_name)[0]
+        otd = request.args.get('otd') #код отделения
+        lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
+        y = request.args.get('year') #год
+        m = request.args.get('month') #месяц       
+        nclock = request.form.get('UpdNclock') #норма часов
+        doc = request.form.get('worker_select') #код сотрудника
+        spz = db.select(sql.sql_doctod.format(otd=otd, doc=doc))[0][2] 
+        room = request.form.get('room_select') #номер кабинета
+        new_data = f' LPU={lpu}, OTD={otd}, SPZ={spz}, DOC={doc}, YEARWORK={y}, MONTHWORK={m}, NCLOCK={nclock}, ROOM={room} '
+        db.write(sql_upd_it_rasp_grf_.format(new_data=new_data, id_grf=output_params))
+        return redirect(url_for("htmx_test.table_view", otd=otd, year=y, month=m))
+    
+        # id_td = request.args.get('id_td')
+        # s_id_td = id_td[2:4]
+        # s_id_td = f'day{s_id_td}'    
+        # id_grf = request.args.get('id_grf')
+        # rasp_id = request.form.get('rasp_id')
+        # rasp_id_visible =db.select( sql.sql_interval_time_current.format(id=rasp_id))
+        # rasp_id_visible = rasp_id_visible[0][0] 
+        # response = f"""
+        #     <div name="id_grf" 
+        #         hx-target="#{id_td}" 
+        #         hx-swap="innerHTML" hx-get="table_view/edit?id_td={id_td}&id_grf={id_grf}">{rasp_id_visible}
+        #     </div>
+        # """
+        # return response  
