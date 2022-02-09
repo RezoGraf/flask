@@ -24,6 +24,15 @@
 
             <div class="col-md-auto">
                 <div class="input-group mb-3">
+                    <label class="form-label">Подразделение: </label>
+                    <select class="form-select" id="podr_select" name="podr_select">
+                      {% for ID, NAME in podr_select %}
+                        <option value="{{ ID }}"{% if loop.first %} SELECTED{% endif %}>{{ NAME or ""}} </option>
+                      {% endfor %}
+                      {% for ID, NAME in podr_all %}
+                      <option value = {{ ID or 0 }} selected> {{ NAME }} </option>
+                      {% endfor %}
+                    </select>
                     <label class="form-label">Отделение: </label>
                     <select class="form-select" id="select_otd" name="select_otd">
                       {% for ID, NAME, LPU in result_select %}
