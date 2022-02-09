@@ -58,6 +58,7 @@ def main():
                 podr_select = ([0, "Все подразделения"],)
             else :
                 podr_select = db.select(sql.sql_select_podr_one.format(lpu=podr_select))
+                podr_all.insert(0, (0, "Все подразделения"))
             if select_otd is None or select_otd == 0 or select_otd == '0':
                 select_current_ord = ([0, "Все отделения", 0],)
                 result = db.select(sql.sql_select_otsut.format(date_start=dtn, date_finish=dtk))
