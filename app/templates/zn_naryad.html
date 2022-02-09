@@ -97,7 +97,7 @@
                             _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Закрыть наряд
                         </button>
                         <br/>
-                        <button type="button submit" name="btn" value="selectNew" class="btn btn-primary btn-block" >Кнопка 2</button>
+                        
                     </div>
                 </td>                 
         </table>
@@ -152,7 +152,7 @@
                 <td style="text-align: center;">{{ kol or '' }}</td>
                 <td style="text-align: center;">{{ stu or '' }}</td> 
             </tr>
-            
+            {% endfor %}    
         </tbody>
         <tfoot>
             <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
@@ -162,7 +162,8 @@
                 <th style="text-align: center;">Количество</th>
                 <th style="text-align: center;">Сумма</th>
             </tr>
-        </tfoot>            
+        </tfoot>
+                   
     </table>
 </body>
 
@@ -279,7 +280,10 @@
             window.location = 'zn_naryad?idkv={{idkv}}'
         }, 200)
     }
- 
+
+    
+    
+     
 </script>
-{% endfor %}
+ 
 {% endblock %}

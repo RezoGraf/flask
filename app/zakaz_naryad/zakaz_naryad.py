@@ -6,6 +6,7 @@ from flask import render_template, request, url_for, redirect, Blueprint
 from . import zakaz_naryad
 from datetime import datetime
 from app.menu_script import generate_menu
+import re 
 
 
 zakaz_naryad = Blueprint('zakaz_naryad', __name__)
@@ -111,18 +112,12 @@ def zn_modal_edit():
         nom_lit = request.args.get("nom_lit")
         nom_pol = request.args.get("nom_pol")
         nom_var = request.args.get("nom_var")
-        # if nom_var is None:
-        #     nom_var=0
         dzr = request.args.get("dzr")
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))        
         nteh_db = db.select(sql.sql_zn_naryad_select_teh)
         nlit_db = db.select(sql.sql_zn_naryad_select_lit)
         npol_db = db.select(sql.sql_zn_naryad_select_pol)
         nvar_db = db.select(sql.sql_zn_naryad_select_var)
-        print(npol_db)
-        
-        # if dzr == 'None':
-        #     dzr = datetime.today().strftime('%Y-%m-%d')
 # Построение выпадающего списка-----------------------------------------------------------------------------------------------------
         sel_1 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nteh_db)):
@@ -137,17 +132,14 @@ def zn_modal_edit():
             sel_2.append(sel_2_vol)
         for i in range(1, len(sel_2)):   
             if str(nom_lit) in sel_2[i]:
-                sel_2[i] = f"""<option value="{nom_lit}" selected>{nlit_db[i][1]}</option>"""        
-        print(nom_pol)        
+                sel_2[i] = f"""<option value="{nom_lit}" selected>{nlit_db[i][1]}</option>"""     
         sel_3 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(npol_db)):
             sel_3_vol = f"""<option value="{npol_db[i][0]}">{npol_db[i][1]}</option>"""
             sel_3.append(sel_3_vol)
         for i in range(1, len(sel_3)):   
             if str(nom_pol) in sel_3[i]:
-                sel_3[i] = f"""<option value="{nom_pol}" selected>{npol_db[i][1]}</option>"""
-        print(nom_pol)
-        
+                sel_3[i] = f"""<option value="{nom_pol}" selected>{npol_db[i][1]}</option>"""        
         sel_4 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nvar_db)):
             sel_4_vol = f"""<option value="{nvar_db[i][0]}">{nvar_db[i][1]}</option>"""
@@ -251,15 +243,31 @@ def zn_modal_close_btn():
             nom_pol = "0"
         if nom_var is None:    
             nom_var = "0"
+        check_dzr = 0
         if dzr is None or dzr == "":   
-            dzr = "null"    
-        check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))
-        if check_zn == []:
-            db.write(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
-        else:
-            db.write(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
-
-        return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
+            dzr = "null"
+            check_dzr = 1  
+            
+        if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
+                date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
+                dzr = date_time_obj.strftime('%d-%m-%Y')
+                check_dzr = 2
+# Проверка даты------------------------------------------------------------------------------------
+        if check_dzr == 1 or 2:
+            check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))
+            if check_zn == []:
+                db.write(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
+                if check_dzr == 2:
+                    sql_zn_naryad_update_uslk = 3 
+                    print("записать в таблицу для инфу для отправки")
+                
+            else:
+                db.write(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
+                if check_dzr == 2:
+                    print("записать в таблицу для инфу для отправки")
+                
+    print(request.url)
+    return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
     
         # return render_template('zn_naryad.html',_external=True, idkv=idkv)
         # return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))

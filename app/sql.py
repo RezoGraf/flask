@@ -97,7 +97,8 @@ sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk
        (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
 from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
-  and (np_otd.GR_OTD=2) 
+  and (np_otd.GR_OTD=2)
+  and (pl_uslk.status=2) 
   and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
 order by idkv,dou"""
 # Только открытые наряды------if check_open and check_close is None--------------------------------------------------------
@@ -111,7 +112,8 @@ sql_zakaz_naryad_select_open = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl
        (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
 from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
-  and (np_otd.GR_OTD=2) 
+  and (np_otd.GR_OTD=2)
+  and (pl_uslk.status=2)  
   and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
   and (pl_uslk.dzr is null)
 order by idkv,dou"""
@@ -126,7 +128,8 @@ sql_zakaz_naryad_select_close = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,p
        (select distinct n_lpu.snlpu from n_slp,n_lpu where n_slp.slp=n_lpu.lpu and n_slp.ter=n_lpu.ter and n_slp.slp=pl_uslk.lpu) as nlpu
 from pl_uslk,patient,np_otd,n_opl
 Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
-  and (np_otd.GR_OTD=2) 
+  and (np_otd.GR_OTD=2)
+  and (pl_uslk.status=2)  
   and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
   and (pl_uslk.dzr is not null)
 order by idkv,dou"""
@@ -182,6 +185,12 @@ sql_zn_naryad_update_isp = """Update pl_uslt
                                   polir={nom_pol}, 
                                   dzr={dzr}
                               where idkv={idkv}"""
+sql_zn_naryad_update_uslk = """Update pl_uslk 
+                              set  
+                                  dzr={dzr},
+                                  status={status}
+                              where idkv={idkv}"""
+                    
 
 # sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
 #        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
