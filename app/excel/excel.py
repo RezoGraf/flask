@@ -6,20 +6,25 @@ from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
 import app.db as db
-from app.sql import sql_select_otsut, sql_select_otsut_otd
+from app.sql import sql_select_otsut, sql_select_otsut_otd, sql_select_otsut_otd_lpu, sql_select_otsut_lpu
 
 excel = Blueprint('excel', __name__)
 
-def book_create(date_start, date_finish, select_otd):
+def book_create(date_start, date_finish, select_otd, podr_select):
     print(select_otd)
-    if select_otd is not None:
-        if select_otd != '0':
+    if podr_select is not None and podr_select != 0 and podr_select != '0':
+        if select_otd is not None and select_otd != 0 and select_otd != '0':
+            select_otd2 = f' and otd in ({select_otd})'
+            data  = db.select(sql_select_otsut_otd_lpu.format(date_start=date_start, date_finish=date_finish, otd=select_otd, lpu=podr_select))
+        else:
+            data = db.select(sql_select_otsut_lpu.format(date_start=date_start, date_finish=date_finish, lpu=podr_select))
+    else:
+        if select_otd is not None and select_otd != 0 and select_otd != '0':
             select_otd2 = f' and otd in ({select_otd})'
             data  = db.select(sql_select_otsut_otd.format(date_start=date_start, date_finish=date_finish, otd=select_otd2))
         else:
             data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
-    else:
-        data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+    
     # print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     book = Workbook()
     sheet = book.active
@@ -168,12 +173,13 @@ def excel_ots():
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
     selected_otd = request.args.get('select_otd')
+    podr_select = request.args.get('podr_select')
 
     # cleanup(path_xlsx)
     # dtn = request.args.get('dtn')
     # dtk = request.args.get('dtk')
 
-    book_create(dtn, dtk, selected_otd)
+    book_create(dtn, dtk, selected_otd, podr_select)
 
     return send_file(path_xlsx,
                      mimetype='xlsx',

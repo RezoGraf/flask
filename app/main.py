@@ -5,11 +5,12 @@ from app.excel.excel import excel
 from app.vaccine.vaccine import vaccine
 from app.report.report import report
 from app.zakaz_naryad.zakaz_naryad import zakaz_naryad
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, flash, session
 from app.db_test.db_test import db_test
 import datetime
 import app.auth as auth
 from app.menu.menu import menu
+import gc
 
 
 # import sentry_sdk
@@ -91,6 +92,15 @@ def login_for_test():
                            user_ad_field=user_ad_field,
                            message=message,
                            message_auth=message_auth)
+
+
+@app.route('/logout')
+@auth.login_required
+def logout():
+    session.clear()
+    flash("Вы успешно вышли!")
+    gc.collect()
+    return redirect(url_for('login'))
 
 
 # @app.route('/menu2')

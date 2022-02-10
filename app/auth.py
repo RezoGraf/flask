@@ -1,7 +1,21 @@
 import ldap
-from flask import session
+from functools import wraps
+from flask import session, flash, redirect, url_for
 import app.db as db
 import app.sql as sql
+from app.menu_script import generate_menu
+
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'arena_user' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("Вам необходимо авторизоваться.")
+            return redirect(url_for('login'))
+
+    return wrap
 
 
 def check_admins_auth(username, password, user_ad):
@@ -59,6 +73,7 @@ def check_admins_auth(username, password, user_ad):
     arena_mpp = db.select(sql.sql_ad_arena_mpp.format(user_ad))
     session['arena_fio'] = arena_fio
     session['arena_mpp'] = arena_mpp[0][0]
+    session['menu'] = generate_menu()
     ldap_client.unbind()
     return "ok", arena_fio, auth_group
 
@@ -121,5 +136,6 @@ def check_credentials(username, password):
     arena_mpp = db.select(sql.sql_ad_arena_mpp.format(username))
     session['arena_fio'] = arena_fio
     session['arena_mpp'] = arena_mpp[0][0]
+    session['menu'] = generate_menu()
     ldap_client.unbind()
     return "ok", arena_fio, auth_group
