@@ -11,10 +11,12 @@ import re
 
 zakaz_naryad = Blueprint('zakaz_naryad', __name__)
 
+url_back = ""
 
 @zakaz_naryad.route('/', methods=['GET', 'POST'])
 def main():
     menu = generate_menu()
+    global url_back
     if request.method == 'POST':
             
         dtn = request.form.get('dtn_get')
@@ -46,24 +48,29 @@ def main():
             # print('open and close')
             
             result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
+            url_back = request.url
             return render_template("zakaz_naryad.html",
                             my_list=result, menu=menu, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
 
         if check_open is None and check_close:
             # print('close')
             result = db.select(sql.sql_zakaz_naryad_select_close.format(dtn=dtn, dtk=dtk))
+            url_back = request.url
             return render_template("zakaz_naryad.html",
                             my_list=result, menu=menu, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
             
         if check_open and check_close is None:
             # print('open')
             result = db.select(sql.sql_zakaz_naryad_select_open.format(dtn=dtn, dtk=dtk))
+            url_back = request.url
             return render_template("zakaz_naryad.html",
                             my_list=result, menu=menu, dtn_get=dtn_simple, dtk_get=dtk_simple, check1=check_open, check2=check_close)
         else:
             # print('default')
             menu = generate_menu()
             result = db.select(sql.sql_zakaz_naryad_select.format(dtn=dtn, dtk=dtk))
+            url_back = request.url
+                    
             return render_template("zakaz_naryad.html", 
                                 menu = menu,
                                 my_list=result,
@@ -83,11 +90,12 @@ def zn_naryad():
         return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))    
    
     else:
+        ub = url_back
         idkv = request.args.get('idkv')    
         result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
         result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
-        menu = generate_menu()       
-        return render_template('zn_naryad.html', menu=menu,
+        menu = generate_menu()     
+        return render_template('zn_naryad.html', menu=menu, ub=ub,
                                result_usl = result_usl,
                                zn_naryad_list=result,
                                idkv=idkv)
@@ -147,8 +155,8 @@ def zn_modal_edit():
         for i in range(1, len(sel_4)):   
             if str(nom_var) in sel_4[i]:
                 sel_4[i] = f"""<option value="{nom_var}" selected>{nvar_db[i][1]}</option>"""
-        
-                
+        url_back2=url_back
+        print(url_back)        
         response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -205,7 +213,8 @@ def zn_modal_edit():
                                             <button class="btn btn-primary btn-success" type="submit" onclick="closeModal()">Сохранить</button>
                                             </td>                                            
                                             <td style="text-align: right;"> 
-                                                <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
+                                                <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button>
+                                                
                                             </td>                                            
                                         </tr>
                                 </div>
@@ -265,7 +274,7 @@ def zn_modal_close_btn():
                 db.write(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
                 if check_dzr == 2:
                     print("записать в таблицу для инфу для отправки")
-                
+    url_back3=url_back            
     print(request.url)
     return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
     
