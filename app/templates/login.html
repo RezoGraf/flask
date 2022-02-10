@@ -17,9 +17,9 @@
         <p>{{ message }}</p>
         {% endif %}
         <p class="title ">Авторизация</p>
-        <input type="text " id="inputLogin" name="username" placeholder="Имя пользователя " autofocus/>
+        <input type="text " id="inputLogin" name="username" placeholder="Имя пользователя " autofocus required/>
         <i class="fa fa-user "></i>
-        <input type="password" id="inputPasswor" name="password" placeholder="Пароль" />
+        <input type="password" id="inputPasswor" name="password" placeholder="Пароль" required/>
         <i class="fa fa-key "></i>
         {{ user_ad_field|safe }}
         <!-- <a href="# ">Forgot your password?</a> -->
