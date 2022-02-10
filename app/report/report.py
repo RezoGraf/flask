@@ -78,16 +78,15 @@ def main():
                         i = i+1
                 podr_delete = podr_all.pop(i)
                 podr_all.insert(0, (0, "Все подразделения"))
+                if select_otd is None or select_otd == 0 or select_otd == '0':
+                    select_current_ord = ([0, "Все отделения", 0],)
+                    result = db.select(sql.sql_select_otsut_lpu.format(date_start=dtn, date_finish=dtk,lpu=lpu))
+                else:
+                    select_otd2=(f'and otd in({select_otd})')
+                    select_current_ord = db.select(sql.sql_allOtd.format(select_otd=select_otd2))
+                    result = db.select(sql.sql_select_otsut_otd_lpu.format(date_start=dtn, date_finish=dtk, lpu=lpu, otd=select_otd))
                 
-                result = db.select(sql.sql_select_otsut_lpu.format(date_start=dtn,date_finish=dtk,lpu=lpu))
-
-            # if lpu is not None or lpu != 0 or lpu != '0':
-            #     result = db.select(sql.sql_select_otsut_lpu.format(date_start=dtn,date_finish=dtk,lpu=lpu))
-
-            # if select_otd is None or select_otd == 0 or select_otd == '0':
-            #     select_current_ord = ([0, "Все отделения", 0],)
-            #     result = db.select(sql.sql_select_otsut.format(date_start=dtn, date_finish=dtk))
-            
+                # result = db.select(sql.sql_select_otsut_lpu.format(date_start=dtn,date_finish=dtk,lpu=lpu))
 
             arena_user = session.get('arena_user')
             allow_otd = utils.access_user_otd(arena_user)

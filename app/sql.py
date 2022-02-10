@@ -343,7 +343,7 @@ sql_select_otsut_otd_lpu = """Select N_DOC.NDOC,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
 where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) {lpu} {otd}"""
+    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) and lpu={lpu} and otd={otd}"""
 
 
 sql_select_otsut_lpu = """Select N_DOC.NDOC, 
