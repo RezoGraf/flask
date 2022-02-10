@@ -35,13 +35,12 @@
         {% endfor %}
         <option value = {{ otd }} selected>{{ notd }}</option>
       </select> 
-
+      
+      <div class="form-group">
+        <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Найти</button>
+      </div>
     </div>  
-    
-    <div class="form-group">
-      <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Найти</button>
-    </div>
-
+  
     <div id="NewGrf" class="form-group">
       <button 
       hx-get="grf_addGrf?otd={{ otd }}" 
@@ -221,17 +220,17 @@
        </td>
        <td class={{ value[1][70] }}>
         <form id="td29{{ value[1][1] }}">
-          <div hx-target="#td29{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td29{{ value[1][1] }}">{{ value[1][71] or "нет приема"}} </div>
+          <div hx-target="#td29{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td29{{ value[1][1] }}"  {{visible_29}}> {{ value[1][71] or "нет приема"}} </div>
         </form>
        </td>
        <td class={{ value[1][72] }}>
         <form id="td30{{ value[1][1] }}">
-          <div hx-target="#td30{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td30{{ value[1][1] }}">{{ value[1][73] or "нет приема"}} </div>
+          <div hx-target="#td30{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td30{{ value[1][1] }}"  {{visible_30}}> {{ value[1][73] or "нет приема"}} </div>
         </form>
        </td>
        <td class={{ value[1][74] }}> 
         <form id="td31{{ value[1][1] }}">
-          <div hx-target="#td31{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td31{{ value[1][1] }}">{{ value[1][75] or "нет приема"}} </div>
+          <div hx-target="#td31{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td31{{ value[1][1] }}"  {{visible_31}}> {{ value[1][75] or "нет приема"}} </div>
         </form>
        </td>
     </tr>
@@ -253,6 +252,7 @@
     setTimeout(function() {
         container.removeChild(backdrop)
         container.removeChild(modal)
+        window.location = 'table_view?otd={{otd}}&year={{year}}&month={{month}}'
     }, 200)
   }
 </script>
