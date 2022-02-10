@@ -7,6 +7,7 @@ import app.db as db
 import app.sql as sql
 import app.utils as utils
 
+
 report = Blueprint('report', __name__)
 
 
