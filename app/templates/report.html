@@ -25,7 +25,7 @@
             <div class="col-md-auto">
                 <div class="input-group mb-3">
                     <label class="form-label">Подразделение: </label>
-                    <select class="form-select" id="podr_select" name="podr_select">
+                    <select hx-get="otd_by_lpu_list" hx-target="#select_otd" hx-swap="outerHTML" class="form-select" id="podr_select" name="podr_select">
                       {% for ID, NAME in podr_all %}
                         <option value={{ ID }}{% if loop.first %} SELECTED{% endif %}>{{ NAME}} </option>
                       {% endfor %}
