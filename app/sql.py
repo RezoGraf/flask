@@ -334,9 +334,36 @@ from RSP_BLC,N_DOC
 where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
     and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) {otd}"""
 
+
+sql_select_otsut_otd_lpu = """Select N_DOC.NDOC, 
+    (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
+    (SELECT NOTD FROM NP_OTD WHERE NP_OTD.OTD=N_DOC.OTD),
+    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),
+    RSP_BLC.DTN,
+    RSP_BLC.DTK
+from RSP_BLC,N_DOC
+where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
+    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) and lpu={lpu} and otd={otd}"""
+
+
+sql_select_otsut_lpu = """Select N_DOC.NDOC, 
+    (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
+    (SELECT NOTD FROM NP_OTD WHERE NP_OTD.OTD=N_DOC.OTD),
+    (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),
+    RSP_BLC.DTN,
+    RSP_BLC.DTK
+from RSP_BLC,N_DOC
+where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
+    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) and lpu={lpu}"""
+
+
 sql_select_podr = """SELECT LPU,SNLPU FROM N_LPU,N_SLP WHERE (N_SLP.SLP=N_LPU.LPU) and (N_SLP.TER=N_LPU.TER)"""
 
+
 sql_select_podr_one = """SELECT LPU,SNLPU FROM N_LPU,N_SLP WHERE (N_SLP.SLP=N_LPU.LPU) and (N_SLP.TER=N_LPU.TER) and lpu ={lpu}"""
+
+
+sql_allOtd_for_lpu = "select otd, notd from np_otd where otd>=0 and lpu={lpu} order by ps"
 # sql_select_otsut_otd = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
 #     (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
 # from RSP_BLC,N_DOC
