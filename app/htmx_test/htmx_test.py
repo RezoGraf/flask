@@ -1,4 +1,6 @@
+from operator import mod
 from pydoc import doc
+from re import M
 from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
 import json
 import os.path
@@ -119,11 +121,25 @@ def table_view():
             current_month=request.form.get('month')
             result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей
     sel_dop_day='';
+    visible_29 = ''        
+    visible_30 = ''
+    visible_31 = ''
+        
+    if last_day==28:
+        visible_29 = 'style=display:none;'        
+        visible_30 = 'style=display:none;'
+        visible_31 = 'style=display:none;'
+        
     if last_day==29:
         sel_dop_day = """,(select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29 """ 
+        visible_30 = 'style=display:none;'
+        visible_31 = 'style=display:none;'
+        
     if last_day==30:
         sel_dop_day = """,(select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29, 
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day30) as day30 """ 
+        visible_31 = 'style=display:none;'
+                
     if last_day==31:
         sel_dop_day = """,(select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day29) as day29, 
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day30) as day30,
@@ -141,7 +157,10 @@ def table_view():
                            notd = notd,
                            otd = otd,
                            menu = menu,
-                           result_alldoc = result_alldoc)
+                           result_alldoc = result_alldoc,
+                           visible_29 = visible_29,        
+                           visible_30 = visible_30,
+                           visible_31 = visible_31)
 
 
 @htmx_test.route("/table_view/edit", methods=["GET", "POST"])
@@ -218,12 +237,6 @@ def NewWork():
 def modal_addWorker():
         
     if request.method == 'POST':
-        #добавить новую запись в таблицу IT_RASP_GRF
-        # procedure_name = 'NEW_GEN_IT_RASP_GRF_ID'
-        # output_params = db.proc(procedure_name)[0][0]
-        #  output_params = utils.list_to_int(output_params)  
-        # doc = request.args.get('doc') #код сотрудника
-        # db.write(sql_upd_it_rasp_grf_.format(day_col=s_id_td, day_zn=rasp_id, id_grf=output_params))
         id_td = request.args.get('id_td')
         s_id_td = id_td[2:4]
         s_id_td = f'day{s_id_td}'    
@@ -335,27 +348,33 @@ def grf_insWorkerTable():
         output_params = db.proc(procedure_name)[0]
         otd = request.args.get('otd') #код отделения
         lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
-        y = request.args.get('year') #год
-        m = request.args.get('month') #месяц       
+        cur_year = request.args.get('year') #год
+        cur_month = request.args.get('month') #месяц       
         nclock = request.form.get('UpdNclock') #норма часов
         doc = request.form.get('worker_select') #код сотрудника
         spz = db.select(sql.sql_doctod.format(otd=otd, doc=doc))[0][2] 
         room = request.form.get('room_select') #номер кабинета
-        new_data = f' LPU={lpu}, OTD={otd}, SPZ={spz}, DOC={doc}, YEARWORK={y}, MONTHWORK={m}, NCLOCK={nclock}, ROOM={room} '
+        new_data = f' LPU={lpu}, OTD={otd}, SPZ={spz}, DOC={doc}, YEARWORK={cur_year}, MONTHWORK={cur_month}, NCLOCK={nclock}, ROOM={room} '
+        #обновить данные с учетом введенного режима работы и отсутствия на работе
+        result_it_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
+        noeven_day=result_it_rasp[0][2]
+        even_day=result_it_rasp[0][4]
+        all_day = calendar.monthrange(int(cur_year), int(cur_month))[1] 
+        for i in range(all_day):
+            i+=1
+            if i<10 :
+                p=f'0{i}'
+            else:
+                p=str(i)  
+            nf = f'day{p}'  #название колонки day01 .. day31
+            current_data = f'{p}.{str(cur_month)}.{str(cur_year)}'
+            select_period = f''' and (dtn>='{current_data}' and dtk<='{current_data}')'''
+            result_rsp_blc=db.select(sql.sql_noWork.format(doc=doc,period=select_period))    
+            if result_rsp_blc == []:
+                if (i % 2) ==0: 
+                    new_data = f'{new_data},{nf}={even_day}'
+                else:   
+                    new_data = f'{new_data},{nf}={noeven_day}'       
         db.write(sql_upd_it_rasp_grf_.format(new_data=new_data, id_grf=output_params))
-        return redirect(url_for("htmx_test.table_view", otd=otd, year=y, month=m))
-    
-        # id_td = request.args.get('id_td')
-        # s_id_td = id_td[2:4]
-        # s_id_td = f'day{s_id_td}'    
-        # id_grf = request.args.get('id_grf')
-        # rasp_id = request.form.get('rasp_id')
-        # rasp_id_visible =db.select( sql.sql_interval_time_current.format(id=rasp_id))
-        # rasp_id_visible = rasp_id_visible[0][0] 
-        # response = f"""
-        #     <div name="id_grf" 
-        #         hx-target="#{id_td}" 
-        #         hx-swap="innerHTML" hx-get="table_view/edit?id_td={id_td}&id_grf={id_grf}">{rasp_id_visible}
-        #     </div>
-        # """
-        # return response  
+        menu = generate_menu
+        return redirect(url_for("htmx_test.table_view", otd=otd, year=cur_year, month=cur_month, menu=menu))
