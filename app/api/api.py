@@ -101,3 +101,9 @@ def oplata_1c():
             return 'Неверынй логин пароль', 401
     else:
         return 'Неверный заголовок JSON, должен быть "DOC"', 400
+
+
+@api.route('/test_api', methods=['GET', 'POST'])
+def test_api():
+    json = request.json
+    return json
