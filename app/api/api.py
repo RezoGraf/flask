@@ -3,7 +3,7 @@ import app.db as db
 import datetime
 import json
 from app.api.sql_api import sql_prov, sql_api_ins, sql_api_upd2
-
+import requests
 api = Blueprint('api', __name__)
 
 @api.route('/oplata_1c', methods=['POST'])
@@ -32,15 +32,10 @@ def oplata_1c():
                     res = [x for x in key_model + keys if x not in key_model or x not in keys]
 
                     if not res:
-
                         status.append(f"{i} - Структура соответствует")
-
                         for i in range(0, len(pair)):
-
                             list_result.append(pair[key_model[i]])
-
                     else:
-
                         status.append(f"{i} - Структура НЕ соответствует по ячейкам {res} у массива: {str(pair)}")
                 print(i)
                 otvet_list.append(list_result)
@@ -53,43 +48,25 @@ def oplata_1c():
                     for vol in res_sql_prov:
                         vol = list(vol)
                 # Сумма (STU) из запроса<>Сумма DOC_SUM из JSON, то запрос -----------------------------
-
                         if vol[1] != float(list_result[4]):
-
-                            
-
-                            # print(sql_api_ins.format(doc_id=list_result[0], kod_err=20, now_date=now_date, json1=list_str,
-                            #                         res_proverki='Не совпадает сумма'))
                             db.write(sql_api_ins.format(doc_id=list_result[0], kod_err=20, now_date=now_date,
                                                         json1=list_str, res_proverki='Не совпадает сумма'))
 
                         if int(list_result[3]) == 4:
                             kom = f""", KOM=KOM||'{list_result[7]}, {list_result[1]}/'"""
-
-                            # print(sql_api_upd2.format(doc_sum_nal=list_result[5],
-                            #                         doc_sum_bnal=list_result[6], kas_kod=list_result[9],
-                            #                         doc_nom=list_result[2], doc_type_opl=4, dred=now_date, kom=kom,
-                            #                         doc_id=list_result[0]))
                             db.write(sql_api_upd2.format(doc_sum_nal=list_result[5],
                                                     doc_sum_bnal=list_result[6], kas_kod=list_result[9],
                                                     doc_nom=list_result[2], doc_type_opl=4, dred=now_date, kom=kom,
                                                     doc_id=list_result[0]))
                             db.write(sql_api_ins.format(doc_id=list_result[0], kod_err=0, now_date=now_date,
                                                         json1=list_str, res_proverki='ОК'))
-                        else:
-
-                            # print(sql_api_upd2.format(doc_sum_nal=list_result[5],
-                            #                         doc_sum_bnal=list_result[6], kas_kod=list_result[9],
-                            #                         doc_nom=list_result[2], doc_type_opl=0, kom='', dred=now_date,
-                            #                         doc_id=list_result[0]))
-                            
+                        else:                            
                             db.write(sql_api_upd2.format(doc_sum_nal=list_result[5],
                                                     doc_sum_bnal=list_result[6], kas_kod=list_result[9],
                                                     doc_nom=list_result[2], doc_type_opl=0, dred=now_date, kom='',
                                                     doc_id=list_result[0]))
                             db.write(sql_api_ins.format(doc_id=list_result[0], kod_err=0, now_date=now_date,
                                                         json1=list_str, res_proverki='ОК'))
-                    
                 else:
                     list_str = json.dumps(json_for_table)
                     db.write(sql_api_ins.format(doc_id=list_result[0], kod_err=20, now_date=now_date,
@@ -107,3 +84,18 @@ def oplata_1c():
 def test_api():
     json = request.json
     return json
+
+@api.route('/zn_close', methods=['GET', 'POST'])
+def zn_close():
+    url = 'http://127.0.0.1:5000/api/test_api'
+    headers = {'Content-type': 'application/json',  # Определение типа данных
+            'Accept': 'text/plain',
+            'Content-Encoding': 'utf-8'}
+    data = {"ZN" : [{"username" : "<user login>",
+                        "key" : "<api_key>"},
+                        {}]}  # Если по одному ключу находится несколько словарей, формируем список словарей
+    answer = requests.post(url, data=json.dumps(data), headers=headers)
+    print(answer)
+    response = answer.json()
+    print(response)
+    return response
