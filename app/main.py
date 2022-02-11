@@ -12,8 +12,6 @@ import app.auth as auth
 from app.menu.menu import menu
 import gc
 import logging
-from logging.config import fileConfig
-
 
 
 # import sentry_sdk
@@ -63,8 +61,10 @@ def login():
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'):
-            app.logger.info('%s logged in successfully', username)
-            app.logger.error('Processing default request')
+            app.logger.info(f'{username} logged in successfully')
+            # app.logger.info(request.args)
+            # app.logger.info(request.full_path)
+            # app.logger.error('Processing default request')
             return redirect(url_for('menu.main_menu'))
         else:
             message = "Неверное имя пользователя или пароль"
@@ -90,7 +90,8 @@ def login_for_test():
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'): 
-            app.logger.info('%s logged in successfully', username)
+            # app.logger.info(f'{username} logged in successfully')
+            # app.logger.info(request.args)
             return redirect(url_for('menu.main_menu'))
         else:
             message = "Неверное имя пользователя или пароль"
