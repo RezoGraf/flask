@@ -112,14 +112,15 @@ def check_credentials(username, password):
         chars2 = ","
         auth_group = x[x.find(chars1)+3 : x.find(chars2)]
         if "web_hs" in auth_group:
-            print(f'Состоит в группе: { auth_group }')
+            # print(f'Состоит в группе: { auth_group }')
             session['auth_group'] = auth_group
         else:
-            print(f'Не состоит в группах web_hs')   
+            # print(f'Не состоит в группах web_hs')
+            pass   
     char_start = 'CN='
     char_end = ','
     arena_fio = d[d.find(char_start)+3 : d.find(char_end)]
-    print(f'ФИО: {arena_fio}')
+    # print(f'ФИО: {arena_fio}')
     arena_mpp = ([0],)
     try:
         f = db.select(sql.sql_ad_arena_username.format(username))
