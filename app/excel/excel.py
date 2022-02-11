@@ -5,13 +5,13 @@ from flask import Blueprint, send_file, request
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
+from app.auth import login_required
 import app.db as db
 from app.sql import sql_select_otsut, sql_select_otsut_otd, sql_select_otsut_otd_lpu, sql_select_otsut_lpu
 
 excel = Blueprint('excel', __name__)
 
 def book_create(date_start, date_finish, select_otd, podr_select):
-    print(select_otd)
     if podr_select is not None and podr_select != 0 and podr_select != '0':
         if select_otd is not None and select_otd != 0 and select_otd != '0':
             select_otd2 = f' and otd in ({select_otd})'
@@ -53,12 +53,13 @@ def book_create(date_start, date_finish, select_otd, podr_select):
     sheet.append(["Отчет по отсутствующим сотрудникам"])
     sheet.append([f"с {date_start} по {date_finish}"])
     sheet.append([" "])
-    sheet.append(["ФИО", "Подразделение", "Причина", "Период"])
-    sheet.append([" ", " ", " ", "Начало", "Конец"])
-    sheet.merge_cells('D5:E5')
+    sheet.append(["ФИО", "Подразделение", "Отделение", "Причина", "Период"])
+    sheet.append([" ", " ", " ", " ", "Начало", "Конец"])
+    sheet.merge_cells('E5:F5')
     sheet.merge_cells('A5:A6')
     sheet.merge_cells('B5:B6')
     sheet.merge_cells('C5:C6')
+    sheet.merge_cells('D5:D6')
     sheet.merge_cells('A2:E2')
     sheet.merge_cells('A3:E3')
     list_result = []
@@ -81,7 +82,7 @@ def book_create(date_start, date_finish, select_otd, podr_select):
         sheet.cell(row=5, column=i).fill = color_fill
         sheet.cell(row=6, column=i).fill = color_fill
     # КОСТЫЛЬ----------------------------------------------------------------------
-    sheet.cell(row=6, column=5).fill = color_fill
+    sheet.cell(row=6, column=6).fill = color_fill
     # переформат даты в dd/mm/yyyy---------------------------------------------------
     for i in range(1, sheet.max_row):
         dateCell = sheet.cell(row=i+1, column=5)
@@ -95,8 +96,8 @@ def book_create(date_start, date_finish, select_otd, podr_select):
     set_column_widths(sheet)
     set_border(sheet)
     set_border_heading(sheet)
-    sheet.column_dimensions['D'].width = 15
     sheet.column_dimensions['E'].width = 15
+    sheet.column_dimensions['F'].width = 15
     side_top = Side(border_style=None, color='FF000000')
     for i in range(1, (sheet.max_column + 1)):
         for s in range(1, 5):
@@ -107,12 +108,12 @@ def book_create(date_start, date_finish, select_otd, podr_select):
 
 def convert_data(conv_data):
     list_data = list(conv_data)
-    if list_data[4] is None:
-        list_data[4] = ''
+    if list_data[5] is None:
+        list_data[5] = ''
 
     else:
+        list_data[5] = list_data[5].date()
         list_data[4] = list_data[4].date()
-        list_data[3] = list_data[3].date()
 
     convert_result = tuple(list_data)
     return convert_result
@@ -167,6 +168,7 @@ def cleanup(path):
     os.remove(path)
 
 @excel.route('/', methods=['GET', 'POST'])
+@login_required
 def excel_ots():
     name_xlsx = "otchet_po_otsutstviyu.xlsx"
     path_xlsx = f"excel/{name_xlsx}"
