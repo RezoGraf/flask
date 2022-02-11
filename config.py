@@ -1,4 +1,5 @@
-dsn = '192.168.100.9/C:/DB/ARENA.GDB'
+# dsn = '192.168.100.9/C:/DB/ARENA.GDB'
+dsn = '192.168.100.52/var/lib/firebird/2.5/data/arena.fdb'
 # dsn = 'localhost:D:/DB/ARENA.GDB'
 user = 'sysdba'
 password = 'masterkey'
