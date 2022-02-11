@@ -12,18 +12,8 @@ import app.auth as auth
 from app.menu.menu import menu
 import gc
 import logging
-from logging import Formatter
-from flask import has_request_context, request
-from flask.logging import default_handler
+from logging.config import fileConfig
 
-class ContextualFilter(logging.Filter):
-    def filter(self, log_record):
-        log_record.url = request.path
-        log_record.method = request.method
-        log_record.ip = request.environ.get("REMOTE_ADDR")
-        log_record.headers = request.headers
-
-        return True
 
 
 # import sentry_sdk
@@ -120,6 +110,11 @@ def logout():
     return redirect(url_for('login'))
 
 
+
+logfile    = logging.getLogger('file')
+logconsole = logging.getLogger('console')
+logfile.debug("Debug FILE")
+logconsole.debug("Debug CONSOLE")
 # @app.route('/menu2')
 # def menu():
 #     if 'arena_user' in session:
@@ -148,23 +143,6 @@ if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
     app.run(host='0.0.0.0', port=4000)
 else:
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    context_provider = ContextualFilter()
-    app.logger.addFilter(context_provider)  
+    gunicorn_logger = logging.getLogger('gunicorn.error') 
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
-    app.logger.setLevel(logging.INFO)
-    # handlers.setFormatter(Formatter('''
-    # Message type:       %(levelname)s
-    # Location:           %(pathname)s:%(lineno)d
-    # Module:             %(module)s
-    # Function:           %(funcName)s
-    # Time:               %(asctime)s
-    # URL:                %(url)s
-    # Method:             %(method)s
-    # Headers:            %(headers)s
-
-    # Message:
-
-    # %(message)s
-    # '''))
