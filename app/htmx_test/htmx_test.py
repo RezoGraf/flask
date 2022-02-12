@@ -59,7 +59,7 @@ def name_order():
 @htmx_test.route("/")
 @logger.catch
 def index():
-  menu = generate_menu()
+  menu = session['menu']
   return render_template("htmx_test.html", items=data, menu=menu)
 
 
@@ -84,6 +84,7 @@ def create_th(cur_year,cur_month):
 
 
 @htmx_test.route("/table_view", methods=["GET", "POST"])
+@logger.catch
 def table_view():
     """отображение таблицы с расписанием, ничего интересного
     Returns:
@@ -153,7 +154,7 @@ def table_view():
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day30) as day30,
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day31) as day31 """ 
      
-    menu = generate_menu
+    menu = session['menu']
     print(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month, sel_dop_day=sel_dop_day))
     table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month, sel_dop_day=sel_dop_day)) 
     return render_template("htmx_tableview.html", 
