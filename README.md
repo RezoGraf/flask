@@ -35,6 +35,8 @@
 
 Запуск Gunicorn:
 
+    $ gunicorn -w 6 -b 0.0.0.0:9000 wsgi:app
+
     $ gunicorn -w 6 -b 0.0.0.0:9000 wsgi:app \
     --log-file ~/Documents/python/flask/logs/gunicorn.log \
     --log-level INFO \
