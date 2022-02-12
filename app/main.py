@@ -11,7 +11,18 @@ import datetime
 import app.auth as auth
 from app.menu.menu import menu
 import gc
+from loguru import logger
 import logging
+
+
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        # Retrieve context where the logging call occurred, this happens to be in the 6th frame upward
+        logger_opt = logger.opt(depth=6, exception=record.exc_info)
+        logger_opt.log(record.levelno, record.getMessage())
+
+
+
 
 
 # import sentry_sdk
@@ -46,7 +57,29 @@ app.register_blueprint(htmx_test, url_prefix='/htmx_test')
 app.register_blueprint(vaccine, url_prefix='/vaccine')
 
 
+def my_filter(record):
+    if record["extra"].get("warn_only"):  # "warn_only" is bound to the logger and set to 'True'
+        return record["level"].no >= logger.level("WARNING").no
+    return True  # Fallback to default 'level' configured while adding the handler
+
+
+logger.add(
+    'logs/events.log',
+    level='DEBUG',
+    format='{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}',
+    backtrace=True,
+    rotation='1 Gb',
+    retention=9,
+    encoding='utf-8',
+    filter=my_filter
+)
+
+app.logger.addHandler(InterceptHandler())
+logging.basicConfig(handlers=[InterceptHandler()], level=20)
+
+
 @app.route('/', methods=['GET', 'POST'])
+@logger.catch
 def login():
     message = ""
     message_auth = ""
@@ -61,7 +94,8 @@ def login():
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'):
-            app.logger.info(f'{username} logged in successfully')
+            # app.logger.info(f'LOGIN-SUCCESS for {username}')
+            logger.info("Inside the function")
             # app.logger.info(request.args)
             # app.logger.info(request.full_path)
             # app.logger.error('Processing default request')
@@ -75,6 +109,7 @@ def login():
 
 
 @app.route('/aalksdhl28kdhalu8', methods=['GET', 'POST'])
+@logger.catch
 def login_for_test():
     message = ""
     message_auth = ""
@@ -101,10 +136,11 @@ def login_for_test():
                            message_auth=message_auth)
 
 
+
 @app.route('/logout')
-@auth.login_required
+@logger.catch
 def logout():
-    
+    logger.info("Inside the function")
     session.clear()
     flash("Вы успешно вышли!")
     gc.collect()
@@ -112,38 +148,16 @@ def logout():
 
 
 
-logfile    = logging.getLogger('file')
-logconsole = logging.getLogger('console')
-logfile.debug("Debug FILE")
-logconsole.debug("Debug CONSOLE")
-# @app.route('/menu2')
-# def menu():
-#     if 'arena_user' in session:
-#         arena_user = session.get('arena_user')
-#     else:
-#         arena_user = 'none'
-#     if 'arena_fio' in session:
-#         arena_fio = session.get('arena_fio')
-#     else:
-#         arena_fio = "Не пользователь домена"
-#     if 'auth_group' in session:
-#         auth_group = session.get('auth_group')
-#     else:
-#         auth_group = 'none'
-#     # if auth_group == 'web_hs_admin':
-#     #     web_hs_admin
-#     #     web_hs_user
-#     #     web_hs_kadr
-#     #     web_hs_epid
-#     menu2 = generate_menu
-#     menu2 = Markup(menu2)
-#     return render_template('menu.html', menu=menu2)
+# logfile    = logging.getLogger('file')
+# logconsole = logging.getLogger('console')
+# logfile.debug("Debug FILE")
+# logconsole.debug("Debug CONSOLE")
 
 
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run(host='0.0.0.0', port=4000)
-else:
-    gunicorn_logger = logging.getLogger('gunicorn.error') 
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+    app.run(host='0.0.0.0', port=4000, debug=False)
+# else:
+#     gunicorn_logger = logging.getLogger('gunicorn.error') 
+#     app.logger.handlers = gunicorn_logger.handlers
+#     app.logger.setLevel(gunicorn_logger.level)

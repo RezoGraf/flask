@@ -1,5 +1,7 @@
 # coding=utf-8
 from flask import Blueprint, g, session, render_template, request, redirect, url_for
+from loguru import logger
+import logging
 from time import time
 import numpy
 from app.db_test.db_test_sql import sql_visit1, sql_visit2, sql_visit3
@@ -12,6 +14,7 @@ db_test = Blueprint('db_test', __name__)
 
 
 @db_test.route('/', methods=['GET', 'POST'])
+@logger.catch
 def main():
     list = []
     select_requests=[('Короткий, для теста скорости подключения', 1), ('Средний, для теста скорости подключения и выборки 10тыс+ записей', 2), ('Огромный, внимание очень тяжелый скрипт, не больше 2 раз',3)]

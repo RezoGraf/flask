@@ -1,5 +1,7 @@
 from datetime import datetime
 from flask import render_template, request, url_for, redirect, Blueprint, session, g
+from loguru import logger
+import logging
 import pandas as pd
 from app.auth import login_required
 import app.db as db
@@ -12,6 +14,7 @@ report = Blueprint('report', __name__)
 
 @report.route('/', methods=['GET', 'POST'])
 @login_required
+@logger.catch
 def main():
     # if 'arena_mpp' not in session:
     #     return redirect(url_for("login"))
@@ -101,6 +104,7 @@ def main():
 
 
 @report.route('/otd_by_lpu_list')
+@logger.catch
 def otd_by_lpu_list():
     lpu = request.args.get('podr_select')
     list_of_otd = db.select(sql.sql_allOtd_for_lpu.format(lpu=lpu))

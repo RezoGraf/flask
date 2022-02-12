@@ -2,6 +2,8 @@ from operator import mod
 from pydoc import doc
 from re import M
 from flask import Flask, render_template, redirect, url_for, request, Blueprint, session
+from loguru import logger
+import logging
 import json
 import os.path
 import app.db as db
@@ -20,6 +22,7 @@ htmx_test = Blueprint('htmx_test', __name__)
 
             
 @htmx_test.route("/name/create", methods=["POST"])
+@logger.catch
 def name_create():
     name = request.form["create"]
     data.append(name)
@@ -35,6 +38,7 @@ def name_create():
 
 
 @htmx_test.route("/name/delete", methods=["POST"])
+@logger.catch
 def name_delete():
     name = request.form["delete"]
     print(f"{name} removed")
@@ -43,6 +47,7 @@ def name_delete():
 
 
 @htmx_test.route("/name/order", methods=["POST"])
+@logger.catch
 def name_order():
     global data
     order = request.form.keys()
@@ -52,9 +57,11 @@ def name_order():
 
 
 @htmx_test.route("/")
+@logger.catch
 def index():
   menu = generate_menu()
   return render_template("htmx_test.html", items=data, menu=menu)
+
 
 # функция формирования заголовка таблицы
 def create_th(cur_year,cur_month):
@@ -74,6 +81,7 @@ def create_th(cur_year,cur_month):
             key_ = f'day{str(i)}'                
             result_th_[key_] = [color_day_week,value_]  
    return result_th_
+
 
 @htmx_test.route("/table_view", methods=["GET", "POST"])
 def table_view():
@@ -164,6 +172,7 @@ def table_view():
 
 
 @htmx_test.route("/table_view/edit", methods=["GET", "POST"])
+@logger.catch
 def table_edit():
     #TODO:  1. Переименовать нормально переменные
     #       2. В блоке POST переменной rasp_id возвращается код в базе а не значение, 
@@ -218,6 +227,7 @@ def table_edit():
     
     
 @htmx_test.route('/grf_NewWork', methods=['GET', 'POST'])
+@logger.catch
 def NewWork():
     otd = request.args.get('otd')
     y = request.args.get('year') #год
@@ -234,6 +244,7 @@ def NewWork():
     
 #Модальное на добавление сотрудника в график работы-------------------------------------------------------------------------------------------- 
 @htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
+@logger.catch
 def modal_addWorker():
         
     if request.method == 'POST':
@@ -341,7 +352,9 @@ def modal_addWorker():
                      </div>"""
         return response
 
+
 @htmx_test.route('/grf_insWorkerTable', methods=['GET', 'POST'])
+@logger.catch
 def grf_insWorkerTable():
         #добавить новую запись в таблицу IT_RASP_GRF
         procedure_name = 'NEW_GEN_IT_RASP_GRF_ID'
