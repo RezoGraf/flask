@@ -1,3 +1,4 @@
+import loguru
 from app.api.api import api
 from app.htmx_test.htmx_test import htmx_test
 from app.data_input.data_input import data_input
@@ -15,11 +16,11 @@ from loguru import logger
 import logging
 
 
-class InterceptHandler(logging.Handler):
-    def emit(self, record):
-        # Retrieve context where the logging call occurred, this happens to be in the 6th frame upward
-        logger_opt = logger.opt(depth=6, exception=record.exc_info)
-        logger_opt.log(record.levelno, record.getMessage())
+# class InterceptHandler(logging.Handler):
+#     def emit(self, record):
+#         # Retrieve context where the logging call occurred, this happens to be in the 6th frame upward
+#         logger_opt = logger.opt(depth=6, exception=record.exc_info)
+#         logger_opt.log(record.levelno, record.getMessage())
 
 
 
@@ -57,11 +58,11 @@ app.register_blueprint(htmx_test, url_prefix='/htmx_test')
 app.register_blueprint(vaccine, url_prefix='/vaccine')
 
 
+
 def my_filter(record):
     if record["extra"].get("warn_only"):  # "warn_only" is bound to the logger and set to 'True'
         return record["level"].no >= logger.level("WARNING").no
     return True  # Fallback to default 'level' configured while adding the handler
-
 
 logger.add(
     'logs/events.log',
@@ -71,11 +72,14 @@ logger.add(
     rotation='1 Gb',
     retention=9,
     encoding='utf-8',
-    filter=my_filter
-)
+    filter=my_filter,
+    colorize=True,
+    enqueue=True,
+    serialize=True
 
-app.logger.addHandler(InterceptHandler())
-logging.basicConfig(handlers=[InterceptHandler()], level=20)
+    )
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -148,13 +152,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-
-# logfile    = logging.getLogger('file')
-# logconsole = logging.getLogger('console')
-# logfile.debug("Debug FILE")
-# logconsole.debug("Debug CONSOLE")
-
-
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
     app.run(host='0.0.0.0', port=4000, debug=False)
@@ -162,3 +159,5 @@ else:
     gunicorn_logger = logging.getLogger('gunicorn.error') 
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
+
+ 
