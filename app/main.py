@@ -95,7 +95,8 @@ def login():
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'):
             # app.logger.info(f'LOGIN-SUCCESS for {username}')
-            logger.info("Inside the function")
+            # logger.info("Inside the function")
+            app.logger.info(f'LOGIN-SUCCESS for {username}')
             # app.logger.info(request.args)
             # app.logger.info(request.full_path)
             # app.logger.error('Processing default request')
@@ -125,7 +126,7 @@ def login_for_test():
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'): 
-            # app.logger.info(f'{username} logged in successfully')
+            app.logger.info(f'LOGIN-SUCCESS for {username}')
             # app.logger.info(request.args)
             return redirect(url_for('menu.main_menu'))
         else:
@@ -157,7 +158,7 @@ def logout():
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
     app.run(host='0.0.0.0', port=4000, debug=False)
-# else:
-#     gunicorn_logger = logging.getLogger('gunicorn.error') 
-#     app.logger.handlers = gunicorn_logger.handlers
-#     app.logger.setLevel(gunicorn_logger.level)
+else:
+    gunicorn_logger = logging.getLogger('gunicorn.error') 
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
