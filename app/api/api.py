@@ -4,6 +4,8 @@ import datetime
 import json
 from app.api.sql_api import sql_prov, sql_api_ins, sql_api_upd2
 import requests
+import app.sql as sql
+import re 
 api = Blueprint('api', __name__)
 
 @api.route('/oplata_1c', methods=['POST'])
@@ -85,15 +87,36 @@ def test_api():
     json = request.json
     return json
 
-@api.route('/zn_close', methods=['GET', 'POST'])
-def zn_close():
-    url = 'http://127.0.0.1:5000/api/test_api'
-    headers = {'Content-type': 'application/json',  # Определение типа данных
-            'Accept': 'text/plain',
-            'Content-Encoding': 'utf-8'}
-    data = {"ZN" : [{"username" : "<user login>",
-                        "key" : "<api_key>"},
-                        {}]}  # Если по одному ключу находится несколько словарей, формируем список словарей
+# @api.route('/zn_close', methods=['GET', 'POST'])
+def zn_close(idkv):
+    url = 'http://127.0.0.1:5000/api/test_api' 
+    headers = {'Content-type': 'application/json',  
+               'Accept': 'text/plain',
+               'Content-Encoding': 'utf-8'}
+    # поиск документов на отправку со статусом 3-------
+    result = db.select(sql.sql_api_select_check)
+    print(result)
+    idkv = result[0][0]
+    dzr = result[0][1]
+    opl = result[0][2]
+    print(dzr)
+    if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
+                date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
+                dzr = date_time_obj.strftime('%d.%m.%Y')
+    print(dzr)
+    data_isp = db.select(sql.sql_api_select_isp.format(idkv))
+    print(data_isp)
+    teh = data_isp[0][0]
+    
+    data = {"DOC" : [{" DOC_ID ": f"{idkv}",
+                      " DOC_TYPE ": "3",
+                      " DOC_DZR ": f"{dzr}",
+                      " DOC_OPL ": f"{opl}"}]
+                      [" ISP " : [{"ISP_STAT":"5",
+                                   "ISP_CODE":f"{teh}"}]] 
+            }
+   
+    # Если по одному ключу находится несколько словарей, формируем список словарей
     answer = requests.post(url, data=json.dumps(data), headers=headers)
     print(answer)
     response = answer.json()

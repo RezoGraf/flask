@@ -97,6 +97,13 @@
                             _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Закрыть наряд
                         </button>
                         <br/>
+                        <button 
+                            hx-get="zn_modal_open_btn?idkv={{idkv}}&nkv={{nkv}}" 
+                            hx-target="#modals-zn_open" 
+                            hx-trigger="click"
+                            class="btn btn-primary btn-block"
+                            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Открыть наряд
+                        </button>
                         <br/>
                         <form action="/api/zn_close">
                         <button class="btn btn-primary btn-block" type="submit">JSON</button>
@@ -107,7 +114,8 @@
                 </td>                 
         </table>
         <div id="modals-here"></div>
-        <div id="modals-here1"></div> 
+        <div id="modals-here1"></div>
+        <div id="modals-zn_open"></div>  
         {% endfor %}
     
     <table id="Table_usl" class="table table-striped">
@@ -264,9 +272,23 @@
     }
 
     function closeModal1() {
-        var container = document.getElementById("modals-here1")
-        var backdrop = document.getElementById("modal-backdrop1")
-        var modal = document.getElementById("modal1")
+        var container = document.getElementById("modals-here")
+        var backdrop = document.getElementById("modal-backdrop")
+        var modal = document.getElementById("modal")
+    
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+    
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
+        }, 200)
+    }
+
+    function closeModal_zn_open() {
+        var container = document.getElementById("modals-zn_open")
+        var backdrop = document.getElementById("modal-backdrop_zn_open")
+        var modal = document.getElementById("modal_zn_modal")
     
         modal.classList.remove("show")
         backdrop.classList.remove("show")
@@ -275,6 +297,20 @@
             container.removeChild(backdrop)
             container.removeChild(modal)
             window.location = 'zn_naryad?idkv={{idkv}}'
+        }, 200)
+    }
+
+    function closeModal_zn_open_close() {
+        var container = document.getElementById("modals-zn_open")
+        var backdrop = document.getElementById("modal-backdrop_zn_open")
+        var modal = document.getElementById("modal_zn_modal")
+    
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+    
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
         }, 200)
     }
 
