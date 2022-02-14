@@ -1,6 +1,8 @@
 from flask import Blueprint, Flask, jsonify, request
 import app.db as db
 import datetime
+from loguru import logger
+import logging
 import json
 from app.api.sql_api import sql_prov, sql_api_ins, sql_api_upd2
 import requests
@@ -8,7 +10,9 @@ import app.sql as sql
 import re 
 api = Blueprint('api', __name__)
 
+
 @api.route('/oplata_1c', methods=['POST'])
+@logger.catch
 def oplata_1c():
 
     dict = request.json
@@ -83,6 +87,7 @@ def oplata_1c():
 
 
 @api.route('/test_api', methods=['GET', 'POST'])
+@logger.catch
 def test_api():
     json = request.json
     return json

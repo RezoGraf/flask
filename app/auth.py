@@ -4,6 +4,9 @@ from flask import session, flash, redirect, url_for
 import app.db as db
 import app.sql as sql
 from app.menu_script import generate_menu
+import functools
+from loguru import logger
+import logging
 
 
 def login_required(f):
@@ -18,6 +21,7 @@ def login_required(f):
     return wrap
 
 
+@logger.catch
 def check_admins_auth(username, password, user_ad):
     session.clear()
     LDAP_SERVER = 'ldap://192.168.100.2'
@@ -78,6 +82,7 @@ def check_admins_auth(username, password, user_ad):
     return "ok", arena_fio, auth_group
 
 
+@logger.catch
 def check_credentials(username, password):
     """Verifies credentials for username and password.
     Returns None on success or a string describing the error on failure

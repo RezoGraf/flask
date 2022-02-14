@@ -1,3 +1,4 @@
+import loguru
 from app.api.api import api
 from app.htmx_test.htmx_test import htmx_test
 from app.data_input.data_input import data_input
@@ -11,19 +12,18 @@ import datetime
 import app.auth as auth
 from app.menu.menu import menu
 import gc
+from loguru import logger
 import logging
-from logging import Formatter
-from flask import has_request_context, request
-from flask.logging import default_handler
 
-class ContextualFilter(logging.Filter):
-    def filter(self, log_record):
-        log_record.url = request.path
-        log_record.method = request.method
-        log_record.ip = request.environ.get("REMOTE_ADDR")
-        log_record.headers = request.headers
 
-        return True
+# class InterceptHandler(logging.Handler):
+#     def emit(self, record):
+#         # Retrieve context where the logging call occurred, this happens to be in the 6th frame upward
+#         logger_opt = logger.opt(depth=6, exception=record.exc_info)
+#         logger_opt.log(record.levelno, record.getMessage())
+
+
+
 
 
 # import sentry_sdk
@@ -58,7 +58,32 @@ app.register_blueprint(htmx_test, url_prefix='/htmx_test')
 app.register_blueprint(vaccine, url_prefix='/vaccine')
 
 
+
+def my_filter(record):
+    if record["extra"].get("warn_only"):  # "warn_only" is bound to the logger and set to 'True'
+        return record["level"].no >= logger.level("WARNING").no
+    return True  # Fallback to default 'level' configured while adding the handler
+
+logger.add(
+    'logs/events.log',
+    level='DEBUG',
+    format='{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}',
+    backtrace=True,
+    rotation='1 Gb',
+    retention=9,
+    encoding='utf-8',
+    filter=my_filter,
+    colorize=True,
+    enqueue=True,
+    serialize=True
+
+    )
+
+
+
+
 @app.route('/', methods=['GET', 'POST'])
+@logger.catch
 def login():
     message = ""
     message_auth = ""
@@ -73,8 +98,12 @@ def login():
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'):
-            app.logger.info('%s logged in successfully', username)
-            app.logger.error('Processing default request')
+            # app.logger.info(f'LOGIN-SUCCESS for {username}')
+            # logger.info("Inside the function")
+            app.logger.info(f'LOGIN-SUCCESS for {username}')
+            # app.logger.info(request.args)
+            # app.logger.info(request.full_path)
+            # app.logger.error('Processing default request')
             return redirect(url_for('menu.main_menu'))
         else:
             message = "Неверное имя пользователя или пароль"
@@ -85,6 +114,7 @@ def login():
 
 
 @app.route('/aalksdhl28kdhalu8', methods=['GET', 'POST'])
+@logger.catch
 def login_for_test():
     message = ""
     message_auth = ""
@@ -100,7 +130,8 @@ def login_for_test():
         if auth_result[0] == 'ok':
             message_auth = f'AD: успешная авторизация {auth_result[1]}, доступ уровень {auth_result[2]}'
         if (username == 'root' and password == 'pass') or (auth_result[0] == 'ok'): 
-            app.logger.info('%s logged in successfully', username)
+            app.logger.info(f'LOGIN-SUCCESS for {username}')
+            # app.logger.info(request.args)
             return redirect(url_for('menu.main_menu'))
         else:
             message = "Неверное имя пользователя или пароль"
@@ -110,61 +141,23 @@ def login_for_test():
                            message_auth=message_auth)
 
 
+
 @app.route('/logout')
-@auth.login_required
+@logger.catch
 def logout():
-    
+    logger.info("Inside the function")
     session.clear()
     flash("Вы успешно вышли!")
     gc.collect()
     return redirect(url_for('login'))
 
 
-# @app.route('/menu2')
-# def menu():
-#     if 'arena_user' in session:
-#         arena_user = session.get('arena_user')
-#     else:
-#         arena_user = 'none'
-#     if 'arena_fio' in session:
-#         arena_fio = session.get('arena_fio')
-#     else:
-#         arena_fio = "Не пользователь домена"
-#     if 'auth_group' in session:
-#         auth_group = session.get('auth_group')
-#     else:
-#         auth_group = 'none'
-#     # if auth_group == 'web_hs_admin':
-#     #     web_hs_admin
-#     #     web_hs_user
-#     #     web_hs_kadr
-#     #     web_hs_epid
-#     menu2 = generate_menu
-#     menu2 = Markup(menu2)
-#     return render_template('menu.html', menu=menu2)
-
-
 if __name__ == "__main__":
     # app.run(host='192.168.100.142', port=80, debug=True)
-    app.run(host='0.0.0.0', port=4000)
+    app.run(host='0.0.0.0', port=4000, debug=False)
 else:
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    context_provider = ContextualFilter()
-    app.logger.addFilter(context_provider)  
+    gunicorn_logger = logging.getLogger('gunicorn.error') 
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
-    app.logger.setLevel(logging.INFO)
-    # handlers.setFormatter(Formatter('''
-    # Message type:       %(levelname)s
-    # Location:           %(pathname)s:%(lineno)d
-    # Module:             %(module)s
-    # Function:           %(funcName)s
-    # Time:               %(asctime)s
-    # URL:                %(url)s
-    # Method:             %(method)s
-    # Headers:            %(headers)s
 
-    # Message:
-
-    # %(message)s
-    # '''))
+ 

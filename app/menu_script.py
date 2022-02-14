@@ -59,7 +59,7 @@ def generate_menu():
         </div>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
+    <form align="right" class="form-inline my-2 my-lg-0">
       <label>{arena_fio}</label>
       {exit}
     </form>

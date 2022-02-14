@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, request, session
+from loguru import logger
+import logging
 # регистрируем схему `Blueprint`
 from app.data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
 from app.data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
@@ -24,6 +26,7 @@ data_input = Blueprint('data_input', __name__)
 
 
 @data_input.route('/', methods=('GET', 'POST'))
+@logger.catch
 def wtf_template():
     if request.method == 'POST':
         otd = request.form.get('otd')
@@ -45,6 +48,7 @@ def wtf_template():
 
 
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
+@logger.catch
 def wtf_template3():
     if 'arena_mpp' not in session:
         return redirect(url_for("login"))

@@ -2,6 +2,8 @@
 import os
 # from datetime import date
 from flask import Blueprint, send_file, request
+from loguru import logger
+import logging
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
@@ -10,6 +12,7 @@ import app.db as db
 from app.sql import sql_select_otsut, sql_select_otsut_otd, sql_select_otsut_otd_lpu, sql_select_otsut_lpu
 
 excel = Blueprint('excel', __name__)
+
 
 def book_create(date_start, date_finish, select_otd, podr_select):
     if podr_select is not None and podr_select != 0 and podr_select != '0':
@@ -163,12 +166,15 @@ def set_column_widths(ws):
     for i, column_width in enumerate(column_widths):
         ws.column_dimensions[get_column_letter(i + 1)].width = column_width
 
+
 # -----------------------------------------------------------------------------
 def cleanup(path):
     os.remove(path)
 
+
 @excel.route('/', methods=['GET', 'POST'])
 @login_required
+@logger.catch
 def excel_ots():
     name_xlsx = "otchet_po_otsutstviyu.xlsx"
     path_xlsx = f"excel/{name_xlsx}"
