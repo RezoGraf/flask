@@ -15,12 +15,19 @@
 
 
 <body>
-    <form>
-        <button hx-get="/vaccine/load_from_fb" hx-swap="outerHTML" hx-target="#loading_from_firebird"  class="btn btn-primary" name="btn" value="load_from_fb_mpp">Загрузить сотрудников из Арены</button>
+    <form action="/vaccine/load_from_fb_to_pg">
+        <button hx-get="/vaccine/load_from_fb" hx-swap="outerHTML" hx-target="#loading_from_firebird"  class="btn btn-primary" name="btn" value="load_from_fb_mpp2">Выгрузить сотрудников из Арены</button>
         <div id="loading_from_firebird" style="display:none;" hx-get="/" hx-trigger="load">
             <img src="{{ img }} alt="Данные загружаются..." class="htmx-indicator" width="150"">
           </div>
+          <button hx-get="/vaccine/load_from_fb_to_pg" hx-swap="outerHTML" hx-target="#loading_to_pg"  class="btn btn-primary" name="btn" value="load_from_fb_mpp_to_pg">Загрузить сотрудников в БД Хелиос</button>
+          <div id="loading_to_pg" style="display:none;" hx-get="/" hx-trigger="load">
+            <img src="{{ img }} alt="Данные загружаются..." class="htmx-indicator" width="150"">
+          </div>
     </form>
+    <div>
+        {{ list_of_workers }}
+    </div>
 </body>
 
 

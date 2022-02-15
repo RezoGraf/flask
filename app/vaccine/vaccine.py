@@ -8,14 +8,9 @@ from webargs.flaskparser import use_args
 import app.db as db
 import app.vaccine.sql_vaccine as sql_vaccine
 import time
-# from . import vaccine
 
 
 vaccine = Blueprint('vaccine', __name__)
-
-
-
-# @use_args({"name": fields.Str(validate=[validate.Range(min=1, max=999)],required=True)}, location="query")
 
 
 @vaccine.route('/sinc')
@@ -25,8 +20,8 @@ def sinc():
     menu = session['menu']
     if request.method == 'POST':
         if request.form['btn'] == 'load_from_fb_mpp':
-
-            return redirect(url_for('vaccine.sinc', ))
+            # workers = request.form.get['workers_for_load']
+            return redirect(url_for('vaccine.sinc'))
     else:
         return render_template('vaccine_loader.html', menu=menu)
 
@@ -45,9 +40,42 @@ def load_from_fb():
 @login_required
 @logger.catch
 def loaf_from_fb_data():
-    time.sleep(7)
+    time.sleep(1)
     data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-    option = '<option selected value="">{var}</option>'
+    option = '<option selected name="worker-{mpp}" value="{mpp}">{fam} {im} {ot}</option>'
+    s = ''
+    for i in range(len(data)):
+        s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
+        i += 1
+    response = f"""
+    <div class="form-group">
+    <label for="exampleFormControlSelect2">Пример множественного выбора</label>
+    <select multiple class="form-control" id="exampleFormControlSelect2" name="workers_for_load">
+      {s}
+    </select>
+    <button name="btn" value="load_from_fb_mpp" type="submit">Загрузить</button>
+  </div>"""
+    return response
+
+
+@vaccine.route('/load_from_fb_to_pg', methods=['GET', 'POST'])
+@login_required
+@logger.catch
+def load_from_fb_to_pg():
+    g.workers = request.form.get['load_from_fb_mpp_to_pg']
+    response = """<div id="loading_to_pg" hx-get="/vaccine/load_to_pg_data" hx-trigger="load">
+            <img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
+          </div>"""
+    return response
+
+
+@vaccine.route('/load_to_pg_data')
+@login_required
+@logger.catch
+def load_to_pg_data():
+    time.sleep(1)
+    data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
+    option = '<option selected value="{var}">{var}</option>'
     s = ''
     for i in range(len(data)):
         s += option.format(var=data[i])
@@ -55,9 +83,10 @@ def loaf_from_fb_data():
     response = f"""
     <div class="form-group">
     <label for="exampleFormControlSelect2">Пример множественного выбора</label>
-    <select multiple class="form-control" id="exampleFormControlSelect2">
+    <select multiple class="form-control" id="exampleFormControlSelect2" name="workers_for_load">
       {s}
     </select>
+    <button name="btn" value="load_from_fb_mpp" type="submit">Загрузить</button>
   </div>"""
     # g.response = response
     # g['response'] = response
