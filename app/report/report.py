@@ -1,7 +1,9 @@
 from datetime import datetime
 from flask import render_template, request, url_for, redirect, Blueprint, session, g
-from loguru import logger
+# from loguru import logger
+from logging import Logger
 import logging
+from loguru import logger
 import pandas as pd
 from app.auth import login_required
 import app.db as db

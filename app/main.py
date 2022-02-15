@@ -64,6 +64,7 @@ def my_filter(record):
         return record["level"].no >= logger.level("WARNING").no
     return True  # Fallback to default 'level' configured while adding the handler
 
+
 logger.add(
     'logs/events.log',
     level='DEBUG',
