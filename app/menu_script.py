@@ -46,6 +46,7 @@ def generate_menu():
         <div class="dropdown-menu">
           <a class="dropdown-item text-primary" href="/vaccine">Заполнение карточек вакцинации</a>
           <a class="dropdown-item text-primary" href="/vaccine/report">Отчет о вакцинации</a>
+          <a class="dropdown-item text-primary" href="/vaccine/sinc">Синхронизация справочников</a>
         </div>
       </li>
       <li class="nav-item dropdown">
