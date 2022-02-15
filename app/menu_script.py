@@ -1,7 +1,7 @@
 from flask import session
 
 
-exit = """<a href="/logout" class="btn btn-secondary" role="button"> Выход</a>"""
+exit = """<a href="/logout" class="btn btn-danger" role="button">Выход</a>"""
 
 
 def generate_menu():
@@ -61,7 +61,7 @@ def generate_menu():
       </li>
     </ul>
     <form align="right" class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
+      <label>{arena_fio}<pre>  </pre></label>
       {exit}
     </form>
   </div>
@@ -74,7 +74,7 @@ def generate_menu():
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
+      <label>{arena_fio}<pre>  </pre></label>
       <a href="/logout" class="btn btn-secondary" role="button"> Выход</a>
     </form>
   </div>
@@ -107,7 +107,7 @@ def generate_menu():
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
+      <label>{arena_fio}<pre>  </pre></label>
       {exit}
     </form>
   </div>
@@ -137,7 +137,7 @@ def generate_menu():
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
+      <label>{arena_fio}<pre>  </pre></label>
       {exit}
     </form>
   </div>
@@ -167,7 +167,7 @@ def generate_menu():
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
+      <label>{arena_fio}<pre>  </pre></label>
       {exit}
     </form>
   </div>
