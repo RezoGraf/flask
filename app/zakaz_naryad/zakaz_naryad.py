@@ -1,11 +1,7 @@
-# from werkzeug.wrappers import response
 import app.db as db
 import app.sql as sql
 import app.api.api as api
-# from . import api
 from flask import render_template, request, url_for, redirect, Blueprint
-# регистрируем схему `Blueprint`
-# from . import zakaz_naryad
 from datetime import datetime
 from app.menu_script import generate_menu
 import re 
@@ -86,9 +82,6 @@ def zn_naryad():
         
     if request.method == 'POST':
         idkv = request.form.get('idkv')
-        # result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        # result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
-        # return redirect(url_for('zakaz_naryad.zn_naryad', result_usl = result_usl, zn_naryad_list=result, idkv=idkv))
         return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))    
    
     else:
@@ -292,20 +285,23 @@ def zn_modal_open_btn():
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" style="text-align:centre;">Вы действительно хотите ОТКРЫТЬ
-                                                                    <br/> наряд № {nkv}?  </h5>                             
+                                            <div class="row" style="text-align: center;">
+                                                <div class="col mx-auto">
+                                                    <h5 class="modal-title" >Вы действительно хотите удалить дату закрытия наряд № {nkv}?</h5>
+                                                </div>
+                                            </div>                             
                                         </div>
                                         <form hx-post="zn_modal_open?idkv={idkv}">                               
                                             <div class="modal-footer">
                                                 <div class="container-fluid">
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                        <button class="btn btn-primary btn-block btn-success " type="submit" onclick="closeModal_zn_open()">Да</button>
+                                                            <button class="btn btn-primary btn-block btn-success " type="submit" onclick="closeModal_zn_open()">Да</button>
                                                         </div>
                                                         <div class="col-md-4">
                                                         </div>
                                                         <div class="col-md-4">
-                                                        <button type="button" class="btn btn-danger btn-block" onclick="closeModal_zn_open_close()">Нет</button>  
+                                                            <button type="button" class="btn btn-danger btn-block" onclick="closeModal_zn_open_close()">Нет</button>  
                                                         </div>
                                                     </div>
                                                 </div>                                       
