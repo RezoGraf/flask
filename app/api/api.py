@@ -93,35 +93,56 @@ def test_api():
     return json
 
 # @api.route('/zn_close', methods=['GET', 'POST'])
+@logger.catch
 def zn_close(idkv):
     url = 'http://127.0.0.1:5000/api/test_api' 
     headers = {'Content-type': 'application/json',  
                'Accept': 'text/plain',
                'Content-Encoding': 'utf-8'}
     # поиск документов на отправку со статусом 3-------
-    result = db.select(sql.sql_api_select_check)
-    print(result)
-    idkv = result[0][0]
-    dzr = result[0][1]
-    opl = result[0][2]
-    print(dzr)
-    if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
-                date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
-                dzr = date_time_obj.strftime('%d.%m.%Y')
-    print(dzr)
-    data_isp = db.select(sql.sql_api_select_isp.format(idkv))
-    print(data_isp)
-    teh = data_isp[0][0]
     
-    data = {"DOC" : [{" DOC_ID ": f"{idkv}",
-                      " DOC_TYPE ": "3",
-                      " DOC_DZR ": f"{dzr}",
-                      " DOC_OPL ": f"{opl}"}]
-                      [" ISP " : [{"ISP_STAT":"5",
-                                   "ISP_CODE":f"{teh}"}]] 
-            }
-   
-    # Если по одному ключу находится несколько словарей, формируем список словарей
+    result = db.select_dicts_in_turple_with_description(sql.sql_api_select_check)
+    # result3 = result2
+    # print(result)
+    # data_all = {}
+    # for i in range(len(result)):
+    #     s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
+    #     i += 1
+    # idkv = result[0][0]
+    # dzr = result[0][1]
+    # opl = result[0][2]
+    # print(dzr)
+    # if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
+    #             date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
+    #             dzr = date_time_obj.strftime('%d.%m.%Y')
+    # if dzr is None or dzr == "":   
+    #         dzr = 'null'
+    # print(dzr)
+    # result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=idkv))
+    # print(result_isp)
+    
+    # print(result[0]['IDKV'])
+    data = {}
+    volue = []
+    for i in range(len(result)):
+        data_vol = {" DOC_ID ": str(result[i]['IDKV']),
+                    " DOC_TYPE ": "3",
+                    " DOC_DZR ": str(result[i]['DZR']),
+                    " DOC_OPL ": str(result[i]['OPL']),
+                    " ISP " : " " }
+        volue.append(data_vol)
+        
+        result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
+        
+        isp_list = []
+        for i in range(len(result)):
+            isp_vol = {"ISP_STAT":str(result_isp[i]['DZR']),
+                       "ISP_CODE":str(result_isp[i]['DZR'])}
+        isp_list.append(isp_vol)
+        data["ISP"] = volue
+        
+    data["DOC"] = volue
+    
     answer = requests.post(url, data=json.dumps(data), headers=headers)
     print(answer)
     response = answer.json()

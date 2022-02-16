@@ -248,13 +248,11 @@ def zn_modal_close_btn():
         check_dzr = 0
         if dzr is None or dzr == "":   
             dzr = 'null'
-            check_dzr = 1  
-        print(dzr)    
+            check_dzr = 1 
         if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
                 date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
                 dzr = date_time_obj.strftime('%d.%m.%Y')
                 check_dzr = 2
-        print(dzr)
 # Проверка даты------------------------------------------------------------------------------------
         if check_dzr == 1 or 2:
             check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))
