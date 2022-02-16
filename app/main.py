@@ -6,6 +6,7 @@ from app.excel.excel import excel
 from app.vaccine.vaccine import vaccine
 from app.report.report import report
 from app.zakaz_naryad.zakaz_naryad import zakaz_naryad
+from app.in_work.in_work import in_work
 from flask import Flask, render_template, request, url_for, redirect, flash, session
 from app.db_test.db_test import db_test
 import datetime
@@ -14,6 +15,7 @@ from app.menu.menu import menu
 import gc
 from loguru import logger
 import logging
+
 
 
 # class InterceptHandler(logging.Handler):
@@ -56,6 +58,7 @@ app.register_blueprint(db_test, url_prefix='/db_test')
 app.register_blueprint(zakaz_naryad, url_prefix='/zakaz_naryad')
 app.register_blueprint(htmx_test, url_prefix='/htmx_test')
 app.register_blueprint(vaccine, url_prefix='/vaccine')
+app.register_blueprint(in_work, url_prefix='/in_work')
 
 
 
