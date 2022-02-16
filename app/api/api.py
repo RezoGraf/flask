@@ -100,8 +100,14 @@ def zn_close(idkv):
                'Accept': 'text/plain',
                'Content-Encoding': 'utf-8'}
     # поиск документов на отправку со статусом 3-------
-    result = db.select(sql.sql_api_select_check)
-    print(result)
+    
+    result = db.select_dicts_in_turple_with_description(sql.sql_api_select_check)
+    # result3 = result2
+    # print(result)
+    # data_all = {}
+    # for i in range(len(result)):
+    #     s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
+    #     i += 1
     # idkv = result[0][0]
     # dzr = result[0][1]
     # opl = result[0][2]
@@ -112,19 +118,31 @@ def zn_close(idkv):
     # if dzr is None or dzr == "":   
     #         dzr = 'null'
     # print(dzr)
-    data_isp = db.select(sql.sql_api_select_isp.format(idkv=idkv))
-    print(data_isp)
-    teh = data_isp[0][0]
+    # result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=idkv))
+    # print(result_isp)
     
-    data ={"DOC" : [{" DOC_ID ": "{idkv}",
-                      " DOC_TYPE ": "3",
-                      " DOC_DZR ": "{dzr}",
-                      " DOC_OPL ": "{opl}"}]
-                      [" ISP " : [{"ISP_STAT":"5",
-                                   "ISP_CODE":"{teh}"}]] 
-            }
-   
-    # Если по одному ключу находится несколько словарей, формируем список словарей
+    # print(result[0]['IDKV'])
+    data = {}
+    volue = []
+    for i in range(len(result)):
+        data_vol = {" DOC_ID ": str(result[i]['IDKV']),
+                    " DOC_TYPE ": "3",
+                    " DOC_DZR ": str(result[i]['DZR']),
+                    " DOC_OPL ": str(result[i]['OPL']),
+                    " ISP " : " " }
+        volue.append(data_vol)
+        
+        result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
+        
+        isp_list = []
+        for i in range(len(result)):
+            isp_vol = {"ISP_STAT":str(result_isp[i]['DZR']),
+                       "ISP_CODE":str(result_isp[i]['DZR'])}
+        isp_list.append(isp_vol)
+        data["ISP"] = volue
+        
+    data["DOC"] = volue
+    
     answer = requests.post(url, data=json.dumps(data), headers=headers)
     print(answer)
     response = answer.json()
