@@ -312,8 +312,8 @@ sql_select_otsut = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK)"""
 
 
 sql_select_otsut_otd = """Select N_DOC.NDOC, 
@@ -323,8 +323,8 @@ sql_select_otsut_otd = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) {otd}"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK) {otd}"""
 
 
 sql_select_otsut_otd_lpu = """Select N_DOC.NDOC, 
@@ -334,8 +334,8 @@ sql_select_otsut_otd_lpu = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) and lpu={lpu} and otd={otd}"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK) and lpu={lpu} and otd={otd}"""
 
 
 sql_select_otsut_lpu = """Select N_DOC.NDOC, 
@@ -345,8 +345,8 @@ sql_select_otsut_lpu = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) and lpu={lpu}"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK) and lpu={lpu}"""
 
 
 sql_select_podr = """SELECT LPU,SNLPU FROM N_LPU,N_SLP WHERE (N_SLP.SLP=N_LPU.LPU) and (N_SLP.TER=N_LPU.TER)"""
