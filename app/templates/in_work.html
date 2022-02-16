@@ -32,7 +32,7 @@
             <th>Телефон</th>
             <th>Кабинет</th>
         </tr>
-        <tr>
+        <tr class="header">
             <th>
                 <input name="otd_filter" list="datalistOptions" class="form-control" id="myInputOtd" placeholder="Поиск по ФИО" autocomplete="off">         
             </th>
@@ -55,7 +55,7 @@
             <th>
                 <input name="kab_filter" list="datalistOptions" class="form-control" id="myInputKab" placeholder="Кабинет" autocomplete="off">
             </th>
-        </tr>
+        </trТ>
     </thead>
     <tbody>
         {% for worker in table %}    
@@ -77,90 +77,6 @@
 
 </html>
 <script>
-    function filterTable(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var secondCol = rows[i].cells[1].textContent.toUpperCase();
-            if (secondCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
-
-
-    function filterTable2(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var firstCol = rows[i].cells[0].textContent.toUpperCase();
-            if (firstCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#myInputOtd').addEventListener('keyup', filterTable2, false);
-
-
-
-    function filterTable3(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var thirdCol = rows[i].cells[2].textContent.toUpperCase();
-            if (thirdCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#myInputReason').addEventListener('keyup', filterTable3, false);
-
-
-    function filterTable4(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var forCol = rows[i].cells[3].textContent.toUpperCase();
-            if (forCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#myInputPodr').addEventListener('keyup', filterTable4, false);
-
-
-    function filterTable5(event) {
-        var filter = event.target.value.toUpperCase();
-        var rows = document.querySelector("#myTable tbody").rows;
-
-        for (var i = 0; i < rows.length; i++) {
-            var fithCol = rows[i].cells[7].textContent.toUpperCase();
-            if (fithCol.indexOf(filter) > -1) {
-                rows[i].style.display = "";
-            } else {
-                rows[i].style.display = "none";
-            }
-        }
-    }
-
-    document.querySelector('#myInputKab').addEventListener('keyup', filterTable5, false);
 
 
     $(function() {
@@ -170,6 +86,32 @@
             nonSelectedText: 'Select language'
         });
     });
+
+
+    function filterTable(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[0].textContent.toUpperCase();
+            var secondCol = rows[i].cells[1].textContent.toUpperCase();
+            var thirdCol = rows[i].cells[2].textContent.toUpperCase();
+            var fourCol = rows[i].cells[3].textContent.toUpperCase();
+            var fiveCol = rows[i].cells[7].textContent.toUpperCase();
+
+            if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1 || thirdCol.indexOf(filter) > -1 || fourCol.indexOf(filter) > -1 || fiveCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#myInputOtd').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInputReason').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInputPodr').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInputKab').addEventListener('keyup', filterTable, false);
 
 </script>
 
