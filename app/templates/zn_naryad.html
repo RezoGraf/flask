@@ -54,11 +54,6 @@
                         <div class="col-md-12"><hr/></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
-                            <span class="font-weight-bold"><u>Исполнители</u></span>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-4">
                             <span class="font-weight-bold">Техник:</span> {{nteh or 'Не назначен'}} 
                         </div>
@@ -83,11 +78,6 @@
                         <div class="col-md-12"><hr/></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12">
-                            <span class="font-weight-bold"><u>Пациент</u></span></span>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-4">
                             <span class="font-weight-bold">№ карты:</span> {{uid}}
                         </div>
@@ -110,7 +100,6 @@
                         class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}
                         _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Изменить
                     </button>
-                    <br/>                        
                     <br/>
                     <button 
                         hx-get="zn_modal_open_btn?idkv={{idkv}}&nkv={{nkv}}" 
@@ -119,9 +108,9 @@
                         class="btn btn-primary btn-block"{{'disabled' if dzr == None else ''}}
                         _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Открыть наряд
                     </button>
-                    <br/>
+                    
                     <hr/>
-                    <br/>
+                    
                     <a href="{% if ub != None %} {{ub}} {% else %} {{"/zakaz_naryad/"}} {%endif %}"><button class="btn btn-primary btn-block">Назад</button></a>
                 </div>
             </td>

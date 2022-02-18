@@ -5,7 +5,7 @@ from flask import render_template, request, url_for, redirect, Blueprint
 from datetime import datetime
 from app.menu_script import generate_menu
 import re 
-
+from loguru import logger
 
 zakaz_naryad = Blueprint('zakaz_naryad', __name__)
 
@@ -125,30 +125,34 @@ def zn_modal_edit():
         sel_1 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nteh_db)):
             sel_1_vol = f"""<option value="{nteh_db[i][0]}">{nteh_db[i][1]}</option>"""
+            # print(nteh_db[i][0])
             sel_1.append(sel_1_vol)
+        # print(sel_1)
         for i in range(1, len(sel_1)):   
-            if str(nom_teh) in sel_1[i]:
-                sel_1[i] = f"""<option value="{nom_teh}" selected>{nteh_db[i][1]}</option>"""       
+            if str('"'+nom_teh+'"') in sel_1[i]:
+                # print(nom_teh)
+                sel_1[i] = f"""<option value="{nom_teh}" selected>{nteh_db[i][1]}</option>"""
+                # print(sel_1[i])       
         sel_2 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nlit_db)):
             sel_2_vol = f"""<option value="{nlit_db[i][0]}">{nlit_db[i][1]}</option>"""
             sel_2.append(sel_2_vol)
         for i in range(1, len(sel_2)):   
-            if str(nom_lit) in sel_2[i]:
+            if str('"'+nom_lit+'"') in sel_2[i]:
                 sel_2[i] = f"""<option value="{nom_lit}" selected>{nlit_db[i][1]}</option>"""     
         sel_3 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(npol_db)):
             sel_3_vol = f"""<option value="{npol_db[i][0]}">{npol_db[i][1]}</option>"""
             sel_3.append(sel_3_vol)
         for i in range(1, len(sel_3)):   
-            if str(nom_pol) in sel_3[i]:
+            if str('"'+nom_pol+'"') in sel_3[i]:
                 sel_3[i] = f"""<option value="{nom_pol}" selected>{npol_db[i][1]}</option>"""        
         sel_4 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nvar_db)):
             sel_4_vol = f"""<option value="{nvar_db[i][0]}">{nvar_db[i][1]}</option>"""
             sel_4.append(sel_4_vol)
         for i in range(1, len(sel_4)):   
-            if str(nom_var) in sel_4[i]:
+            if str('"'+nom_var+'"') in sel_4[i]:
                 sel_4[i] = f"""<option value="{nom_var}" selected>{nvar_db[i][1]}</option>"""       
         response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
@@ -220,6 +224,7 @@ def zn_modal_edit():
     
 # Модальное на закрытие---------------------------------------------------------------------------------------------------------------------------------
 @zakaz_naryad.route('/zn_modal_close_btn', methods=['GET', 'POST'])
+@logger.catch
 def zn_modal_close_btn():
         
     if request.method == 'POST':
@@ -246,13 +251,13 @@ def zn_modal_close_btn():
         if nom_var is None:    
             nom_var = "0"
         check_dzr = 0
-        if dzr is None or dzr == "":   
-            dzr = 'null'
-            check_dzr = 1 
         if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
                 date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
                 dzr = date_time_obj.strftime('%d.%m.%Y')
                 check_dzr = 2
+        if dzr is None:   
+            dzr = "null"
+            check_dzr = 1 
 # Проверка даты------------------------------------------------------------------------------------
         if check_dzr == 1 or 2:
             check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))

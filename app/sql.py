@@ -191,7 +191,7 @@ sql_zn_naryad_select_var = """Select distinct mpp, ndoc
                               where pv=1 and (dolj=164 or doc=0)
                               order by ndoc"""
 sql_zn_naryad_select_check = """Select idkv from pl_uslt where idkv={idkv}"""
-sql_zn_naryad_insert_isp = """INSERT INTO PL_USLT (idkv,teh,lit,varh,polir,dzr) values({idkv},{nom_teh},{nom_lit},{nom_var},{nom_pol},'{dzr}')"""
+sql_zn_naryad_insert_isp = """INSERT INTO PL_USLT (idkv,teh,lit,varh,polir,dzr) values({idkv},{nom_teh},{nom_lit},{nom_var},{nom_pol},{dzr})"""
 sql_zn_naryad_update_isp = """Update pl_uslt 
                               set teh={nom_teh}, 
                                   lit={nom_lit},                                   
@@ -206,7 +206,7 @@ sql_zn_naryad_update_uslk = """Update pl_uslk
                               where idkv={idkv}"""
 #api.zn_close закрытие наряда, отправка в 1с-------------------------------------------------------------------------------------------------------- 
 sql_api_select_check = """Select idkv, dzr, opl from pl_uslk where status=3 and dou>='01.01.2021'"""
-sql_api_select_isp = """Select teh, nap, lit, varh, polir from pl_uslt where idkv={idkv}"""
+sql_api_select_isp = """Select teh, lit, polir from pl_uslt where idkv={idkv}"""
 sql_api_upd_otpr = """Update set status=2 from pl_uslk where idkv={idkv}"""
 # Открытие наряда \ удаление даты закрытия----------------------------------------------------------------------------------------------------------
 sql_zn_naryad_update_dzr_uslk = """Update pl_uslk set dzr=null where idkv={idkv}"""
