@@ -1,10 +1,10 @@
-import pg8000
+import psycopg2
 import config
 # import wtforms_sqlalchemy.orm.model_form
 
 
 def select(sql):
-    con = pg8000.connect(dsn=config.pg_dsn,
+    con = psycopg2.connect(dsn=config.pg_dsn,
                         database = 'helios',
                         user=config.pg_user,
                         password=config.pg_password)
@@ -17,7 +17,7 @@ def select(sql):
 
 
 def write(sql):
-    con = pg8000.connect(dsn=config.pg_dsn,
+    con = psycopg2.connect(dsn=config.pg_dsn,
                         database = 'helios',
                         user=config.pg_user,
                         password=config.pg_password)
@@ -29,7 +29,7 @@ def write(sql):
 
 
 def proc(proc_name):
-    con = pg8000.connect(dsn=config.pg_dsn,
+    con = psycopg2.connect(dsn=config.pg_dsn,
                         database = 'helios',
                         user=config.pg_user,
                         password=config.pg_password)
