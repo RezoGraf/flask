@@ -15,26 +15,26 @@
 
 <div class="container">
   <h4 class="text-primary">График учета рабочего времени</h4>
-  <form class="form-horizontal" method="POST">
-    <div class="row">
+  <div class="row">
+    <form method="POST">
+      <label for="year_" class="form-label">Год</label>
+      <input id="year_" type="number" name="year" min=2020 max=3000 value={{ year }} step=1 required=true/>
 
-      <div class="col-md-auto">
-        <label for="year_" class="form-label">Год</label>
-        <input id="year_" type="number" name="year" min=2020 max=3000 value={{ year }} step=1 required=true/>
-      </div>
-
-      <div>
-       <label for="month_" class="form-label">Месяц</label>
-       <input id="month_" type="number" name="month" min=1 max=31 value={{ month }} step=1 required=true/>
-      </div>
-
+      <label for="month_" class="form-label">Месяц</label>
+      <input id="month_" type="number" name="month" min=1 max=31 value={{ month }} step=1 required=true/>
       <label for="otd" class="form-label">Отделение</label>
+<<<<<<< HEAD
       <select hx-get="grf_NewWork" hx-target="#NewWork" hx-swap="innerHTML" name="otd" value={{ otd }} class="form-select" style="height: 30px;">
+=======
+      
+      <select hx-get="grf_NewWork" hx-target="#NewWork" hx-swap="innerHTML"  name="otd" value={{ otd }}>
+>>>>>>> 4009fb9104d3adcea514dd1ad7c0b75428ae1e44
         {% for otd, notd, lpu in result_otd %}
           <option value="{{ otd }}"{% if loop.first %} SELECTED {% endif %}>{{ notd }}</option>
         {% endfor %}
         <option value = {{ otd }} selected>{{ notd }}</option>
       </select> 
+<<<<<<< HEAD
       
       <div class="form-group">
         <button type="button submit" name="btn" value="selectNew" class="btn btn-outline-primary btn-sm">Найти</button>
@@ -67,7 +67,22 @@
 
     </div>
    </form>
+=======
+      <div class="btn btn-primary">
+        <button type="button submit" name="btn" value="selectNew" class="btn btn-primary">Найти</button>
+      </div>
+  
+      <div class="btn btn-primary" id="NewGrf">
+        <button hx-get="grf_addGrf?otd={{ otd }}" hx-target="#modals-here" hx-trigger="click" class="btn btn-primary btn-block">Создать график</button>
+      </div>
+
+      <div id="NewWork" class="btn btn-primary">
+        <button hx-get="grf_addWorker?otd={{ otd }}&year={{ year }}&month={{ month }}" hx-target="#modals-here" hx-trigger="click" class="btn btn-primary">Добавить сотрудника</button>
+      </div>
+    </form>
+>>>>>>> 4009fb9104d3adcea514dd1ad7c0b75428ae1e44
   </div>
+</div>
 
 <div id="modals-here"></div>
 

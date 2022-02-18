@@ -1,13 +1,11 @@
-# from werkzeug.wrappers import response
 import app.db as db
 import app.sql as sql
+import app.api.api as api
 from flask import render_template, request, url_for, redirect, Blueprint
-# регистрируем схему `Blueprint`
-from . import zakaz_naryad
 from datetime import datetime
 from app.menu_script import generate_menu
 import re 
-
+from loguru import logger
 
 zakaz_naryad = Blueprint('zakaz_naryad', __name__)
 
@@ -84,9 +82,6 @@ def zn_naryad():
         
     if request.method == 'POST':
         idkv = request.form.get('idkv')
-        # result = db.select(sql.sql_zn_naryad_select_info.format(idkv=idkv))
-        # result_usl = db.select(sql.sql_zn_naryad_select_usl.format(idkv=idkv))
-        # return redirect(url_for('zakaz_naryad.zn_naryad', result_usl = result_usl, zn_naryad_list=result, idkv=idkv))
         return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))    
    
     else:
@@ -130,33 +125,35 @@ def zn_modal_edit():
         sel_1 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nteh_db)):
             sel_1_vol = f"""<option value="{nteh_db[i][0]}">{nteh_db[i][1]}</option>"""
+            # print(nteh_db[i][0])
             sel_1.append(sel_1_vol)
+        # print(sel_1)
         for i in range(1, len(sel_1)):   
-            if str(nom_teh) in sel_1[i]:
-                sel_1[i] = f"""<option value="{nom_teh}" selected>{nteh_db[i][1]}</option>"""       
+            if str('"'+nom_teh+'"') in sel_1[i]:
+                # print(nom_teh)
+                sel_1[i] = f"""<option value="{nom_teh}" selected>{nteh_db[i][1]}</option>"""
+                # print(sel_1[i])       
         sel_2 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nlit_db)):
             sel_2_vol = f"""<option value="{nlit_db[i][0]}">{nlit_db[i][1]}</option>"""
             sel_2.append(sel_2_vol)
         for i in range(1, len(sel_2)):   
-            if str(nom_lit) in sel_2[i]:
+            if str('"'+nom_lit+'"') in sel_2[i]:
                 sel_2[i] = f"""<option value="{nom_lit}" selected>{nlit_db[i][1]}</option>"""     
         sel_3 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(npol_db)):
             sel_3_vol = f"""<option value="{npol_db[i][0]}">{npol_db[i][1]}</option>"""
             sel_3.append(sel_3_vol)
         for i in range(1, len(sel_3)):   
-            if str(nom_pol) in sel_3[i]:
+            if str('"'+nom_pol+'"') in sel_3[i]:
                 sel_3[i] = f"""<option value="{nom_pol}" selected>{npol_db[i][1]}</option>"""        
         sel_4 = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(nvar_db)):
             sel_4_vol = f"""<option value="{nvar_db[i][0]}">{nvar_db[i][1]}</option>"""
             sel_4.append(sel_4_vol)
         for i in range(1, len(sel_4)):   
-            if str(nom_var) in sel_4[i]:
-                sel_4[i] = f"""<option value="{nom_var}" selected>{nvar_db[i][1]}</option>"""
-        url_back2=url_back
-        print(url_back)        
+            if str('"'+nom_var+'"') in sel_4[i]:
+                sel_4[i] = f"""<option value="{nom_var}" selected>{nvar_db[i][1]}</option>"""       
         response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -213,7 +210,7 @@ def zn_modal_edit():
                                             <button class="btn btn-primary btn-success" type="submit" onclick="closeModal()">Сохранить</button>
                                             </td>                                            
                                             <td style="text-align: right;"> 
-                                                <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button>
+                                                <button type="button" class="btn btn-danger" onclick="closeModal1()">&nbsp;Отмена&nbsp;</button>
                                                 
                                             </td>                                            
                                         </tr>
@@ -227,6 +224,7 @@ def zn_modal_edit():
     
 # Модальное на закрытие---------------------------------------------------------------------------------------------------------------------------------
 @zakaz_naryad.route('/zn_modal_close_btn', methods=['GET', 'POST'])
+@logger.catch
 def zn_modal_close_btn():
         
     if request.method == 'POST':
@@ -253,33 +251,79 @@ def zn_modal_close_btn():
         if nom_var is None:    
             nom_var = "0"
         check_dzr = 0
-        if dzr is None or dzr == "":   
-            dzr = "null"
-            check_dzr = 1  
-            
         if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
                 date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
-                dzr = date_time_obj.strftime('%d-%m-%Y')
+                dzr = date_time_obj.strftime('%d.%m.%Y')
                 check_dzr = 2
+        if dzr is None:   
+            dzr = "null"
+            check_dzr = 1 
 # Проверка даты------------------------------------------------------------------------------------
         if check_dzr == 1 or 2:
             check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))
             if check_zn == []:
                 db.write(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
-                if check_dzr == 2:
-                    sql_zn_naryad_update_uslk = 3 
-                    print("записать в таблицу для инфу для отправки")
-                
+                # если дата формата дд.мм.гг то запись на отправку----------------------------------------------------
+                if check_dzr == 2: 
+                    db.write(sql.sql_zn_naryad_update_uslk.format(idkv=idkv, status=3, dzr=dzr))
+                    api.zn_close(idkv)
             else:
                 db.write(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
                 if check_dzr == 2:
-                    print("записать в таблицу для инфу для отправки")
-    url_back3=url_back            
-    print(request.url)
+                    db.write(sql.sql_zn_naryad_update_uslk.format(idkv=idkv, status=3, dzr=dzr))
+                    api.zn_close(idkv)
     return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
+# Кнопка удаления даты закрытия наряда---------------------------------------------------------------------------------------------------------------------------
+@zakaz_naryad.route('/zn_modal_open_btn', methods=['GET', 'POST'])
+def zn_modal_open_btn():
+    if request.method == 'POST':
+        idkv = request.args.get('idkv')
+        nkv = request.args.get('nkv')
+        return redirect(url_for('zakaz_naryad.zn_modal_open_btn', idkv=idkv, nkv=nkv))
+    else:
+        idkv = request.args.get('idkv')
+        nkv = request.args.get('nkv')            
+        response = f"""<div id="modal-backdrop_zn_open" class="modal-backdrop fade show" style="display:block;"></div>
+                        <div id="modal_zn_modal" class="modal fade show" tabindex="-1" style="display:block;">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <div class="row" style="text-align: center;">
+                                                <div class="col mx-auto">
+                                                    <h5 class="modal-title" >Вы действительно хотите удалить дату закрытия наряд № {nkv}?</h5>
+                                                </div>
+                                            </div>                             
+                                        </div>
+                                        <form hx-post="zn_modal_open?idkv={idkv}">                               
+                                            <div class="modal-footer">
+                                                <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <button class="btn btn-primary btn-block btn-success " type="submit" onclick="closeModal_zn_open()">Да</button>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <button type="button" class="btn btn-danger btn-block" onclick="closeModal_zn_open_close()">Нет</button>  
+                                                        </div>
+                                                    </div>
+                                                </div>                                       
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                          """
+        return response
     
-        # return render_template('zn_naryad.html',_external=True, idkv=idkv)
-        # return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
-    
-    
-  
+@zakaz_naryad.route('/zn_modal_open', methods=['GET', 'POST'])
+def zn_modal_open():
+    if request.method == 'POST':
+        idkv = request.args.get('idkv')
+        return redirect(url_for('zakaz_naryad.zn_modal_open', idkv=idkv))
+    else:
+        idkv = request.args.get('idkv')
+        db.write(sql.sql_zn_naryad_update_dzr_uslk.format(idkv=idkv))
+        db.write(sql.sql_zn_naryad_update_dzr_uslt.format(idkv=idkv))    
+    return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))

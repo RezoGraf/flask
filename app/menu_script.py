@@ -1,4 +1,9 @@
 from flask import session
+
+
+exit = """<a href="/logout" class="btn btn-danger" role="button">Выход</a>"""
+
+
 def generate_menu():
     menu = ''
     if 'auth_group' in session:
@@ -29,6 +34,7 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
           <a class="dropdown-item text-primary" href="/zakaz_naryad">Заказ Наряды</a>
         </div>
@@ -41,6 +47,7 @@ def generate_menu():
         <div class="dropdown-menu">
           <a class="dropdown-item text-primary" href="/vaccine">Заполнение карточек вакцинации</a>
           <a class="dropdown-item text-primary" href="/vaccine/report">Отчет о вакцинации</a>
+          <a class="dropdown-item text-primary" href="/vaccine/sinc">Синхронизация справочников</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -54,9 +61,9 @@ def generate_menu():
         </div>
       </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
-      <a href="/" class="btn btn-secondary" role="button"> Выход</a>
+    <form align="right" class="form-inline my-2 my-lg-0">
+      <label>{arena_fio}<pre>  </pre></label>
+      {exit}
     </form>
   </div>
 </nav>"""
@@ -68,8 +75,8 @@ def generate_menu():
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
-      <a href="/" class="btn btn-secondary" role="button"> Выход</a>
+      <label>{arena_fio}<pre>  </pre></label>
+      <a href="/logout" class="btn btn-secondary" role="button"> Выход</a>
     </form>
   </div>
 </nav>
@@ -96,13 +103,14 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
         </div>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
-      <a href="/" class="btn btn-secondary" role="button"> Выход</a>
+      <label>{arena_fio}<pre>  </pre></label>
+      {exit}
     </form>
   </div>
 </nav>"""
@@ -126,13 +134,14 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
         </div>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
-      <a href="/" class="btn btn-secondary" role="button"> Выход</a>
+      <label>{arena_fio}<pre>  </pre></label>
+      {exit}
     </form>
   </div>
 </nav>"""
@@ -156,13 +165,14 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
         </div>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
-      <label>{arena_fio}</label>
-      <a href="/" class="btn btn-secondary" role="button"> Выход</a>
+      <label>{arena_fio}<pre>  </pre></label>
+      {exit}
     </form>
   </div>
 </nav>"""

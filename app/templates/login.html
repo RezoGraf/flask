@@ -10,6 +10,15 @@
 
 <div class="form" style="overflow-x: hidden;">
     <form class="login" method="post">
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 {% if message_auth %}
 <p>{{ message_auth }}</p>
 {% endif %}

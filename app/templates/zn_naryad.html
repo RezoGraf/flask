@@ -15,96 +15,110 @@
 
 
     <meta charset="UTF-8">
-    <title>Отчет по отсутствующим</title>
+    <title>Лаборатория</title>
 </head>
 
 <body>
-    
-
-        <table class="table table-borderless">
-            
-            <tr>
-                
-                <td style = "width:80%;">
-                    
-                    <table class="table" style="border: none">
-                        
-                        <tbody>
-                            {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nom_teh, nlit, nom_lit, 
-                                npolir, nom_pol, nvarh, nom_var,nlpu in zn_naryad_list %}
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px; border: none">
-                                <td><span class="font-weight-bold"><u>Номер наряда:</u></span> {{nkv}}</td> 
-                                <td> 
-                                    <span class="font-weight-bold">Статус: </span>  
-                                    <span class="{{'text-danger' if dzr != None else 'text-success'}}"> {{'Закрыт' if dzr != None else 'Открыт'}}</span>
-                                </td> 
-                                <td><span class="font-weight-bold">Вид оплаты:</span> {{nopl}}</td>                                
-                            </tr>        
-                   
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><span class="font-weight-bold">Дата оформления:</span> {% if dou != None %} {{ dou.strftime('%d.%m.%Y') }} {% else %} {{ dou or "" }} {%endif %}</td>
-                                <td><span class="font-weight-bold">Дата закрытия:</span> {% if dzr != None %} {{ dzr.strftime('%d.%m.%Y') }} {% else %} {{ dzr or "" }} {%endif %}</td>
-                                <td><span class="font-weight-bold">Полная стоимость:</span> {{stu}}</td>
-                            </tr>
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><hr/></td><td><hr/></td><td><hr/></td>
-                            </tr>
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><span class="font-weight-bold"><u>Исполнители</u></span></td>
-                            </tr>
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><span class="font-weight-bold">Техник:</span> {{nteh or 'Не назначен'}}</td> 
-                                <td><span class="font-weight-bold">Врач:</span> {{nmpp or 'Не назначен'}}</td>
-                            </tr>
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><span class="font-weight-bold">Литейщик:</span> {{nlit or 'Не назначен'}}</td> 
-                                <td><span class="font-weight-bold">Полировщик:</span> {{npolir or 'Не назначен'}}</td> 
-                                <td><span class="font-weight-bold">Варщик:</span> {{nvarh or 'Не назначен'}}</td>
-                            </tr>
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><hr/></td><td><hr/></td><td><hr/></td>
-                            </tr>
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><span class="font-weight-bold"><u>Пациент</u></span></td>
-                            </tr>
-                            <tr style = "line-height: 15px; min-height: 15px; height: 15px;">
-                                <td><span class="font-weight-bold">№ карты:</span> {{uid}}</td> 
-                                <td><span class="font-weight-bold">ФИО:</span> {{ fam or '' }} {{ im or '' }} {{ ot or '' }}</td> 
-                                <td><span class="font-weight-bold">Дата рождения:</span> {% if dr != None %} {{ dr.strftime('%d.%m.%Y') }} {% else %} {{ dr or "" }} {%endif %}</td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
-                    
-                </td>
-
-                <td style="text-align: center;">
-                    <div style="width:50%; margin: 0 auto;">
-                        <br/> <br/>
-                        <button 
-                            hx-get="zn_modal_edit?idkv={{idkv}}&nom_teh={{nom_teh}}&nom_lit={{nom_lit}}&nom_pol={{nom_pol}}&nom_var={{nom_var}}&dzr={{dzr}}" 
-                            hx-target="#modals-here" 
-                            hx-trigger="click"
-                            class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}
-                            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Изменить
-                        </button>
-                        <br/>
-                        <button 
-                            hx-get="zn_modal_close?idkv={{idkv}}&nkv={{nkv}}" 
-                            hx-target="#modals-here1" 
-                            hx-trigger="click"
-                            class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}
-                            _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Закрыть наряд
-                        </button>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <a href="{{ub}}"><button class="btn btn-primary btn-block">Назад</button></a>
+    <table class="table table-borderless table-sm">
+{% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nom_teh, nlit, nom_lit, npolir, nom_pol, nvarh, nom_var,nlpu in zn_naryad_list %}
+        <tr>
+            <td style = "width:80%;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12"><br/></div>
                     </div>
-                </td>                 
-        </table>
+                    <div class="row">
+                        <div class="col-md-4">
+                             <span class="font-weight-bold"><u>Номер наряда:</u></span> {{nkv}}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Статус: </span>
+                            <span class="{{'text-danger' if dzr != None else 'text-success'}}"> {{'Закрыт' if dzr != None else 'Открыт'}}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Вид оплаты:</span> {{nopl}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Дата оформления:</span> {% if dou != None %} {{ dou.strftime('%d.%m.%Y') }} {% else %} {{ dou or "" }} {%endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Дата закрытия:</span> {% if dzr != None %} {{ dzr.strftime('%d.%m.%Y') }} {% else %} {{ dzr or "" }} {%endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Полная стоимость:</span> {{stu}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12"><hr/></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Техник:</span> {{nteh or 'Не назначен'}} 
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Врач:</span> {{nmpp or 'Не назначен'}}
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Литейщик:</span> {{nlit or 'Не назначен'}}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Полировщик:</span> {{npolir or 'Не назначен'}}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Варщик:</span> {{nvarh or 'Не назначен'}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12"><hr/></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">№ карты:</span> {{uid}}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">ФИО:</span> {{ fam or '' }} {{ im or '' }} {{ ot or '' }}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="font-weight-bold">Дата рождения:</span> {% if dr != None %} {{ dr.strftime('%d.%m.%Y') }} {% else %} {{ dr or "" }} {%endif %}
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td style="text-align: center;">
+                <div style="width:50%; margin: 0 auto;">
+                    <br/>
+                    <button 
+                        hx-get="zn_modal_edit?idkv={{idkv}}&nom_teh={{nom_teh}}&nom_lit={{nom_lit}}&nom_pol={{nom_pol}}&nom_var={{nom_var}}&dzr={{dzr}}" 
+                        hx-target="#modals-here" 
+                        hx-trigger="click"
+                        class="btn btn-primary btn-block" {{'disabled' if dzr != None else ''}}
+                        _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Изменить
+                    </button>
+                    <br/>
+                    <button 
+                        hx-get="zn_modal_open_btn?idkv={{idkv}}&nkv={{nkv}}" 
+                        hx-target="#modals-zn_open" 
+                        hx-trigger="click"
+                        class="btn btn-primary btn-block"{{'disabled' if dzr == None else ''}}
+                        _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Открыть наряд
+                    </button>
+                    
+                    <hr/>
+                    
+                    <a href="{% if ub != None %} {{ub}} {% else %} {{"/zakaz_naryad/"}} {%endif %}"><button class="btn btn-primary btn-block">Назад</button></a>
+                </div>
+            </td>
+        </tr>                 
+    </table>
         <div id="modals-here"></div>
-        <div id="modals-here1"></div> 
+        <div id="modals-here1"></div>
+        <div id="modals-zn_open"></div>  
         {% endfor %}
     
     <table id="Table_usl" class="table table-striped">
@@ -261,9 +275,23 @@
     }
 
     function closeModal1() {
-        var container = document.getElementById("modals-here1")
-        var backdrop = document.getElementById("modal-backdrop1")
-        var modal = document.getElementById("modal1")
+        var container = document.getElementById("modals-here")
+        var backdrop = document.getElementById("modal-backdrop")
+        var modal = document.getElementById("modal")
+    
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+    
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
+        }, 200)
+    }
+
+    function closeModal_zn_open() {
+        var container = document.getElementById("modals-zn_open")
+        var backdrop = document.getElementById("modal-backdrop_zn_open")
+        var modal = document.getElementById("modal_zn_modal")
     
         modal.classList.remove("show")
         backdrop.classList.remove("show")
@@ -272,6 +300,20 @@
             container.removeChild(backdrop)
             container.removeChild(modal)
             window.location = 'zn_naryad?idkv={{idkv}}'
+        }, 200)
+    }
+
+    function closeModal_zn_open_close() {
+        var container = document.getElementById("modals-zn_open")
+        var backdrop = document.getElementById("modal-backdrop_zn_open")
+        var modal = document.getElementById("modal_zn_modal")
+    
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+    
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
         }, 200)
     }
 

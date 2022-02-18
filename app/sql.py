@@ -97,6 +97,23 @@ Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_
   and (pl_uslk.status=2) 
   and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
 order by idkv,dou"""
+# idkv, - уникальный код квитанции (не нужен)
+# nkv,  - номер наряда
+# dou,  - дата оформления наряда
+# stu,  - полная стоимость
+# dzr,  - дата закрытия
+# nopl, - вид оплаты
+# uid,  - номер карты пациента
+# fam,  - Фамилия пац
+# im,   - Имя пац
+# ot,   - Отчество пац
+# dr,   - дата рождения
+# nmpp, - ФИО врача
+# nteh, - ФИО Техника
+# nlit, - ФИО Литейщика
+# npolir- ФИО Полировщика 
+# nvarh - ФИО Варщика
+# --------------------------------------------------------------{% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh in my_list %}
 # Только открытые наряды------if check_open and check_close is None--------------------------------------------------------
 sql_zakaz_naryad_select_open = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
@@ -179,46 +196,21 @@ sql_zn_naryad_update_isp = """Update pl_uslt
                                   lit={nom_lit},                                   
                                   varh={nom_var},
                                   polir={nom_pol}, 
-                                  dzr={dzr}
+                                  dzr='{dzr}'
                               where idkv={idkv}"""
 sql_zn_naryad_update_uslk = """Update pl_uslk 
                               set  
-                                  dzr={dzr},
+                                  dzr='{dzr}',
                                   status={status}
                               where idkv={idkv}"""
-                    
-
-# sql_zakaz_naryad_select = """Select pl_uslk.idkv,pl_uslk.nkv,pl_uslk.dou,pl_uslk.stu,pl_uslk.dzr, 
-#        n_opl.nopl,patient.uid,patient.fam,patient.im,patient.ot,patient.dr,
-#        (select nmpp from n_mpp where n_mpp.mpp=pl_uslk.vr) as nmpp,
-#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.teh) as nteh,
-#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.lit) as nlit,
-#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.polir) as npolir,
-#        (select nmpp from pl_uslt,n_mpp where pl_uslt.idkv=pl_uslk.idkv and n_mpp.mpp=pl_uslt.varh) as nvarh,
-#        (select nyml from np_yml where np_yml.kspr=pl_uslk.lpu and np_yml.yml=1) as nlpu
-# from pl_uslk,patient,np_otd,n_opl
-# Where (pl_uslk.uid=patient.uid) and (pl_uslk.otd=np_otd.otd) and (pl_uslk.opl=n_opl.opl)
-#   and (np_otd.GR_OTD=2) 
-#   and (pl_uslk.dou>='{dtn}' and pl_uslk.dou<='{dtk}')
-# order by idkv,dou"""
-
-# idkv, - уникальный код квитанции (не нужен)
-# nkv,  - номер наряда
-# dou,  - дата оформления наряда
-# stu,  - полная стоимость
-# dzr,  - дата закрытия
-# nopl, - вид оплаты
-# uid,  - номер карты пациента
-# fam,  - Фамилия пац
-# im,   - Имя пац
-# ot,   - Отчество пац
-# dr,   - дата рождения
-# nmpp, - ФИО врача
-# nteh, - ФИО Техника
-# nlit, - ФИО Литейщика
-# npolir- ФИО Полировщика 
-# nvarh - ФИО Варщика
-# --------------------------------------------------------------{% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nlit, npolir, nvarh in my_list %}
+#api.zn_close закрытие наряда, отправка в 1с-------------------------------------------------------------------------------------------------------- 
+sql_api_select_check = """Select idkv, dzr, opl from pl_uslk where status=3 and dou>='01.01.2021'"""
+sql_api_select_isp = """Select teh, lit, polir from pl_uslt where idkv={idkv}"""
+sql_api_upd_otpr = """Update set status=2 from pl_uslk where idkv={idkv}"""
+# Открытие наряда \ удаление даты закрытия----------------------------------------------------------------------------------------------------------
+sql_zn_naryad_update_dzr_uslk = """Update pl_uslk set dzr=null where idkv={idkv}"""
+sql_zn_naryad_update_dzr_uslt = """Update pl_uslk set dzr=null where idkv={idkv}"""
+# ---------------------------------------------------------------------------------------------------------------------------------------------------
 sql_ad_arena_username = """select app_user from users_app where com='{}'"""
 sql_ad_arena_mpp = """select mpp from users_app where com='{}'"""
 
@@ -319,8 +311,8 @@ sql_select_otsut = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK)"""
 
 
 sql_select_otsut_otd = """Select N_DOC.NDOC, 
@@ -330,8 +322,8 @@ sql_select_otsut_otd = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) {otd}"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK) {otd}"""
 
 
 sql_select_otsut_otd_lpu = """Select N_DOC.NDOC, 
@@ -341,8 +333,8 @@ sql_select_otsut_otd_lpu = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) and lpu={lpu} and otd={otd}"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK) and lpu={lpu} and otd={otd}"""
 
 
 sql_select_otsut_lpu = """Select N_DOC.NDOC, 
@@ -352,8 +344,8 @@ sql_select_otsut_lpu = """Select N_DOC.NDOC,
     RSP_BLC.DTN,
     RSP_BLC.DTK
 from RSP_BLC,N_DOC
-where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-    and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) and lpu={lpu}"""
+where (RSP_BLC.DOC=N_DOC.DOC) and ('{date_start}'>=RSP_BLC.DTN
+    and '{date_finish}'<=RSP_BLC.DTK) and lpu={lpu}"""
 
 
 sql_select_podr = """SELECT LPU,SNLPU FROM N_LPU,N_SLP WHERE (N_SLP.SLP=N_LPU.LPU) and (N_SLP.TER=N_LPU.TER)"""
@@ -363,18 +355,3 @@ sql_select_podr_one = """SELECT LPU,SNLPU FROM N_LPU,N_SLP WHERE (N_SLP.SLP=N_LP
 
 
 sql_allOtd_for_lpu = "select otd, notd from np_otd where otd>=0 and lpu={lpu} order by ps"
-# sql_select_otsut_otd = """Select N_DOC.NDOC, (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
-#     (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),RSP_BLC.DTN ,RSP_BLC.DTK
-# from RSP_BLC,N_DOC
-# where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-#     and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}')) {otd}"""
-
-# sql_select_otsut = """Select N_DOC.NDOC, 
-#     (SELECT SNLPU FROM N_LPU WHERE N_DOC.LPU=N_LPU.LPU and N_LPU.TER=5),
-#     (SELECT NOTD FROM NP_OTD WHERE NP_OTD.OTD=N_OTD.OTD),
-#     (SELECT NRSN FROM RSP_RSN WHERE RSP_RSN.RSN=RSP_BLC.RSN),
-#     RSP_BLC.DTN,
-#     RSP_BLC.DTK
-# from RSP_BLC,N_DOC
-# where (RSP_BLC.DOC=N_DOC.DOC) and ((RSP_BLC.DTK>='{date_start}'
-#     and RSP_BLC.DTK<='{date_finish}') or (RSP_BLC.DTN>='{date_start}' and RSP_BLC.DTN<='{date_finish}'))"""

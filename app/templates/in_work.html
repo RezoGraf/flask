@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-multiselect.js') }}"></script>
+    {{ menu|safe  }}
+  </head>
+{% block content %}
+
+    <title>Отчет по отсутствующим</title>
+</head>
+<div class="content">
+<body>
+
+
+<table id="myTable" class="table table-striped" style="width:100%">
+    <thead>
+        <tr>
+            <th>ФИО сотрудника</th>
+            <th>Специальность</th>
+            <th>Отделение</th>
+            <th>Подразделение</th>
+            <th>Нечетное число</th>
+            <th>Четное число</th>
+            <th>Телефон</th>
+            <th>Кабинет</th>
+        </tr>
+        <tr class="header">
+            <th>
+                <input name="otd_filter" list="datalistOptions" class="form-control" id="myInputOtd" placeholder="Поиск по ФИО" autocomplete="off">         
+            </th>
+            <th>
+                <input name="fil_filter" list="datalistOptions" class="form-control" id="myInput" placeholder="Поиск по специальности" autocomplete="off">
+            </th>
+            <th>
+                <input name="reason_filter" list="datalistOptions" class="form-control" id="myInputReason" placeholder="Поиск по отделению" autocomplete="off"> 
+            </th>
+            
+            <th>
+                <input name="podr_filter" list="datalistOptions" class="form-control" id="myInputPodr" placeholder="Поиск по подразделению" autocomplete="off">
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+            <th>
+            </th>
+            <th>
+                <input name="kab_filter" list="datalistOptions" class="form-control" id="myInputKab" placeholder="Кабинет" autocomplete="off">
+            </th>
+        </trТ>
+    </thead>
+    <tbody>
+        {% for worker in table %}    
+        <tr>
+            <td>{{ worker.NMPP }}</td>
+            <td>{{ worker.NSPZ }}</td>
+            <td>{{ worker.NOTD }}</td>
+            <td>{{ worker.SNLPU }}</td>
+            <td>{{ worker.EVEN_DAY or "" }}</td>
+            <td>{{ worker.NOEVEN_DAY or "" }}</td>
+            <td>{{ worker.TEL or "" }}</td>
+            <td>{{ worker.NROOM_KR or "" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</body>
+
+</html>
+<script>
+
+
+    $(function() {
+        $('#MultipleCheckboxes').multiselect({
+            enableClickableOptGroups: true,
+            includeSelectAllOption:true,
+            nonSelectedText: 'Select language'
+        });
+    });
+
+
+    function filterTable(event) {
+        var filter = event.target.value.toUpperCase();
+        var rows = document.querySelector("#myTable tbody").rows;
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstCol = rows[i].cells[0].textContent.toUpperCase();
+            var secondCol = rows[i].cells[1].textContent.toUpperCase();
+            var thirdCol = rows[i].cells[2].textContent.toUpperCase();
+            var fourCol = rows[i].cells[3].textContent.toUpperCase();
+            var fiveCol = rows[i].cells[7].textContent.toUpperCase();
+
+            if (firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1 || thirdCol.indexOf(filter) > -1 || fourCol.indexOf(filter) > -1 || fiveCol.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    document.querySelector('#myInputOtd').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInputReason').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInputPodr').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInputKab').addEventListener('keyup', filterTable, false);
+
+</script>
+
+
+{% endblock %}

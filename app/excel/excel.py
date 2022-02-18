@@ -2,24 +2,32 @@
 import os
 # from datetime import date
 from flask import Blueprint, send_file, request
+from loguru import logger
+import logging
 from openpyxl.styles import Alignment, Border, Side, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook import Workbook
+from app.auth import login_required
 import app.db as db
-from app.sql import sql_select_otsut, sql_select_otsut_otd
+from app.sql import sql_select_otsut, sql_select_otsut_otd, sql_select_otsut_otd_lpu, sql_select_otsut_lpu
 
 excel = Blueprint('excel', __name__)
 
-def book_create(date_start, date_finish, select_otd):
-    print(select_otd)
-    if select_otd is not None:
-        if select_otd != '0':
+
+def book_create(date_start, date_finish, select_otd, podr_select):
+    if podr_select is not None and podr_select != 0 and podr_select != '0':
+        if select_otd is not None and select_otd != 0 and select_otd != '0':
+            select_otd2 = f' and otd in ({select_otd})'
+            data  = db.select(sql_select_otsut_otd_lpu.format(date_start=date_start, date_finish=date_finish, otd=select_otd, lpu=podr_select))
+        else:
+            data = db.select(sql_select_otsut_lpu.format(date_start=date_start, date_finish=date_finish, lpu=podr_select))
+    else:
+        if select_otd is not None and select_otd != 0 and select_otd != '0':
             select_otd2 = f' and otd in ({select_otd})'
             data  = db.select(sql_select_otsut_otd.format(date_start=date_start, date_finish=date_finish, otd=select_otd2))
         else:
             data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
-    else:
-        data = db.select(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
+    
     # print(sql_select_otsut.format(date_start=date_start, date_finish=date_finish))
     book = Workbook()
     sheet = book.active
@@ -48,12 +56,13 @@ def book_create(date_start, date_finish, select_otd):
     sheet.append(["Отчет по отсутствующим сотрудникам"])
     sheet.append([f"с {date_start} по {date_finish}"])
     sheet.append([" "])
-    sheet.append(["ФИО", "Подразделение", "Причина", "Период"])
-    sheet.append([" ", " ", " ", "Начало", "Конец"])
-    sheet.merge_cells('D5:E5')
+    sheet.append(["ФИО", "Подразделение", "Отделение", "Причина", "Период"])
+    sheet.append([" ", " ", " ", " ", "Начало", "Конец"])
+    sheet.merge_cells('E5:F5')
     sheet.merge_cells('A5:A6')
     sheet.merge_cells('B5:B6')
     sheet.merge_cells('C5:C6')
+    sheet.merge_cells('D5:D6')
     sheet.merge_cells('A2:E2')
     sheet.merge_cells('A3:E3')
     list_result = []
@@ -76,7 +85,7 @@ def book_create(date_start, date_finish, select_otd):
         sheet.cell(row=5, column=i).fill = color_fill
         sheet.cell(row=6, column=i).fill = color_fill
     # КОСТЫЛЬ----------------------------------------------------------------------
-    sheet.cell(row=6, column=5).fill = color_fill
+    sheet.cell(row=6, column=6).fill = color_fill
     # переформат даты в dd/mm/yyyy---------------------------------------------------
     for i in range(1, sheet.max_row):
         dateCell = sheet.cell(row=i+1, column=5)
@@ -90,8 +99,8 @@ def book_create(date_start, date_finish, select_otd):
     set_column_widths(sheet)
     set_border(sheet)
     set_border_heading(sheet)
-    sheet.column_dimensions['D'].width = 15
     sheet.column_dimensions['E'].width = 15
+    sheet.column_dimensions['F'].width = 15
     side_top = Side(border_style=None, color='FF000000')
     for i in range(1, (sheet.max_column + 1)):
         for s in range(1, 5):
@@ -102,12 +111,12 @@ def book_create(date_start, date_finish, select_otd):
 
 def convert_data(conv_data):
     list_data = list(conv_data)
-    if list_data[4] is None:
-        list_data[4] = ''
+    if list_data[5] is None:
+        list_data[5] = ''
 
     else:
+        list_data[5] = list_data[5].date()
         list_data[4] = list_data[4].date()
-        list_data[3] = list_data[3].date()
 
     convert_result = tuple(list_data)
     return convert_result
@@ -157,23 +166,28 @@ def set_column_widths(ws):
     for i, column_width in enumerate(column_widths):
         ws.column_dimensions[get_column_letter(i + 1)].width = column_width
 
+
 # -----------------------------------------------------------------------------
 def cleanup(path):
     os.remove(path)
 
+
 @excel.route('/', methods=['GET', 'POST'])
+@login_required
+@logger.catch
 def excel_ots():
     name_xlsx = "otchet_po_otsutstviyu.xlsx"
     path_xlsx = f"excel/{name_xlsx}"
     dtn = request.args.get('dtn')
     dtk = request.args.get('dtk')
     selected_otd = request.args.get('select_otd')
+    podr_select = request.args.get('podr_select')
 
     # cleanup(path_xlsx)
     # dtn = request.args.get('dtn')
     # dtk = request.args.get('dtk')
 
-    book_create(dtn, dtk, selected_otd)
+    book_create(dtn, dtk, selected_otd, podr_select)
 
     return send_file(path_xlsx,
                      mimetype='xlsx',

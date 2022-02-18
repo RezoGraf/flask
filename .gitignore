@@ -11,3 +11,6 @@ app/excel/otchet_po_otsutstviyu.xlsx
 .DS_Store
 .idea/
 excel/otchet_po_otsutstviyu.xlsx
+logs/gunicorn.log
+gunicorn.log
+logs/events.log
