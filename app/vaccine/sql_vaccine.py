@@ -19,3 +19,11 @@ select_one_mpp = """
     from n_doc 
     where pv=1 and mol=1 and mpp={mpp}
     """
+
+
+
+#------------------postgresql----------------------------------------------------
+
+sinc_worker = """INSERT INTO public."epid_WORKER"(
+	"ID_WORKER", "FAM_WORKER", "IM_WORKER", "OT_WORKER", "PODR", "OTD", "DLJ")
+	VALUES ('{mpp}', '{fam}', '{im}', '{ot}', '{lpu}', '{otd}', '{dolj}')"""

@@ -1,13 +1,12 @@
-import pg8000.native
+import pg8000
 import config
 # import wtforms_sqlalchemy.orm.model_form
 
 
 def select(sql):
-    con = pg8000.connect(dsn=config.dsn,
-                              user=config.user,
-                              password=config.password,
-                              charset=config.charset)
+    con = pg8000.connect(host=config.pg_dsn, port=5432,
+                             database='helios',
+                             user=config.pg_user, password=config.pg_password)
     cur = con.cursor()
     cur.execute(sql)
     result = cur.fetchall()
@@ -17,10 +16,9 @@ def select(sql):
 
 
 def write(sql):
-    con = pg8000.connect(dsn=config.dsn,
-                              user=config.user,
-                              password=config.password,
-                              charset=config.charset)
+    con = pg8000.connect(host='192.168.100.52',
+                             database='helios',
+                             user='postgres', password='Gecnjq01!')
     cur = con.cursor()
     cur.execute(sql)
     con.commit()
@@ -29,10 +27,9 @@ def write(sql):
 
 
 def proc(proc_name):
-    con = pg8000.connect(dsn=config.dsn,
-                              user=config.user,
-                              password=config.password,
-                              charset=config.charset)
+    con = pg8000.connect(host=config.pg_dsn, port=5432,
+                             database='helios',
+                             user=config.pg_user, password=config.pg_password)
     cur = con.cursor()
     cur.callproc(proc_name)
     output_params = cur.fetchone()
