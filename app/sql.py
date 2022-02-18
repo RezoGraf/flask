@@ -23,7 +23,7 @@ sql_accessOtd = """select txt from users_set_app where app_user='{arena_user}' a
 # Выборка доступных должностей
 sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20001 """
 # Выборка всех ФИО врачей по коду отделения
-sql_allDoc = """select doc, case nspz when '' then ndoc||' ('||nspz||')' else ndoc||' ('||ndlj||')' end as ndoc, spz from 
+sql_allDoc = """select doc, case spz when 0 then ndoc||' ('||ndlj||')' else ndoc||' ('||nspz||')' end as ndoc, spz from 
                 (select n_doc.doc, n_doc.ndoc,n_spz.nspz, n_doc.spz, n_dlj.ndlj
                  from n_doc, n_spz, n_dlj
                  where (n_doc.spz=n_spz.spz)
