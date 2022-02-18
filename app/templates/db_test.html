@@ -2,6 +2,7 @@
                 {% include "menu.html" %}
             {% endwith %}
 {% block content %}
+<title>Тестирование БД Firebird</title>
 <form method="post">
     <select class="custom-select" name="script_select" required>
         {% for nameid, valueid in select_requests %}
