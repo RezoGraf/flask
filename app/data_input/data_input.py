@@ -75,8 +75,6 @@ def wtf_template3():
         
         select_period_blc = f" and (rsp_blc.dtk>='01.01.{current_year}' and rsp_blc.dtk<='31.12.{current_year}')"
         select_period_duty = f" and (it_rasp_duty.date_duty>='01.01.{current_year}' and it_rasp_duty.date_duty<='31.12.{current_year}')"
-
-        
         
         if int(otd) == 0:
             select_current_otd = ''
@@ -86,7 +84,7 @@ def wtf_template3():
         result_fio = db.select(sql.sql_allDoc.format(current_otd = select_current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
         doc = request.args.get('doc') or result_fio[0][0]      #код выбранного сотрудника со wtf_template3 или первый из запроса       
         fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))[0][0]
-        
+        print(sql.sql_allDoc.format(current_otd = select_current_otd, select_sdl=select_sdl))
         result_rasp = db.select(sql.sql_it_rasp.format(doc=doc)) #режим работы сотрудника
         visible_ = ''
         if result_rasp == []:

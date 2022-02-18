@@ -23,10 +23,14 @@ sql_accessOtd = """select txt from users_set_app where app_user='{arena_user}' a
 # Выборка доступных должностей
 sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20001 """
 # Выборка всех ФИО врачей по коду отделения
-sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_dlj.ndlj||')' as ndoc, spz from n_doc, n_dlj 
-                where (n_doc.dolj=n_dlj.dlj) and (n_doc.pv=1) and (n_doc.pr_dlj=1) and (mol=1) {current_otd}
-                {select_sdl} 
-                order by ndoc """
+sql_allDoc = """select doc, case spz when 0 then ndoc||' ('||ndlj||')' else ndoc||' ('||nspz||')' end as ndoc, spz from 
+                (select n_doc.doc, n_doc.ndoc,n_spz.nspz, n_doc.spz, n_dlj.ndlj
+                 from n_doc, n_spz, n_dlj
+                 where (n_doc.spz=n_spz.spz)
+                 and (n_doc.dolj=n_dlj.dlj) 
+                 and (n_doc.pv=1) and (n_doc.pr_dlj=1) and (n_doc.mol=1) {current_otd}
+                {select_sdl})
+                order by ndoc"""
 # Выборка первого попавшегося врача
 sql_randomDoc = """select first 1 doc from n_doc where pv=1 and doc>0 {select_otd} {select_sdl} order by ndoc"""
 # Выборка ФИО по коду
@@ -38,7 +42,6 @@ sql_room = """select id, nroom_kr from room where lpu in (select distinct lpu fr
 sql_room_mpp = """select id, nroom_kr from room where lpu in (select distinct lpu from n_doc where mpp={mpp}) order by nroom_kr """
 # Выборка всех специальностей сотрудников
 sql_allSpz = """select spz, nspz from n_spz where pd=1 order by nspz"""
-
 # Информация о режиме работы сотрудника
 sql_it_rasp = """Select IT_RASP.ROOM,
                         ROOM.NROOM_KR,
@@ -219,7 +222,7 @@ sql_ad_arena_mpp = """select mpp from users_app where com='{}'"""
 sql_TabelWorkTime = """Select it_rasp_grf.id_grf, it_rasp_grf.yearwork, it_rasp_grf.monthwork, 
                 (select nroom_kr from room where room.id=it_rasp_grf.room) as nroom,
                 (select notd from np_otd where np_otd.otd=it_rasp_grf.otd) as notd,
-                n_spz.nspz, n_doc.ndoc,  
+                n_spz.nspz, n_doc.ndoc, it_rasp_grf.nclock, it_rasp_grf.dwork,
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day01) as day01, 
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day02) as day02, 
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day03) as day03, 

@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    {{ menu|safe  }}
+  </head>
+
+{% block content %}
+<div class="container-fluid">
+  <h4 class="text-primary">График учета рабочего времени</h4>
+
+	<div class="row">
+    <form method="POST">
+
+        <div class="col-md-4">
+          <span class="badge badge-default">Label</span>
+  
+          <label for="month_" class="form-label">Месяц</label>
+          <input id="month_" type="number" name="month" min=1 max=31 value={{ month }} step=1 required=true/>
+          <label for="otd" class="form-label">Отделение</label>
+          <select hx-get="grf_NewWork" hx-target="#NewWork" hx-swap="innerHTML" name="otd" value={{ otd }} class="form-select" style="height: 30px;">
+            {% for otd, notd, lpu in result_otd %}
+              <option value="{{ otd }}"{% if loop.first %} SELECTED {% endif %}>{{ notd }}</option>
+            {% endfor %}
+            <option value = {{ otd }} selected>{{ notd }}</option>
+          </select> 
+                
+          <label for="year_" class="form-label">Год</label>
+          <input id="year_" type="number" name="year" min=2020 max=3000 value={{ year }} step=1 required=true/>
+
+          <div class="btn-group btn-group-vertical" role="group">
+            
+            <button class="btn btn-secondary" type="button">
+              Январь
+            </button> 
+            <button class="btn btn-secondary" type="button">
+              Февраль
+            </button> 
+            <button class="btn btn-secondary" type="button">
+              Март
+            </button> 
+            <button class="btn btn-secondary" type="button">
+              Апрель
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Май
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Июнь
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Июль
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Август
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Сентябрь
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Октябрь
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Ноябрь
+            </button>
+            <button class="btn btn-secondary" type="button">
+              Декабрь
+            </button>
+
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="btn-group" role="group">
+            <button class="btn btn-secondary" type="button">
+              Left
+            </button> 
+            <button class="btn btn-secondary" type="button">
+              Center
+            </button> 
+            <button class="btn btn-secondary" type="button">
+              Right
+            </button> 
+            <button class="btn btn-secondary" type="button">
+              Justify
+            </button>
+          </div>
+          <div class="row">
+            <div id="modals-here"></div>
+            <table class="table table-sm table-hover table-bordered" id="myTable">
+              <thead style="font-size:small;"> 
+                  <th>ФИО Сотрудника</th>
+                  <th>Специалист</th>
+                  <th>№ каб.</th>
+                  <th>Норма часов в месяц</th>
+                  <th>Дней</th>
+                  {% for value in result_th.items() %}
+                    <th class={{ value[1][0] }}> {{ value[1][1] }} </th>
+                  {% endfor %}
+              </thead>
+          
+              <tbody style="font-size:10px;">
+              {% for value in table_view_all.items() %}
+              <tr>
+                 <td class={{ value[1][12] }}> {{ value[1][13] }} </td> 
+                 <td class={{ value[1][10] }}> {{ value[1][11] }} </td>
+                 <td class={{ value[1][6] }}> {{ value[1][7] }} </td> 
+          
+                 <td>{{ value[1][15] }}</td>
+                 <td>{{ value[1][17] }}</td>    
+                 <td class={{ value[1][18] }}> 
+                  <form id="td01{{ value[1][1] }}">
+                    <div hx-target="#td01{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td01{{ value[1][1] }}">{{ value[1][19] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][20] }}>         
+                  <form id="td02{{ value[1][1] }}">
+                    <div hx-target="#td02{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td02{{ value[1][1] }}">{{ value[1][21] or "нет приема"}} </div>
+                  </form>
+                </td>
+                 <td class={{ value[1][22] }}> 
+                  <form id="td03{{ value[1][1] }}">
+                    <div hx-target="#td03{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td03{{ value[1][1] }}">{{ value[1][23] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][24] }}>
+                  <form id="td04{{ value[1][1] }}">
+                    <div hx-target="#td04{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td04{{ value[1][1] }}">{{ value[1][25] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][26] }}> 
+                  <form id="td05{{ value[1][1] }}">
+                    <div hx-target="#td05{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td05{{ value[1][1] }}">{{ value[1][27] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][28] }}> 
+                  <form id="td06{{ value[1][1] }}">
+                    <div hx-target="#td06{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td06{{ value[1][1] }}">{{ value[1][29] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][30] }}> 
+                  <form id="td07{{ value[1][1] }}">
+                    <div hx-target="#td07{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td07{{ value[1][1] }}">{{ value[1][31] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][32] }}>
+                  <form id="td08{{ value[1][1] }}">
+                    <div hx-target="#td08{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td08{{ value[1][1] }}">{{ value[1][33] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][34] }}>
+                  <form id="td09{{ value[1][1] }}">
+                    <div hx-target="#td09{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td09{{ value[1][1] }}">{{ value[1][35] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][36] }}> 
+                  <form id="td10{{ value[1][1] }}">
+                    <div hx-target="#td10{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td10{{ value[1][1] }}">{{ value[1][37] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][38] }}>  
+                  <form id="td11{{ value[1][1] }}">
+                    <div hx-target="#td11{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td11{{ value[1][1] }}">{{ value[1][39] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][40] }}> 
+                  <form id="td12{{ value[1][1] }}">
+                    <div hx-target="#td12{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td12{{ value[1][1] }}">{{ value[1][41] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][42] }}> 
+                  <form id="td13{{ value[1][1] }}">
+                    <div hx-target="#td13{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td13{{ value[1][1] }}">{{ value[1][43] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][44] }}>
+                  <form id="td14{{ value[1][1] }}">
+                    <div hx-target="#td14{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td14{{ value[1][1] }}">{{ value[1][45] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][46] }}> 
+                  <form id="td15{{ value[1][1] }}">
+                    <div hx-target="#td15{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td15{{ value[1][1] }}">{{ value[1][47] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][48] }}> 
+                  <form id="td16{{ value[1][1] }}">
+                    <div hx-target="#td16{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td16{{ value[1][1] }}">{{ value[1][49] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][50] }}> 
+                  <form id="td17{{ value[1][1] }}">
+                    <div hx-target="#td17{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td17{{ value[1][1] }}">{{ value[1][51] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][52] }}> 
+                  <form id="td18{{ value[1][1] }}">
+                    <div hx-target="#td81{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td18{{ value[1][1] }}">{{ value[1][53] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][54] }}> 
+                  <form id="td19{{ value[1][1] }}">
+                    <div hx-target="#td19{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td19{{ value[1][1] }}">{{ value[1][55] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][56] }}>
+                  <form id="td20{{ value[1][1] }}">
+                    <div hx-target="#td20{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td20{{ value[1][1] }}">{{ value[1][57] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][58] }}>
+                  <form id="td21{{ value[1][1] }}">
+                    <div hx-target="#td21{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td21{{ value[1][1] }}">{{ value[1][59] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][60] }}>
+                  <form id="td22{{ value[1][1] }}">
+                    <div hx-target="#td22{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td22{{ value[1][1] }}">{{ value[1][61] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][62] }}> 
+                  <form id="td23{{ value[1][1] }}">
+                    <div hx-target="#td23{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td23{{ value[1][1] }}">{{ value[1][63] or "нет приема"}} </div>
+                  </form>
+                 </td> 
+                 <td class={{ value[1][64] }}> 
+                  <form id="td24{{ value[1][1] }}">
+                    <div hx-target="#td24{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td24{{ value[1][1] }}">{{ value[1][65] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][66] }}> 
+                  <form id="td25{{ value[1][1] }}">
+                    <div hx-target="#td25{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td25{{ value[1][1] }}">{{ value[1][67] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][68] }}> 
+                  <form id="td26{{ value[1][1] }}">
+                    <div hx-target="#td26{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td26{{ value[1][1] }}">{{ value[1][69] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][70] }}> 
+                  <form id="td27{{ value[1][1] }}">
+                    <div hx-target="#td27{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td27{{ value[1][1] }}">{{ value[1][71] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][72] }}>  
+                  <form id="td28{{ value[1][1] }}">
+                    <div hx-target="#td28{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td28{{ value[1][1] }}">{{ value[1][73] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][74] }}>
+                  <form id="td29{{ value[1][1] }}">
+                    <div hx-target="#td29{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td29{{ value[1][1] }}"  {{visible_29}}> {{ value[1][75] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][76] }}>
+                  <form id="td30{{ value[1][1] }}">
+                    <div hx-target="#td30{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td30{{ value[1][1] }}"  {{visible_30}}> {{ value[1][77] or "нет приема"}} </div>
+                  </form>
+                 </td>
+                 <td class={{ value[1][78] }}> 
+                  <form id="td31{{ value[1][1] }}">
+                    <div hx-target="#td31{{ value[1][1] }}" hx-swap="innerHTML" hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td31{{ value[1][1] }}"  {{visible_31}}> {{ value[1][79] or "нет приема"}} </div>
+                  </form>
+                 </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          
+            </table>  
+          </div> 
+        </div>
+
+      </form>    
+	</div>
+</div>
+
+<div class="container">
+  
+  <div class="row">
+    <form method="POST">
+  
+      
+      <div class="form-group">
+        <button type="button submit" name="btn" value="selectNew" class="btn btn-outline-primary btn-sm">Найти</button>
+      </div>
+    </div>  
+    <div class="row">
+     <div id="NewGrf" class="form-group">
+       <button 
+       hx-get="grf_addGrf?otd={{ otd }}" 
+        hx-target="#modals-here" 
+        hx-trigger="click"
+       class="btn btn-outline-primary btn-block">Создать график</button>
+     </div>
+
+     <div id="NewWork" class="form-group">
+         <button 
+          hx-get="grf_addWorker?otd={{ otd }}&year={{ year }}&month={{ month }}" 
+          hx-target="#modals-here" 
+          hx-trigger="click"
+          class="btn btn-outline-primary btn-block">Добавить сотрудника</button>
+      </div>
+
+      <div id="DelWork" class="form-group">
+        <button 
+         hx-get="grf_delWorker?otd={{ otd }}&year={{ year }}&month={{ month }}" 
+         hx-target="#modals-here" 
+         hx-trigger="click"
+         class="btn btn-outline-primary btn-block">Удалить сотрудника</button>
+     </div>
+
+    </div>
+   </form>
+  </div>
+</div>
+
+
+
+<script>
+
+  function closeModal() {
+    var container = document.getElementById("modals-here")
+    var backdrop = document.getElementById("modal-backdrop")
+    var modal = document.getElementById("modal")
+
+    modal.classList.remove("show")
+    backdrop.classList.remove("show")
+
+    setTimeout(function() {
+        container.removeChild(backdrop)
+        container.removeChild(modal)
+        window.location = 'table_view?otd={{otd}}&year={{year}}&month={{month}}'
+    }, 200)
+  }
+</script>
+
+{% endblock %}
+

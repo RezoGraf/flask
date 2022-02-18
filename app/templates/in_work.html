@@ -14,7 +14,7 @@
   </head>
 {% block content %}
 
-    <title>Отчет по отсутствующим</title>
+    <title>Информация о работе сотрудников</title>
 </head>
 <div class="content">
 <body>
@@ -40,11 +40,11 @@
                 <input name="fil_filter" list="datalistOptions" class="form-control" id="myInput" placeholder="Поиск по специальности" autocomplete="off">
             </th>
             <th>
-                <input name="reason_filter" list="datalistOptions" class="form-control" id="myInputReason" placeholder="Поиск по отделению" autocomplete="off"> 
+                {{all_select_otd|safe}}
             </th>
             
             <th>
-                <input name="podr_filter" list="datalistOptions" class="form-control" id="myInputPodr" placeholder="Поиск по подразделению" autocomplete="off">
+                {{all_select_podr|safe}}
             </th>
             <th>
             </th>
@@ -55,15 +55,15 @@
             <th>
                 <input name="kab_filter" list="datalistOptions" class="form-control" id="myInputKab" placeholder="Кабинет" autocomplete="off">
             </th>
-        </trТ>
+        </tr>
     </thead>
     <tbody>
         {% for worker in table %}    
         <tr>
             <td>{{ worker.NMPP }}</td>
             <td>{{ worker.NSPZ }}</td>
-            <td>{{ worker.NOTD }}</td>
-            <td>{{ worker.SNLPU }}</td>
+            <td style="font-size:15px">{{ worker.NOTD }}</td>
+            <td style="font-size:15px">{{ worker.SNLPU }}</td>
             <td>{{ worker.EVEN_DAY or "" }}</td>
             <td>{{ worker.NOEVEN_DAY or "" }}</td>
             <td>{{ worker.TEL or "" }}</td>
@@ -109,8 +109,8 @@
 
     document.querySelector('#myInputOtd').addEventListener('keyup', filterTable, false);
     document.querySelector('#myInput').addEventListener('keyup', filterTable, false);
-    document.querySelector('#myInputReason').addEventListener('keyup', filterTable, false);
-    document.querySelector('#myInputPodr').addEventListener('keyup', filterTable, false);
+    document.querySelector('#myInputReason').addEventListener('change', filterTable, false);
+    document.querySelector('#myInputPodr').addEventListener('change', filterTable, false);
     document.querySelector('#myInputKab').addEventListener('keyup', filterTable, false);
 
 </script>
