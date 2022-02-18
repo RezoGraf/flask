@@ -71,8 +71,6 @@ def wtf_template3():
         
         select_period_blc = f" and (rsp_blc.dtk>='01.01.{current_year}' and rsp_blc.dtk<='31.12.{current_year}')"
         select_period_duty = f" and (it_rasp_duty.date_duty>='01.01.{current_year}' and it_rasp_duty.date_duty<='31.12.{current_year}')"
-
-        
         
         if int(otd) == 0:
             select_current_otd = ''

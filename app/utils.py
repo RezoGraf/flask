@@ -46,7 +46,6 @@ def date_color(current_date):
     return result
  
 def access_user_otd(arena_user):
-    
     result_accessotd = app.db.select(app.sql.sql_accessOtd.format(arena_user=arena_user))[0][0]
     
     if  result_accessotd != '0':
@@ -57,11 +56,6 @@ def access_user_otd(arena_user):
     return select_otd
 
 def access_user_sdl(arena_user):
-    if 'arena_user' in session:
-        arena_user = session.get('arena_user')
-    else:
-        arena_user = 0  
-    
     result_accessSdl = app.db.select(app.sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
     
     if  result_accessSdl != '0':
