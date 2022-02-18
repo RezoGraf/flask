@@ -43,11 +43,8 @@ def oplata_1c():
                             list_result.append(pair[key_model[i]])
                     else:
                         status.append(f"{i} - Структура НЕ соответствует по ячейкам {res} у массива: {str(pair)}")
-                print(i)
                 otvet_list.append(list_result)
-                print(list_result[0])
                 res_sql_prov = db.select(sql_prov.format(doc_id=list_result[0]))
-                print(res_sql_prov)
                 now_date = datetime.datetime.now()
                 now_date = now_date.strftime('%Y.%m.%d %H:%M:%S')
                 if res_sql_prov:
@@ -102,6 +99,7 @@ def zn_close(idkv):
     # поиск документов на отправку со статусом 3-------
     
     result = db.select_dicts_in_turple_with_description(sql.sql_api_select_check)
+    print(result)
     # result3 = result2
     # print(result)
     # data_all = {}
@@ -132,14 +130,58 @@ def zn_close(idkv):
                     " ISP " : " " }
         volue.append(data_vol)
         
-        result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
+    result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[0]['IDKV']))
+    te = result_isp[0]
+    print(te)
+    val = list(te.values())
+    print(val)
+    print(val[2])
+    print(type(val[2]))
+    list_isp = []
+    # Техник
+    if val[0] != "0" or 0 or not None:
+        isp_vol = {" ISP_STAT ": "5",
+                    " ISP_CODE ": str(val[0])}
+        list_isp.append(isp_vol)
+    # Литейщик
+    if val[1] != "0" or 0 or not None:
+        isp_vol = {" ISP_STAT ": "6",
+                    " ISP_CODE ": str(val[1])}
+        list_isp.append(isp_vol)
+    # Полир
+    
+    if val[2] != 0 and not None and " " and "0":
+        isp_vol = {" ISP_STAT ": "7",
+                   " ISP_CODE ": str(val[2])}
+        list_isp.append(isp_vol)
+    print(list_isp)    
         
-        isp_list = []
-        for i in range(len(result)):
-            isp_vol = {"ISP_STAT":str(result_isp[i]['DZR']),
-                       "ISP_CODE":str(result_isp[i]['DZR'])}
-        isp_list.append(isp_vol)
-        data["ISP"] = volue
+        
+    # for u in range (len(val)):
+    #     print(val[u])
+    # for key, item in te.items:
+    #     print(key, item)
+    # items = result_isp[0]
+    # print(type(items))
+    # qwe = items.keys()
+    # print(len(qwe))
+    # print(len(result_isp[0].key()))
+    # for u in range(len(result_isp[0])):
+    #     print(result_isp[0].key(u))
+    #     # isp_vol = {" ISP_STAT ": "u",
+    #     #            " ISP_CODE ": str(result_isp[0][u]['TEH'])}
+    #     print(u)
+    # col_isp = 0
+    # if result_isp["TEH"] != None or 0 or "" or " ":
+    #     col_isp += 1
+         
+        
+        # isp_list = []
+        # for i in range(len(result)):
+        #     isp_vol = {"ISP_STAT":str(result_isp[i]['DZR']),
+        #                "ISP_CODE":str(result_isp[i]['DZR'])}
+        # isp_list.append(isp_vol)
+        # data["ISP"] = volue
         
     data["DOC"] = volue
     

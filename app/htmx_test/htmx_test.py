@@ -102,7 +102,7 @@ def table_view():
     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m") #текущий месяц
     last_day = calendar.monthrange(int(current_year), int(current_month))[1]
     result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd))           #список отделений доступных пользователю
-    otd = request.form.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
+    otd = request.args.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
     notd = db.select(sql.sql_currentOtd.format(otd=otd))[0][1] #наименование выбранного отделения
     current_otd = f' and otd={otd}'
     
@@ -129,6 +129,7 @@ def table_view():
             current_year=request.form.get('year')
             current_month=request.form.get('month')
             result_alldoc = db.select(sql.sql_allDoc.format(otd=otd, select_sdl = select_sdl)) #список врачей
+            
     sel_dop_day='';
     visible_29 = ''        
     visible_30 = ''
@@ -155,7 +156,6 @@ def table_view():
                 (select it_rasp_time.interval_time from it_rasp_time where it_rasp_time.id=it_rasp_grf.day31) as day31 """ 
      
     menu = session['menu']
-    print(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month, sel_dop_day=sel_dop_day))
     table_view_all = db.select_dicts_in_turple(sql.sql_TabelWorkTime.format(otd=otd, EYear=current_year, EMonth=current_month, sel_dop_day=sel_dop_day)) 
     return render_template("htmx_tableview.html", 
                            table_view_all = table_view_all,
@@ -238,7 +238,7 @@ def NewWork():
       hx-get="grf_addWorker?otd={otd}&year={y}&month={m}" 
       hx-target="#modals-here" 
       hx-trigger="click"
-      class="btn btn-primary btn-block" >Добавить сотрудника</button>
+      class="btn btn-primary btn-block">Добавить сотрудника</button>
       </div>"""
     return response
     
@@ -296,51 +296,72 @@ def modal_addWorker():
             sel1_vol = f"""<option value="{sql_room[i][0]}">{sql_room[i][1]}</option>"""
             sel_room.append(sel1_vol)
             
-        sel_2 = ['<option value="0">Не назначен</option>', ] 
+        sel_noeven = ['<option value="0">Не назначен</option>', ] 
         for i in range(1, len(result_time)):
             sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
-            sel_2.append(sel2_vol)
+            sel_noeven.append(sel2_vol)
+            
+        sel_even = ['<option value="0">Не назначен</option>', ] 
+        for i in range(1, len(result_time)):
+            sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+            sel_even.append(sel2_vol)            
                 
         response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                <h5 class="modal-title">Сотрудник</h5>
+                                    <h5 class="modal-title">Добавить сотрудника</h5>
+                                    <button type="button" class="btn-close btn btn-light" data-dismiss="modal" aria-label="Close" onclick="closeModal()">X</button>
                                 </div>
                                 <form hx-post="grf_insWorkerTable?otd={otd}&year={y}&month={m}" action=""> 
                                 <div class="modal-body">
-                                       
-                                        <table class="table table-borderless">
-                                            <tr>
+                            
                                                 <td style="text-align: center; width:50%;">
-                                                    <label class="custom-select-label" for="worker_select">Сотрудник</label> 
-                                                    <select class="custom-select" id="worker_select"  name = "worker_select">                                                
-                                                        {sel_doc}
-                                                    </select>
+                                                    <div class="input-group mb-3">
+                                                      <label class="col-form-label input-group-text" for="worker_select" style = "width:188px;">Сотрудник</label> 
+                                                      <select class="custom-select form-control" id="worker_select"  name = "worker_select">                                                
+                                                         {sel_doc}
+                                                      </select>
+                                                    </div>
                                                     
-                                                    <label class="custom-select-label" for="room_select">№ кабинета</label> 
-                                                    <select class="custom-select" id="room_select"  name = "room_select">                                                
-                                                        {sel_room}
-                                                    </select>
+                                                    <div class="input-group mb-3">
+                                                        <label class="custom-select-label input-group-text" for="room_select" style = "width:188px;">№ кабинета</label> 
+                                                        <select class="custom-select" id="room_select"  name = "room_select">                                                
+                                                            {sel_room}
+                                                        </select>
+                                                    </div>
                                                     
-                                                    <div class="mb-3">
-                                                        <label class="col-form-label">Норма часов в месяц:</label>
+                                                    <div class="input-group mb-3">
+                                                        <label class="col-form-label input-group-text">Норма часов в месяц:</label>
                                                         <input type="number" class="form-control" name="UpdNclock">
                                                     </div>    
+                                                    
+                                                    <div class="input-group mb-3">
+                                                        <label class="custom-select-label input-group-text" for="noeven_select" style = "width:188px;">Не четное</label> 
+                                                        <select class="custom-select" id="noeven_select"  name = "noeven_select">                                                
+                                                            {sel_noeven}
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div class="input-group mb-3">
+                                                        <label class="custom-select-label input-group-text" for="even_select" style = "width:188px;">Четное</label> 
+                                                        <select class="custom-select" id="even_select"  name = "even_select">                                                
+                                                            {sel_even}
+                                                        </select>
+                                                    </div>                                                                                                       
+
                                                 </td>                                                
-                                            </tr>
-                                        </table>
-   
+                                
                                         </div>
                                         <div class="modal-footer">
                                             <table class="table table-borderless">
                                                 <tr>
                                                     <td style="text-align: left;">
-                                                      <button class="btn btn-primary btn-success" type="submit" onclick="closeModal()">Сохранить</button>  
+                                                        <button class="btn btn-primary btn-success" type="submit" style = "width:185px;" onclick="closeModal()">Сохранить</button>  
                                                     </td>                                            
                                                     <td style="text-align: right;"> 
-                                                        <button type="button" class="btn btn-danger" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
+                                                        <button class="btn btn-danger" type="button" style = "width:185px;" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
                                                     </td>                                            
                                                 </tr>
                                         </div>
@@ -371,8 +392,8 @@ def grf_insWorkerTable():
         new_data = f' LPU={lpu}, OTD={otd}, SPZ={spz}, DOC={doc}, YEARWORK={cur_year}, MONTHWORK={cur_month}, NCLOCK={nclock}, ROOM={room} '
         #обновить данные с учетом введенного режима работы и отсутствия на работе
         result_it_rasp = db.select(sql.sql_it_rasp.format(doc=doc))
-        noeven_day=result_it_rasp[0][2]
-        even_day=result_it_rasp[0][4]
+        noeven_day = request.form.get('noeven_select') or result_it_rasp[0][2] 
+        even_day = request.form.get('even_select') or result_it_rasp[0][4]
         all_day = calendar.monthrange(int(cur_year), int(cur_month))[1] 
         for i in range(all_day):
             i+=1
@@ -392,3 +413,83 @@ def grf_insWorkerTable():
         db.write(sql_upd_it_rasp_grf_.format(new_data=new_data, id_grf=output_params))
         menu = generate_menu
         return redirect(url_for("htmx_test.table_view", otd=otd, year=cur_year, month=cur_month, menu=menu))
+    
+    
+@htmx_test.route('/grf_delWorker', methods=['GET', 'POST'])    
+def modal_delWorker():        
+    if request.method == 'POST':
+        id_td = request.args.get('id_td')
+        s_id_td = id_td[2:4]
+        s_id_td = f'day{s_id_td}'    
+        id_grf = request.args.get('id_grf')
+        rasp_id = request.form.get('rasp_id')
+        rasp_id_visible =db.select( sql.sql_interval_time_current.format(id=rasp_id))
+        rasp_id_visible = rasp_id_visible[0][0] 
+        response = f"""
+            <div name="id_grf" 
+                hx-target="#{id_td}" 
+                hx-swap="innerHTML" hx-get="table_view/edit?id_td={id_td}&id_grf={id_grf}">{rasp_id_visible}
+            </div>
+        """
+        return response  
+    else:
+        if 'arena_user' in session:
+            arena_user = session.get('arena_user')
+        else:
+            arena_user = 0
+             
+        if 'arena_mpp' in session:
+            arena_mpp = session.get('arena_mpp')
+        else:
+            arena_mpp = 0
+            
+        select_sdl = utils.access_user_sdl(arena_user = arena_user)
+        
+        otd = request.args.get('otd')
+        
+        y = request.args.get('year') #год
+        m = request.args.get('month') #месяц
+        
+        current_otd=f' and otd={ otd }'
+        
+        result_alldoc = db.select(sql.sql_allDoc.format(current_otd=current_otd,select_sdl=select_sdl)) #список врачей
+        result_time = db.select(sql.sql_interval_time) #интервал времени
+        
+        sql_room = db.select(sql.sql_room_mpp.format(mpp = arena_mpp)) #кабинеты
+          
+                
+        response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
+                        <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Удаление сотрудника из графика учета рабочего времени</h5>
+                                    <button type="button" class="btn-close btn btn-light" data-dismiss="modal" aria-label="Close" onclick="closeModal()">X</button>
+                                </div>
+                                <form hx-post="grf_delWorkerTable?otd={otd}&year={y}&month={m}" action=""> 
+                                <div class="modal-body">
+                                   <label class="col-form-label input-group-text" for="worker_select" style = "width:188px;">
+                                        Удалить сотрудника {{ fioSotrudnika }} из графика ?
+                                   </label> 
+                                
+                                        </div>
+                                        <div class="modal-footer">
+                                            <table class="table table-borderless">
+                                                <tr>
+                                                    <td style="text-align: left;">
+                                                        <button class="btn btn-primary btn-success" type="submit" style = "width:185px;" onclick="closeModal()">Удалить</button>  
+                                                    </td>                                            
+                                                    <td style="text-align: right;"> 
+                                                        <button class="btn btn-danger" type="button" style = "width:185px;" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
+                                                    </td>                                            
+                                                </tr>
+                                        </div>
+                                         
+                                </div>                                  
+                            </div>
+                        </div>
+                     </div>
+                     </form>
+                     </div>"""
+        return response
+    
