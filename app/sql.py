@@ -23,10 +23,14 @@ sql_accessOtd = """select txt from users_set_app where app_user='{arena_user}' a
 # Выборка доступных должностей
 sql_accessSdl = """select txt from users_set_app where app_user='{arena_user}' and mdl=88 and set_code=20001 """
 # Выборка всех ФИО врачей по коду отделения
-sql_allDoc = """select n_doc.doc, n_doc.ndoc||' ('||n_spz.nspz||')' as ndoc, n_doc.spz from n_doc, n_spz 
-                where (n_doc.spz=n_spz.spz) and (n_doc.pv=1) and (n_doc.pr_dlj=1) and (mol=1) {current_otd}
-                {select_sdl} 
-                order by ndoc """
+sql_allDoc = """select doc, case nspz when '' then ndoc||' ('||nspz||')' else ndoc||' ('||ndlj||')' end as ndoc, spz from 
+                (select n_doc.doc, n_doc.ndoc,n_spz.nspz, n_doc.spz, n_dlj.ndlj
+                 from n_doc, n_spz, n_dlj
+                 where (n_doc.spz=n_spz.spz)
+                 and (n_doc.dolj=n_dlj.dlj) 
+                 and (n_doc.pv=1) and (n_doc.pr_dlj=1) and (n_doc.mol=1) {current_otd}
+                {select_sdl})
+                order by ndoc"""
 # Выборка первого попавшегося врача
 sql_randomDoc = """select first 1 doc from n_doc where pv=1 and doc>0 {select_otd} {select_sdl} order by ndoc"""
 # Выборка ФИО по коду
