@@ -34,7 +34,7 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
-          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
+          <a class="dropdown-item text-primary" href="/in_work">Информация о работе сотрудников</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
           <a class="dropdown-item text-primary" href="/zakaz_naryad">Заказ Наряды</a>
         </div>
@@ -103,7 +103,7 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
-          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
+          <a class="dropdown-item text-primary" href="/in_work">Информация о работе сотрудников</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
         </div>
       </li>
@@ -134,7 +134,7 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
-          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
+          <a class="dropdown-item text-primary" href="/in_work">Информация о работе сотрудников</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
         </div>
       </li>
@@ -165,7 +165,7 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
         <div class="dropdown-menu">
-          <a class="dropdown-item text-primary" href="/in_work">Оперативная информация</a>
+          <a class="dropdown-item text-primary" href="/in_work">Информация о работе сотрудников</a>
           <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
         </div>
       </li>

@@ -43,11 +43,8 @@ def oplata_1c():
                             list_result.append(pair[key_model[i]])
                     else:
                         status.append(f"{i} - Структура НЕ соответствует по ячейкам {res} у массива: {str(pair)}")
-                print(i)
                 otvet_list.append(list_result)
-                print(list_result[0])
                 res_sql_prov = db.select(sql_prov.format(doc_id=list_result[0]))
-                print(res_sql_prov)
                 now_date = datetime.datetime.now()
                 now_date = now_date.strftime('%Y.%m.%d %H:%M:%S')
                 if res_sql_prov:
@@ -100,51 +97,52 @@ def zn_close(idkv):
                'Accept': 'text/plain',
                'Content-Encoding': 'utf-8'}
     # поиск документов на отправку со статусом 3-------
-    
     result = db.select_dicts_in_turple_with_description(sql.sql_api_select_check)
-    # result3 = result2
-    # print(result)
-    # data_all = {}
-    # for i in range(len(result)):
-    #     s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
-    #     i += 1
-    # idkv = result[0][0]
-    # dzr = result[0][1]
-    # opl = result[0][2]
-    # print(dzr)
-    # if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
-    #             date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
-    #             dzr = date_time_obj.strftime('%d.%m.%Y')
-    # if dzr is None or dzr == "":   
-    #         dzr = 'null'
-    # print(dzr)
-    # result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=idkv))
-    # print(result_isp)
-    
-    # print(result[0]['IDKV'])
+    print(result)
     data = {}
     volue = []
     for i in range(len(result)):
-        data_vol = {" DOC_ID ": str(result[i]['IDKV']),
-                    " DOC_TYPE ": "3",
-                    " DOC_DZR ": str(result[i]['DZR']),
-                    " DOC_OPL ": str(result[i]['OPL']),
-                    " ISP " : " " }
-        volue.append(data_vol)
-        
-        result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
-        
-        isp_list = []
-        for i in range(len(result)):
-            isp_vol = {"ISP_STAT":str(result_isp[i]['DZR']),
-                       "ISP_CODE":str(result_isp[i]['DZR'])}
-        isp_list.append(isp_vol)
-        data["ISP"] = volue
-        
+        dzr = result[i]['DZR']
+        if dzr is not None:
+            dzr = dzr.strftime('%d.%m.%Y')
+            result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
+            te = result_isp[0]
+            print(te)
+            val = list(te.values())
+            print(val)
+            list_isp = []
+            # Техник
+            if val[0] != "0" or 0 or not None:
+                isp_vol = {"ISP_STAT":"5",
+                           "ISP_CODE":str(val[0])}
+                list_isp.append(isp_vol)
+            # Литейщик
+            if val[1] != "0" or 0 or not None:
+                isp_vol = {"ISP_STAT":"6",
+                           "ISP_CODE":str(val[1])}
+                list_isp.append(isp_vol)
+            # Полир
+            if val[2] != 0 and not None and " " and "0":
+                isp_vol = {"ISP_STAT":"7",
+                           "ISP_CODE":str(val[2])}
+                list_isp.append(isp_vol)
+            print(list_isp)
+            data_vol = {"DOC_ID":str(result[i]['IDKV']),
+                        "DOC_TYPE":"3",
+                        "DOC_DZR":dzr,
+                        "DOC_OPL":str(result[i]['OPL']),
+                        "ISP":list_isp}
+            volue.append(data_vol)
     data["DOC"] = volue
     
     answer = requests.post(url, data=json.dumps(data), headers=headers)
     print(answer)
+    print(type(answer))
+    if answer:
+        print('200')
+    else:
+        print("хз")
+        return "OK", 200
     response = answer.json()
     print(response)
     return response
