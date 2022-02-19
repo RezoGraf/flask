@@ -1,23 +1,13 @@
-<<<<<<< HEAD:app/db_pg.py
-import pg8000
-=======
 import psycopg2
->>>>>>> 62e56751d4d79069ba8e78c483dbda902f6c51fb:app/db-pg.py
 import config
 # import wtforms_sqlalchemy.orm.model_form
 
 
 def select(sql):
-<<<<<<< HEAD:app/db_pg.py
-    con = pg8000.connect(host=config.pg_dsn, port=5432,
-                             database='helios',
-                             user=config.pg_user, password=config.pg_password)
-=======
     con = psycopg2.connect(dsn=config.pg_dsn,
                         database = 'helios',
                         user=config.pg_user,
                         password=config.pg_password)
->>>>>>> 62e56751d4d79069ba8e78c483dbda902f6c51fb:app/db-pg.py
     cur = con.cursor()
     cur.execute(sql)
     result = cur.fetchall()
@@ -27,16 +17,10 @@ def select(sql):
 
 
 def write(sql):
-<<<<<<< HEAD:app/db_pg.py
-    con = pg8000.connect(host='192.168.100.52',
-                             database='helios',
-                             user='postgres', password='Gecnjq01!')
-=======
     con = psycopg2.connect(dsn=config.pg_dsn,
                         database = 'helios',
                         user=config.pg_user,
                         password=config.pg_password)
->>>>>>> 62e56751d4d79069ba8e78c483dbda902f6c51fb:app/db-pg.py
     cur = con.cursor()
     cur.execute(sql)
     con.commit()
@@ -45,16 +29,10 @@ def write(sql):
 
 
 def proc(proc_name):
-<<<<<<< HEAD:app/db_pg.py
-    con = pg8000.connect(host=config.pg_dsn, port=5432,
-                             database='helios',
-                             user=config.pg_user, password=config.pg_password)
-=======
     con = psycopg2.connect(dsn=config.pg_dsn,
                         database = 'helios',
                         user=config.pg_user,
                         password=config.pg_password)
->>>>>>> 62e56751d4d79069ba8e78c483dbda902f6c51fb:app/db-pg.py
     cur = con.cursor()
     cur.callproc(proc_name)
     output_params = cur.fetchone()
