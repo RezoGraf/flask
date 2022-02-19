@@ -1,13 +1,10 @@
 import psycopg2
 import config
 # import wtforms_sqlalchemy.orm.model_form
-
+dsn = f'dbname={config.pg_database} user={config.pg_user} host={config.pg_dsn} port={config.pg_port} password={config.pg_password}'
 
 def select(sql):
-    con = psycopg2.connect(dsn=config.pg_dsn,
-                        database = 'helios',
-                        user=config.pg_user,
-                        password=config.pg_password)
+    con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
     result = cur.fetchall()
@@ -17,10 +14,7 @@ def select(sql):
 
 
 def write(sql):
-    con = psycopg2.connect(dsn=config.pg_dsn,
-                        database = 'helios',
-                        user=config.pg_user,
-                        password=config.pg_password)
+    con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
     con.commit()
@@ -29,10 +23,7 @@ def write(sql):
 
 
 def proc(proc_name):
-    con = psycopg2.connect(dsn=config.pg_dsn,
-                        database = 'helios',
-                        user=config.pg_user,
-                        password=config.pg_password)
+    con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.callproc(proc_name)
     output_params = cur.fetchone()

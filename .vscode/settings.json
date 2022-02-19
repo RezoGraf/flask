@@ -124,6 +124,7 @@
         "csvg",
         "datetime",
         "dateutil",
+        "dbname",
         "deadsnakes",
         "dolj",
         "dred",
