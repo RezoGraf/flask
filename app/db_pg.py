@@ -43,7 +43,6 @@ def select_dicts_in_turple_with_description(sql):
     for row in cur:
         for i in range(len(selectFields)):
             dict_select[selectFields[i]] = row[i]
-        # result_4 += dict_select
         result_4.append(dict_select)
         dict_select = {}
     cur.close()
