@@ -30,37 +30,22 @@ def proc(proc_name):
     con.commit()
     return output_params
 
-# Base = automap_base()
 
-# engine = create_engine("postgresql+pg8000://postgres:Gecnjq01!@192.168.100.52/helios", client_encoding='utf8')
-# Base.prepare(engine, reflect=True)
-# Worker = Base.classes.epid_Worker
-# print(Worker)
-# session = Session(engine)
-# results = Base.session.query(Worker).all()
-#     for r in results:
-#         print(r.IDW)
-
-
-# db = SQLAlchemy(app)
-
-# # worker = db.Table('epid_Worker', db.metadata, autoload=True, autoload_with=db.engine)
-# # session.add(Address(email_address="foo@bar.com", user=User(name="foo")))
-# session.commit()
-
-# Base = automap_base()
-# Base.prepare(db.engine, reflect=True)
-# Worker = Base.classes.epid_Worker
-
-# @app.route('/')
-# def index():
-#     # db.session.query(worker).all()
-#     # worker.session.all()
-#     results = db.session.query(Worker).all()
-#     for r in results:
-#         print(r.IDW)
-#     return ''
-
-# if __name__ == "__main__":
-#     # app.run(host='192.168.100.142', port=80, debug=True)
-#     app.run(host='0.0.0.0', port=4000)
+def select_dicts_in_turple_with_description(sql):
+    con = psycopg2.connect(dsn)
+    cur = con.cursor()
+    cur.execute(sql)
+    selectFields = ()
+    for fieldDesc in cur.description:
+        selectFields = *selectFields, fieldDesc[psycopg2.DESCRIPTION_NAME]
+    dict_select = {}
+    result_4 = []
+    for row in cur:
+        for i in range(len(selectFields)):
+            dict_select[selectFields[i]] = row[i]
+        # result_4 += dict_select
+        result_4.append(dict_select)
+        dict_select = {}
+    cur.close()
+    del cur
+    return result_4
