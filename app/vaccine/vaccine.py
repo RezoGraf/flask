@@ -15,8 +15,8 @@ vaccine = Blueprint('vaccine', __name__)
 
 
 @vaccine.route('/sinc', methods=['GET', 'POST'])
-# @login_required
-# @logger.catch
+@login_required
+@logger.catch
 def sinc():
     menu = session['menu']
     data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
@@ -26,43 +26,12 @@ def sinc():
       print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
       db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
       
-    # as_list = []
-    # if request.args.get['as_list'] is not None:
-    #     as_list = request.args.get['as_list']
-    # print(as_list)
-    # s = request.args
-    # print(s)
-    # jsonData = request.get_json()
-    # print(jsonData)
-    # print(request.args)
-    # workers = request.args.get
-    # if request.args.get['workers'] is not None:
-    #     workers = request.args.get['workers']
-    #     for i in workers:
-    #         print(i)
-    # workers = ''
-    # if request.form.get['workers'] is not None:
-    # workers = request.args.get['workers']
-        # return render_template('vaccine_write.html', menu=menu, workers=workers)
     if request.method == 'POST':
-        # if request.form['btn'] == 'load_from_fb_mpp':
-        # workers = request.form.get['workers_for_load']
-        # as_dict = request.form.getlist('exampleFormControlSelect2')
         as_list = request.form.getlist('exampleFormControlSelect2')
-        # print(as_list)
         data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
         
         for x in as_list:
-          # s = db_pg.write()
-          print(int(x))
-
           one_worker = db.select_dicts_in_turple_with_description(sql_vaccine.select_one_mpp.format(mpp=int(x)))
-          
-        # print(as_list[0])
-        # print(request)
-        # for i in workers:
-        #     print(i)
-        # print(workers)
         return redirect(url_for('vaccine.sinc'))
     else:
         return render_template('vaccine_loader.html', menu=menu)
@@ -76,6 +45,43 @@ def load_from_fb():
             <img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
           </div>"""
     return response
+
+
+@vaccine.route('/select_filter')
+@login_required
+@logger.catch
+def select_filter():
+  # all_otd = db.select(sql_vaccine.)
+  # select_otd = """<option selected></option>"""
+  # for x in all_otd:
+  #     select_string = f"""<option style="font-size:15px">{x[0]}</option>"""
+  #     select_otd += select_string
+  # all_select_otd = f"""<select style="font-size:15px" class="form-select" name="reason_filter" id="myInputReason"
+  # name="select_otd">{select_otd}</select>"""
+  response = """
+  <!-- Подразделение | Select Basic -->
+  <div class="row">
+        <div class="form-group row">
+            <label class="col-md-4 col-form-label" for="podr_select">Подразделение</label>
+            <div class="col-md-4">
+                <select id="podr_select" name="podr_select" class="form-control">
+                    <option value="1" selected>Все</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Отделение | Select Basic -->
+        <div class="form-group row">
+            <label class="col-md-4 col-form-label" for="otd_select">Отделение</label>
+            <div class="col-md-4">
+                <select id="otd_select" name="otd_select" class="form-control">
+                    <option value="1" selected>Все</option>
+                </select>
+            </div>
+        </div>
+  </div>
+  """
+  return response
 
 
 @vaccine.route('/load_from_fb_data')
