@@ -21,9 +21,22 @@ select_one_mpp = """
     """
 
 
+select_vaccine = """select VVC, NVVC from n_vvc where VVC>0"""
+
+
 
 #------------------postgresql----------------------------------------------------
 
 sinc_worker = """INSERT INTO public."epid_WORKER"(
 	"ID_WORKER", "FAM_WORKER", "IM_WORKER", "OT_WORKER", "PODR", "OTD", "DLJ")
 	VALUES ('{mpp}', '{fam}', '{im}', '{ot}', '{lpu}', '{otd}', '{dolj}')"""
+
+
+sinc_vaccine = """INSERT INTO public."epid_S_VACCINE"(
+	"NVACCINE", "ID_ARENA")
+	VALUES ('{nvc}', '{vcid}')"""
+
+
+select_workers = """SELECT "IDW", "ID_WORKER", "FAM_WORKER",
+ "IM_WORKER", "OT_WORKER", "DR", "PODR", "OTD", "DLJ", "CERT"
+	FROM public."epid_WORKER";"""

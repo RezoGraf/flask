@@ -15,54 +15,26 @@ vaccine = Blueprint('vaccine', __name__)
 
 
 @vaccine.route('/sinc', methods=['GET', 'POST'])
-# @login_required
-# @logger.catch
+@login_required
+@logger.catch
 def sinc():
     menu = session['menu']
     data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
     option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
     s = ''
-    for i in range(len(data)):
-      print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-      db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-      
-    # as_list = []
-    # if request.args.get['as_list'] is not None:
-    #     as_list = request.args.get['as_list']
-    # print(as_list)
-    # s = request.args
-    # print(s)
-    # jsonData = request.get_json()
-    # print(jsonData)
-    # print(request.args)
-    # workers = request.args.get
-    # if request.args.get['workers'] is not None:
-    #     workers = request.args.get['workers']
-    #     for i in workers:
-    #         print(i)
-    # workers = ''
-    # if request.form.get['workers'] is not None:
-    # workers = request.args.get['workers']
-        # return render_template('vaccine_write.html', menu=menu, workers=workers)
+    # for i in range(len(data)):
+    #   print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
+    #   db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
+    vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+    # for x in range(len(vc)):
+    #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
+    #   x += 1
     if request.method == 'POST':
-        # if request.form['btn'] == 'load_from_fb_mpp':
-        # workers = request.form.get['workers_for_load']
-        # as_dict = request.form.getlist('exampleFormControlSelect2')
         as_list = request.form.getlist('exampleFormControlSelect2')
-        # print(as_list)
         data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
         
         for x in as_list:
-          # s = db_pg.write()
-          print(int(x))
-
           one_worker = db.select_dicts_in_turple_with_description(sql_vaccine.select_one_mpp.format(mpp=int(x)))
-          
-        # print(as_list[0])
-        # print(request)
-        # for i in workers:
-        #     print(i)
-        # print(workers)
         return redirect(url_for('vaccine.sinc'))
     else:
         return render_template('vaccine_loader.html', menu=menu)
@@ -78,6 +50,35 @@ def load_from_fb():
     return response
 
 
+@vaccine.route('/vaccine_main')
+@login_required
+@logger.catch
+def vaccine_main():
+  # all_otd = db.select(sql_vaccine.)
+  # select_otd = """<option selected></option>"""
+  # for x in all_otd:
+  #     select_string = f"""<option style="font-size:15px">{x[0]}</option>"""
+  #     select_otd += select_string
+  # all_select_otd = f"""<select style="font-size:15px" class="form-select" name="reason_filter" id="myInputReason"
+  # name="select_otd">{select_otd}</select>"""
+  menu = session['menu']
+  return render_template('vaccine.html', menu=menu)
+
+@vaccine.route('/vaccine_table')
+@login_required
+@logger.catch
+def vaccine_table():
+  data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
+  for x in data:
+    print(x)
+  response = """
+  <tr>
+  <td>1</td>
+  </tr>
+  """
+  return response
+
+
 @vaccine.route('/load_from_fb_data')
 @login_required
 @logger.catch
@@ -87,9 +88,14 @@ def loaf_from_fb_data():
     option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
     s = ''
     for i in range(len(data)):
-      db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
+      # db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
       s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
       i += 1
+    
+    vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+    # for x in range(len(vc)):
+    #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
+    #   x += 1
     response = f"""
     <div class="form-group">
     <br>

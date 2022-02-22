@@ -45,9 +45,9 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Вакцинация</a>
         <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/vaccine/vaccine_main">Вакцинация</a>
           <a class="dropdown-item text-primary" href="/vaccine">Заполнение карточек вакцинации</a>
           <a class="dropdown-item text-primary" href="/vaccine/report">Отчет о вакцинации</a>
-          <a class="dropdown-item text-primary" href="/vaccine/sinc">Синхронизация справочников</a>
         </div>
       </li>
       <li class="nav-item dropdown">
@@ -56,6 +56,7 @@ def generate_menu():
           <a class="dropdown-item text-primary" href="/db_test">Тестирование БД Firebird</a>
           <a class="dropdown-item text-primary" href="/htmx_test">Тест HTMX</a>
           <a class="dropdown-item text-primary" href="/htmx_test/table_view">Таблица HTMX</a>
+          <a class="dropdown-item text-primary" href="/vaccine/sinc">Вакцинация синхр справочников (НЕ ВХОДТЬ)</a>
           <a class="dropdown-item text-primary" href="/aalksdhl28kdhalu8">Авторизация от лица пользователя</a>
           
         </div>
