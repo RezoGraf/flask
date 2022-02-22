@@ -22,10 +22,13 @@ def sinc():
     data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
     option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
     s = ''
-    for i in range(len(data)):
-      print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-      db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-      
+    # for i in range(len(data)):
+    #   print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
+    #   db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
+    vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+    # for x in range(len(vc)):
+    #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
+    #   x += 1
     if request.method == 'POST':
         as_list = request.form.getlist('exampleFormControlSelect2')
         data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
@@ -47,10 +50,10 @@ def load_from_fb():
     return response
 
 
-@vaccine.route('/select_filter')
+@vaccine.route('/vaccine_main')
 @login_required
 @logger.catch
-def select_filter():
+def vaccine_main():
   # all_otd = db.select(sql_vaccine.)
   # select_otd = """<option selected></option>"""
   # for x in all_otd:
@@ -58,28 +61,20 @@ def select_filter():
   #     select_otd += select_string
   # all_select_otd = f"""<select style="font-size:15px" class="form-select" name="reason_filter" id="myInputReason"
   # name="select_otd">{select_otd}</select>"""
+  menu = session['menu']
+  return render_template('vaccine.html', menu=menu)
+
+@vaccine.route('/vaccine_table')
+@login_required
+@logger.catch
+def vaccine_table():
+  data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
+  for x in data:
+    print(x)
   response = """
-  <!-- Подразделение | Select Basic -->
-  <div class="row">
-        <div class="form-group row">
-            <label class="col-md-4 col-form-label" for="podr_select">Подразделение</label>
-            <div class="col-md-4">
-                <select id="podr_select" name="podr_select" class="form-control">
-                    <option value="1" selected>Все</option>
-                </select>
-            </div>
-        </div>
-        
-        <!-- Отделение | Select Basic -->
-        <div class="form-group row">
-            <label class="col-md-4 col-form-label" for="otd_select">Отделение</label>
-            <div class="col-md-4">
-                <select id="otd_select" name="otd_select" class="form-control">
-                    <option value="1" selected>Все</option>
-                </select>
-            </div>
-        </div>
-  </div>
+  <tr>
+  <td>1</td>
+  </tr>
   """
   return response
 
@@ -93,9 +88,14 @@ def loaf_from_fb_data():
     option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
     s = ''
     for i in range(len(data)):
-      db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
+      # db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
       s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
       i += 1
+    
+    vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+    # for x in range(len(vc)):
+    #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
+    #   x += 1
     response = f"""
     <div class="form-group">
     <br>

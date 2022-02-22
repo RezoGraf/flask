@@ -17,32 +17,30 @@
 
 <body>
     <form>
-        <div id="loading_from_firebird" hx-get="/vaccine/select_filter" hx-trigger="load">
-            <img  alt="Загрузка данных..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
-          </div>
-        <!-- Подразделение | Select Basic -->
-        <div class="form-group row">
-            <label class="col-md-4 col-form-label" for="podr_select">Подразделение</label>
-            <div class="col-md-4">
-                <select id="podr_select" name="podr_select" class="form-control">
-                    <option value="1">Выбор 1</option>
-                    <option value="2">Выбор 2</option>
-                </select>
+        <div class="container">
+            <div class="row">
+                <label class="col" for="podr_select">Подразделение</label>
+                <div class="col">
+                    <select id="podr_select" name="podr_select" class="form-control">
+                        <option value="1" selected>Все</option>
+                    </select>
+                </div>
+
+                <label class="col" for="otd_select">Отделение</label>
+                <div class="col">
+                    <select id="otd_select" name="otd_select" class="form-control">
+                        <option value="1" selected>Все</option>
+                    </select>
+                </div>
             </div>
         </div>
-        
-        <!-- Отделение | Select Basic -->
-        <div class="form-group row">
-            <label class="col-md-4 col-form-label" for="otd_select">Отделение</label>
-            <div class="col-md-4">
-                <select id="otd_select" name="otd_select" class="form-control">
-                    <option value="1">Выбор 1</option>
-                    <option value="2">Выбор 2</option>
-                </select>
-            </div>
-        </div>
-        
     </form>
+    <div id="loading_from_firebird" hx-get="/vaccine/vaccine_table" hx-target="#table" hx-trigger="load">
+        <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
+    </div>
+    <table id="table">
+
+    </table>
         
 </body>
 

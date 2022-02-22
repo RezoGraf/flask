@@ -45,6 +45,7 @@ def generate_menu():
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Вакцинация</a>
         <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/vaccine/vaccine_main">Вакцинация</a>
           <a class="dropdown-item text-primary" href="/vaccine">Заполнение карточек вакцинации</a>
           <a class="dropdown-item text-primary" href="/vaccine/report">Отчет о вакцинации</a>
         </div>

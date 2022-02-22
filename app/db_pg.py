@@ -31,20 +31,16 @@ def proc(proc_name):
     return output_params
 
 
-def select_dicts_in_turple_with_description(sql):
+def select_dicts_in_list_with_description(sql):
     con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
-    selectFields = ()
-    for fieldDesc in cur.description:
-        selectFields = *selectFields, fieldDesc[psycopg2.DESCRIPTION_NAME]
-    dict_select = {}
-    result_4 = []
-    for row in cur:
-        for i in range(len(selectFields)):
-            dict_select[selectFields[i]] = row[i]
-        result_4.append(dict_select)
-        dict_select = {}
-    cur.close()
-    del cur
-    return result_4
+    columns = list(cur.description)
+    result = cur.fetchall() 
+    results = []
+    for row in result:
+        row_dict = {}
+        for i, col in enumerate(columns):
+            row_dict[col.name] = row[i]
+            results.append(row_dict)
+    return results
