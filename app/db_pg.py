@@ -32,7 +32,7 @@ def proc(proc_name):
     return output_params
 
 
-def select_dicts_in_list_with_description(sql):
+def select_dicts_in_list_with_description(sql) -> list:
     con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)

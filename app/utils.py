@@ -3,6 +3,7 @@ from unittest import result
 from dateutil import parser
 import app.db, app.sql
 
+
 def list_to_int(list_result):
     string_result = ''.join(str(e) for e in list_result)
     string_result = string_result.replace('(', '')
@@ -64,3 +65,20 @@ def access_user_sdl(arena_user):
         select_sdl = ''
          
     return select_sdl
+
+
+def db_to_html_table(data) -> String:
+    x = 0
+    for x in range(len(data)):
+        if data[x]['CERT'] == None:
+            data[x]['CERT'] = 'Отсутствует'
+            table_row = f"""<tr id="{data[x]['IDW']}">
+                <td>{data[x]['FAM_WORKER']} {data[x]['IM_WORKER']} {data[x]['OT_WORKER']}</td>
+                <td>{data[x]['PODR']}</td>
+                <td>{data[x]['OTD']}</td>
+                <td>{data[x]['DLJ']}</td>
+                <td>{data[x]['CERT']}</td>
+                </tr>"""
+            table_tr += table_row
+            table_row = ''
+            x += 1
