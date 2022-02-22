@@ -69,33 +69,33 @@ def vaccine_main():
 @login_required
 @logger.catch
 def vaccine_table():
-  data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
-  table_tr = """<thead>
-  <th>ФИО</th>
-  <th>Подразделение</th>
-  <th>Отделение</th>
-  <th>Должность</th>
-  <th>Сертификат</th>
-  </thead>
-  <tbody>"""
-  x = 0
-  for x in range(len(data)):
-    if data[x]['CERT'] == None:
-      data[x]['CERT'] = 'Отсутствует'
-      table_row = f"""<tr id="{data[x]['IDW']}">
-        <td>{data[x]['FAM_WORKER']} {data[x]['IM_WORKER']} {data[x]['OT_WORKER']}</td>
-        <td>{data[x]['PODR']}</td>
-        <td>{data[x]['OTD']}</td>
-        <td>{data[x]['DLJ']}</td>
-        <td>{data[x]['CERT']}</td>
-        </tr>"""
-      table_tr += table_row
-      table_row = ''
-      x+1
-  response = f"""{table_tr}
-  </tbody>"""
-  # response = {table_tr}
-  return response
+    data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
+    table_tr = """<thead>
+    <th>ФИО</th>
+    <th>Подразделение</th>
+    <th>Отделение</th>
+    <th>Должность</th>
+    <th>Сертификат</th>
+    </thead>
+    <tbody>"""
+    x = 0
+    for x in range(len(data)):
+        if data[x]['CERT'] == None:
+            data[x]['CERT'] = 'Отсутствует'
+            table_row = f"""<tr id="{data[x]['IDW']}">
+                <td>{data[x]['FAM_WORKER']} {data[x]['IM_WORKER']} {data[x]['OT_WORKER']}</td>
+                <td>{data[x]['PODR']}</td>
+                <td>{data[x]['OTD']}</td>
+                <td>{data[x]['DLJ']}</td>
+                <td>{data[x]['CERT']}</td>
+                </tr>"""
+            table_tr += table_row
+            table_row = ''
+            x += 1
+    response = f"""{table_tr}
+    </tbody>"""
+    # response = {table_tr}
+    return response
 
 
 @vaccine.route('/load_from_fb_data')
@@ -108,8 +108,8 @@ def loaf_from_fb_data():
     s = ''
     for i in range(len(data)):
       # db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
-      s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
-      i += 1
+        s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
+        i += 1
     
     vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
     # for x in range(len(vc)):

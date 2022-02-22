@@ -3,6 +3,7 @@ import config
 # import wtforms_sqlalchemy.orm.model_form
 dsn = f'dbname={config.pg_database} user={config.pg_user} host={config.pg_dsn} port={config.pg_port} password={config.pg_password}'
 
+
 def select(sql):
     con = psycopg2.connect(dsn)
     cur = con.cursor()
