@@ -64,18 +64,37 @@ def vaccine_main():
   menu = session['menu']
   return render_template('vaccine.html', menu=menu)
 
+
 @vaccine.route('/vaccine_table')
 @login_required
 @logger.catch
 def vaccine_table():
   data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
-  for x in data:
-    print(x)
-  response = """
-  <tr>
-  <td>1</td>
-  </tr>
-  """
+  table_tr = """<thead>
+  <th>ФИО</th>
+  <th>Подразделение</th>
+  <th>Отделение</th>
+  <th>Должность</th>
+  <th>Сертификат</th>
+  </thead>
+  <tbody>"""
+  x = 0
+  for x in range(len(data)):
+    if data[x]['CERT'] == None:
+      data[x]['CERT'] = 'Отсутствует'
+      table_row = f"""<tr id="{data[x]['IDW']}">
+        <td>{data[x]['FAM_WORKER']} {data[x]['IM_WORKER']} {data[x]['OT_WORKER']}</td>
+        <td>{data[x]['PODR']}</td>
+        <td>{data[x]['OTD']}</td>
+        <td>{data[x]['DLJ']}</td>
+        <td>{data[x]['CERT']}</td>
+        </tr>"""
+      table_tr += table_row
+      table_row = ''
+      x+1
+  response = f"""{table_tr}
+  </tbody>"""
+  # response = {table_tr}
   return response
 
 

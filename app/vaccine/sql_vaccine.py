@@ -37,6 +37,6 @@ sinc_vaccine = """INSERT INTO public."epid_S_VACCINE"(
 	VALUES ('{nvc}', '{vcid}')"""
 
 
-select_workers = """SELECT "IDW", "ID_WORKER", "FAM_WORKER",
+select_workers = """SELECT "IDW", "FAM_WORKER",
  "IM_WORKER", "OT_WORKER", "DR", "PODR", "OTD", "DLJ", "CERT"
 	FROM public."epid_WORKER";"""
