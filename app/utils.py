@@ -1,7 +1,7 @@
 """Набор функций упрощающий жизнь"""
 from dateutil import parser
-import db
-import sql
+import app.db as db
+import app.sql as sql
 
 
 def list_to_int(list_result) -> int:
@@ -107,12 +107,12 @@ def access_user_sdl(arena_user) -> str:
         str: _description_
     """
     result_access_sdl = db.select(sql.sql_accessSdl.format(arena_user=arena_user))[0][0]
-    
+
     if  result_access_sdl != '0':
         select_sdl=f' and n_doc.sdl in ({result_access_sdl})' #доступные отделения
     else:
         select_sdl = ''
-         
+
     return select_sdl
 
 
@@ -141,3 +141,4 @@ def db_to_html_table(data = None, **params) -> str:
             table_row = ''
     table_tr += """</tbody"""
     return table_tr
+    
