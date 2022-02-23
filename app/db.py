@@ -111,6 +111,14 @@ def select_dicts_in_turple2(sql):
 
 
 def select_dicts_in_turple_with_description(sql):
+    """
+    Формирование кортежа из словарей 
+        вида ключ:значение, где ключ берется из название столбца в запросе
+    Args:
+        sql (str): sql для выборки
+    Returns:
+        tuple: dicts in tuple
+    """    
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,

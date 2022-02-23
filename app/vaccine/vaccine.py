@@ -18,57 +18,80 @@ vaccine = Blueprint('vaccine', __name__)
 @login_required
 @logger.catch
 def sinc():
-    menu = session['menu']
-    data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-    option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
-    s = ''
+	"""Синхронизация справочников fb - pg
+	Returns:
+		render_template: vaccine_loader.html
+	"""	
+	menu = session['menu']
+	data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
+	print(data[0])
+	option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
+	print(option)
+	s = ''
+	print(s)
     # for i in range(len(data)):
     #   print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
     #   db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-    vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+	vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+	print(vc[0])
     # for x in range(len(vc)):
     #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
     #   x += 1
-    if request.method == 'POST':
-        as_list = request.form.getlist('exampleFormControlSelect2')
-        data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-        
-        for x in as_list:
-          one_worker = db.select_dicts_in_turple_with_description(sql_vaccine.select_one_mpp.format(mpp=int(x)))
-        return redirect(url_for('vaccine.sinc'))
-    else:
-        return render_template('vaccine_loader.html', menu=menu)
+	if request.method == 'POST':
+		as_list = request.form.getlist('exampleFormControlSelect2')
+		data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
+		
+		for x in as_list:
+			one_worker = db.select_dicts_in_turple_with_description(sql_vaccine.select_one_mpp.format(mpp=int(x)))
+		return redirect(url_for('vaccine.sinc'))
+	else:
+		return render_template('vaccine_loader.html', menu=menu)
 
 
 @vaccine.route('/load_from_fb')
 @login_required
 @logger.catch
 def load_from_fb():
-    response = """<div id="loading_from_firebird" hx-get="/vaccine/load_from_fb_data" hx-trigger="load">
-            <img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
-          </div>"""
-    return response
+	"""Функция вызывает htmx load для загрузки данных из бд fb
+
+	Returns:
+		response: html код htmx load
+	"""
+	response = """<div id="loading_from_firebird" hx-get="/vaccine/load_from_fb_data" hx-trigger="load">
+			<img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
+			</div>"""
+	return response
 
 
 @vaccine.route('/vaccine_main')
 @login_required
 @logger.catch
 def vaccine_main():
-  # all_otd = db.select(sql_vaccine.)
-  # select_otd = """<option selected></option>"""
-  # for x in all_otd:
-  #     select_string = f"""<option style="font-size:15px">{x[0]}</option>"""
-  #     select_otd += select_string
-  # all_select_otd = f"""<select style="font-size:15px" class="form-select" name="reason_filter" id="myInputReason"
-  # name="select_otd">{select_otd}</select>"""
-  menu = session['menu']
-  return render_template('vaccine.html', menu=menu)
+	"""Главная страница "Вакцинация"
+
+	Returns:
+		render_template: vaccine.html
+	"""
+	# all_otd = db.select(sql_vaccine.)
+	# select_otd = """<option selected></option>"""
+	# for x in all_otd:
+	#     select_string = f"""<option style="font-size:15px">{x[0]}</option>"""
+	#     select_otd += select_string
+	# all_select_otd = f"""<select style="font-size:15px" class="form-select" name="reason_filter" id="myInputReason"
+	# name="select_otd">{select_otd}</select>"""
+	menu = session['menu']
+	return render_template('vaccine.html', menu=menu)
 
 
 @vaccine.route('/vaccine_table')
 @login_required
 @logger.catch
 def vaccine_table():
+	"""Формирование таблицы сотрудников
+
+	Returns:
+		response: html <tbody> </tbody>
+	"""
 	data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
 	table_tr = """<thead>
 	<th>ФИО</th>
@@ -78,23 +101,23 @@ def vaccine_table():
     <th>Сертификат</th>
     </thead>
     <tbody>"""
-	x = 0
-	for x in range(len(data)):
-		if data[x]['CERT'] == None:
-			data[x]['CERT'] = 'Отсутствует'
-		table_row = f"""<tr id="{data[x]['IDW']}">
-        	<td>{data[x]['FAM_WORKER']} {data[x]['IM_WORKER']} {data[x]['OT_WORKER']}</td>
-			<td>{data[x]['PODR']}</td>
-			<td>{data[x]['OTD']}</td>
-			<td>{data[x]['DLJ']}</td>
-			<td>{data[x]['CERT']}</td>
+	# x = 0
+	for i in range(data):
+		if data[i]['CERT'] is None:
+			data[i]['CERT'] = 'Отсутствует'
+		table_row = f"""<tr id="{data[i]['IDW']}">
+			<td>{data[i]['FAM_WORKER']} {data[i]['IM_WORKER']} {data[i]['OT_WORKER']}</td>
+			<td>{data[i]['PODR']}</td>
+			<td>{data[i]['OTD']}</td>
+			<td>{data[i]['DLJ']}</td>
+			<td>{data[i]['CERT']}</td>
 			</tr>"""
 		table_tr += table_row
 		table_row = ''
-		x += 1
+		# x += 1
 	response = f"""{table_tr}
-    </tbody>"""
-    # response = {table_tr}
+	</tbody>"""
+	# response = {table_tr}
 	return response
 
 
