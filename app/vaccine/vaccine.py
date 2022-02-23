@@ -9,6 +9,7 @@ import app.db as db
 import app.db_pg as db_pg
 import app.vaccine.sql_vaccine as sql_vaccine
 import time
+import app.utils as utils
 
 
 vaccine = Blueprint('vaccine', __name__)
@@ -27,13 +28,13 @@ def sinc():
 	print(data[0])
 	option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
 	print(option)
-	s = ''
-	print(s)
+	s_str = ''
+	print(s_str)
     # for i in range(len(data)):
     #   print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
     #   db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-	vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
-	print(vc[0])
+	vaccine_fb = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+	print(vaccine_fb[0])
     # for x in range(len(vc)):
     #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
     #   x += 1
@@ -93,6 +94,7 @@ def vaccine_table():
 		response: html <tbody> </tbody>
 	"""
 	data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
+	s = utils.db_to_html_table(data, 0,1, {'cols':''})
 	table_tr = """<thead>
 	<th>ФИО</th>
     <th>Подразделение</th>
@@ -125,61 +127,62 @@ def vaccine_table():
 @login_required
 @logger.catch
 def loaf_from_fb_data():
-    time.sleep(1)
-    data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-    option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
-    s = ''
-    for i in range(len(data)):
-      # db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
-        s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
-        i += 1
-    
-    vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
-    # for x in range(len(vc)):
-    #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
-    #   x += 1
-    response = f"""
-    <div class="form-group">
-    <br>
-    <label for="exampleFormControlSelect2">Выберите сотрудников для загрузки</label>
-    <select multiple size="20" class="form-control" id="exampleFormControlSelect2" name="exampleFormControlSelect2">
-      {s}
-    </select>
-    <br>
-    <button class="btn btn-primary" type="submit">Загрузить сотрудников в БД Хелиос</button>
+	time.sleep(1)
+	data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
+	option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
+	s = ''
+	for i in range(len(data)):
+	  # db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
+		s += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'])
+		i += 1
+	
+	vc = db.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
+	# for x in range(len(vc)):
+	#   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
+	#   x += 1
+	response = f"""
+	<div class="form-group">
+	<br>
+	<label for="exampleFormControlSelect2">Выберите сотрудников для загрузки</label>
+	<select multiple size="20" class="form-control" id="exampleFormControlSelect2" name="exampleFormControlSelect2">
+	  {s}
+	</select>
+	<br>
+	<button class="btn btn-primary" type="submit">Загрузить сотрудников в БД Хелиос</button>
   </div>"""
-    return response
+	return response
 
 
 @vaccine.route('/load_from_fb_to_pg', methods=['GET', 'POST'])
 @login_required
 @logger.catch
 def load_from_fb_to_pg():
-    workers = request.form.get['workers_for_load']
-    print(workers)
-    response = """<div id="loading_to_pg" hx-get="/vaccine/load_to_pg_data" hx-trigger="load">
-            <img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
-          </div>"""
-    return response
+	workers = request.form.get['workers_for_load']
+	print(workers)
+	response = """<div id="loading_to_pg" hx-get="/vaccine/load_to_pg_data" hx-trigger="load">
+			<img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
+		  </div>"""
+	return response
 
 
 @vaccine.route('/load_to_pg_data')
 @login_required
 @logger.catch
 def load_to_pg_data():
-    time.sleep(1)
-    data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-    option = '<option selected value="{var}">{var}</option>'
-    s = ''
-    for i in range(len(data)):
-        s += option.format(var=data[i])
-        i += 1
-    response = f"""
-    <div class="form-group">
-    <label for="exampleFormControlSelect3">Пример множественного выбора</label>
-    <select id="select_multiple" multiple class="form-control" id="exampleFormControlSelect3" name="workers_for_load">
-      {s}
-    </select>
-    <button name="btn" value="load_from_fb_mpp" type="submit">Загрузить</button>
+	time.sleep(1)
+	data = db.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
+	db_to_html_table
+	option = '<option selected value="{var}">{var}</option>'
+	s = ''
+	for i in range(len(data)):
+		s += option.format(var=data[i])
+		i += 1
+	response = f"""
+	<div class="form-group">
+	<label for="exampleFormControlSelect3">Пример множественного выбора</label>
+	<select id="select_multiple" multiple class="form-control" id="exampleFormControlSelect3" name="workers_for_load">
+	  {s}
+	</select>
+	<button name="btn" value="load_from_fb_mpp" type="submit">Загрузить</button>
   </div>"""
-    return response
+	return response
