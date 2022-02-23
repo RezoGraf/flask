@@ -118,7 +118,7 @@ def select_dicts_in_turple_with_description(sql):
         sql (str): sql для выборки
     Returns:
         tuple: dicts in tuple
-    """    
+    """
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,
