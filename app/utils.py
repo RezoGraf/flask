@@ -116,7 +116,7 @@ def access_user_sdl(arena_user) -> str:
     return select_sdl
 
 
-def db_to_html_table(data = None, **params) -> str:
+def db_to_html_table(data=None, **params) -> str:
     """Формирование tbody из результата запроса
 
     Args:
@@ -141,4 +141,3 @@ def db_to_html_table(data = None, **params) -> str:
             table_row = ''
     table_tr += """</tbody"""
     return table_tr
-    

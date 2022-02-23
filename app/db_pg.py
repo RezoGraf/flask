@@ -1,10 +1,20 @@
+"""Функции для работы с БД Postgresql"""
 import psycopg2
-import config
-# import wtforms_sqlalchemy.orm.model_form
-dsn = f'dbname={config.pg_database} user={config.pg_user} host={config.pg_dsn} port={config.pg_port} password={config.pg_password}'
+from config import (pg_database, pg_user, pg_dsn, pg_port, pg_password)
+
+
+dsn = f'dbname={pg_database} user={pg_user} host={pg_dsn} port={pg_port} password={pg_password}'
 
 
 def select(sql):
+    """Выборка из бд firebird
+
+    Args:
+        sql (str): строка sql запроса
+
+    Returns:
+        _type_: _description_
+    """
     con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
@@ -15,6 +25,11 @@ def select(sql):
 
 
 def write(sql):
+    """Записать данные в бд firebird
+
+    Args:
+        sql (str): строка sql запроса
+    """
     con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
@@ -24,6 +39,14 @@ def write(sql):
 
 
 def proc(proc_name):
+    """Выполнить процедуру и вернуть номер для id записи
+
+    Args:
+        proc_name (str): вызов процедуры
+
+    Returns:
+        tuple: возвращает tuple от выполнения процедуры
+    """    
     con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.callproc(proc_name)
@@ -33,11 +56,19 @@ def proc(proc_name):
 
 
 def select_dicts_in_list_with_description(sql) -> list:
+    """Выборка в словари вида название столбца:значение в списке
+
+    Args:
+        sql (str): строка sql запроса на выборку данных из бд pg
+
+    Returns:
+        list: Список со словарями, где ключи - название колонок
+    """
     con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
     columns = list(cur.description)
-    result = cur.fetchall() 
+    result = cur.fetchall()
     results = []
     for row in result:
         row_dict = {}

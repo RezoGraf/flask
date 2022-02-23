@@ -181,7 +181,7 @@ def load_from_fb_to_pg():
 def load_to_pg_data():
 	time.sleep(1)
 	data = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-	utils.db_to_html_table
+	utils.db_to_html_table(data, {'col':['CERT', 'пусто'],['FAM_WORKER', 'пусто']})
 	option = '<option selected value="{var}">{var}</option>'
 	s = ''
 	for i in range(len(data)):
