@@ -67,8 +67,8 @@ def access_user_sdl(arena_user):
     return select_sdl
 
 
-def db_to_html_table(data, **kwargs) -> String:
-    print(kwargs)
+def db_to_html_table(data = None, **params) -> str:
+    print(params)
     table_tr = """<tbody>"""
     x = 0
     for x in range(len(data)):
