@@ -89,9 +89,9 @@ def vaccine_table():
 			<td>{data[x]['DLJ']}</td>
 			<td>{data[x]['CERT']}</td>
 			</tr>"""
-        table_tr += table_row
-        table_row = ''
-        x += 1
+		table_tr += table_row
+		table_row = ''
+		x += 1
 	response = f"""{table_tr}
     </tbody>"""
     # response = {table_tr}
