@@ -91,7 +91,7 @@ def vaccine_table():
         response: html <tbody> </tbody>
     """
     data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
-    string8 = utils.db_to_html_table(data, 5 {'cols':'col1','None'})
+    string8 = utils.db_to_html_table(data, 5, {'cols':'None'})
     print(string8)
     table_tr = """<thead>
     <th>ФИО</th>
