@@ -131,9 +131,8 @@ def select_dicts_in_turple_with_description(sql):
     dict_select = {}
     result_4 = []
     for row in cur:
-        for i in range(select_fields):
+        for i, _ in enumerate(select_fields):
             dict_select[select_fields[i]] = row[i]
-        # result_4 += dict_select
         result_4.append(dict_select)
         dict_select = {}
     cur.close()
