@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    {{ menu|safe  }}
+  </head>
+{% block content %}
+
+<title>Вакцинация</title>
+
+<body>
+    <form>
+        <div class="container">
+            <div class="row">
+                <label class="col" for="podr_select">Подразделение</label>
+                <div class="col">
+                    <select id="podr_select" name="podr_select" class="form-control">
+                        <option value="1" selected>Все</option>
+                    </select>
+                </div>
+
+                <label class="col" for="otd_select">Отделение</label>
+                <div class="col">
+                    <select id="otd_select" name="otd_select" class="form-control">
+                        <option value="1" selected>Все</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+    <table id="table" class="table">
+
+    </table>
+    <div id="loading_from_firebird" hx-get="/vaccine/vaccine_table" hx-target="#table" hx-trigger="load">
+        <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
+    </div>
+        
+</body>
+
+
+{% endblock %}

@@ -33,7 +33,8 @@ packaging==21.3
 pandas==1.3.5
 pathspec==0.9.0
 pep8==1.7.1
-pg8000==1.24.0
+psycopg2==2.9.3
+psycopg2-binary==2.9.3
 platformdirs==2.5.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8

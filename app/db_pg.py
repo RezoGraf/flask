@@ -1,13 +1,21 @@
+"""Функции для работы с БД Postgresql"""
 import psycopg2
-import config
-# import wtforms_sqlalchemy.orm.model_form
+from config import (pg_database, pg_user, pg_dsn, pg_port, pg_password)
+
+
+dsn = f'dbname={pg_database} user={pg_user} host={pg_dsn} port={pg_port} password={pg_password}'
 
 
 def select(sql):
-    con = psycopg2.connect(dsn=config.pg_dsn,
-                        database = 'helios',
-                        user=config.pg_user,
-                        password=config.pg_password)
+    """Выборка из бд firebird
+
+    Args:
+        sql (str): строка sql запроса
+
+    Returns:
+        _type_: _description_
+    """
+    con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
     result = cur.fetchall()
@@ -17,10 +25,12 @@ def select(sql):
 
 
 def write(sql):
-    con = psycopg2.connect(dsn=config.pg_dsn,
-                        database = 'helios',
-                        user=config.pg_user,
-                        password=config.pg_password)
+    """Записать данные в бд firebird
+
+    Args:
+        sql (str): строка sql запроса
+    """
+    con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.execute(sql)
     con.commit()
@@ -29,47 +39,40 @@ def write(sql):
 
 
 def proc(proc_name):
-    con = psycopg2.connect(dsn=config.pg_dsn,
-                        database = 'helios',
-                        user=config.pg_user,
-                        password=config.pg_password)
+    """Выполнить процедуру и вернуть номер для id записи
+
+    Args:
+        proc_name (str): вызов процедуры
+
+    Returns:
+        tuple: возвращает tuple от выполнения процедуры
+    """    
+    con = psycopg2.connect(dsn)
     cur = con.cursor()
     cur.callproc(proc_name)
     output_params = cur.fetchone()
     con.commit()
     return output_params
 
-# Base = automap_base()
 
-# engine = create_engine("postgresql+pg8000://postgres:Gecnjq01!@192.168.100.52/helios", client_encoding='utf8')
-# Base.prepare(engine, reflect=True)
-# Worker = Base.classes.epid_Worker
-# print(Worker)
-# session = Session(engine)
-# results = Base.session.query(Worker).all()
-#     for r in results:
-#         print(r.IDW)
+def select_dicts_in_list_with_description(sql) -> list:
+    """Выборка в словари вида название столбца:значение в списке
 
+    Args:
+        sql (str): строка sql запроса на выборку данных из бд pg
 
-# db = SQLAlchemy(app)
-
-# # worker = db.Table('epid_Worker', db.metadata, autoload=True, autoload_with=db.engine)
-# # session.add(Address(email_address="foo@bar.com", user=User(name="foo")))
-# session.commit()
-
-# Base = automap_base()
-# Base.prepare(db.engine, reflect=True)
-# Worker = Base.classes.epid_Worker
-
-# @app.route('/')
-# def index():
-#     # db.session.query(worker).all()
-#     # worker.session.all()
-#     results = db.session.query(Worker).all()
-#     for r in results:
-#         print(r.IDW)
-#     return ''
-
-# if __name__ == "__main__":
-#     # app.run(host='192.168.100.142', port=80, debug=True)
-#     app.run(host='0.0.0.0', port=4000)
+    Returns:
+        list: Список со словарями, где ключи - название колонок
+    """
+    con = psycopg2.connect(dsn)
+    cur = con.cursor()
+    cur.execute(sql)
+    columns = list(cur.description)
+    result = cur.fetchall()
+    results = []
+    for row in result:
+        row_dict = {}
+        for i, col in enumerate(columns):
+            row_dict[col.name] = row[i]
+            results.append(row_dict)
+    return results

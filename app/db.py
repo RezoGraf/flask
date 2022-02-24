@@ -111,20 +111,28 @@ def select_dicts_in_turple2(sql):
 
 
 def select_dicts_in_turple_with_description(sql):
+    """
+    Формирование кортежа из словарей 
+        вида ключ:значение, где ключ берется из название столбца в запросе
+    Args:
+        sql (str): sql для выборки
+    Returns:
+        tuple: dicts in tuple
+    """
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,
                               charset=config.charset)
     cur = con.cursor()
     cur.execute(sql)
-    selectFields = ()
-    for fieldDesc in cur.description:
-        selectFields = *selectFields, fieldDesc[firebirdsql.DESCRIPTION_NAME]
+    select_fields = ()
+    for field_desc in cur.description:
+        select_fields = *select_fields, field_desc[firebirdsql.DESCRIPTION_NAME]
     dict_select = {}
     result_4 = []
     for row in cur:
-        for i in range(len(selectFields)):
-            dict_select[selectFields[i]] = row[i]
+        for i in range(select_fields):
+            dict_select[select_fields[i]] = row[i]
         # result_4 += dict_select
         result_4.append(dict_select)
         dict_select = {}
