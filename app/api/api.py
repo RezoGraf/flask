@@ -27,7 +27,7 @@ def oplata_1c():
     if key_json == key_true:
         if usr == usr_true and pwd == pwd_true:
             #               0               1           2             3               4              5                   6               7               8           9
-            key_chek = (" DOC_ID ",	" DOC_DATE ", " DOC_NOM ", " DOC_TYPE_OPL ", " DOC_SUM ", " DOC_SUM_NAL ",	" DOC_SUM_BNAL ", " DOC_SUM_RAS ", " CHECK_NUM ", " KAS_KOD ")
+            key_chek = ("DOC_ID",	"DOC_DATE", "DOC_NOM", "DOC_TYPE_OPL", "DOC_SUM", "DOC_SUM_NAL",	"DOC_SUM_BNAL", "DOC_SUM_RAS", "CHECK_NUM", "KAS_KOD")
             key_model = list(key_chek)
             status = ([])
             otvet_list = ([])
