@@ -1,13 +1,12 @@
 """Модуль Вакцинация"""
 import time
 from loguru import logger
+from app.utils import db_to_html_table
 import app.db as firebird
 from app.auth import login_required
 from flask import Blueprint, render_template, request, redirect, url_for, session
-import app.db_pg as db_pg
 import app.vaccine.sql_vaccine as sql_vaccine
-import app.utils as utils
-
+from app import db_pg
 
 vaccine = Blueprint('vaccine', __name__)
 
@@ -94,8 +93,11 @@ def vaccine_table():
         response: html <tbody> </tbody>
     """
     data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
-    # string8 = utils.db_to_html_table(data, 5, {'cols':'None'})
-    # print(string8)
+    string8 = db_to_html_table(data, tr=['IDW',''],
+                                        nulls=['Отсутствует'],
+                                        cols=['FAM_WORKER','PODR','OTD','DLJ','CERT']
+                                        )
+    print(string8)
     table_tr = """<thead>
     <th>ФИО</th>
     <th>Подразделение</th>
