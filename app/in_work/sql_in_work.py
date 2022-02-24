@@ -19,6 +19,7 @@ From it_rasp,np_otd,n_doc,n_mpp
 Where (it_rasp.otd=np_otd.otd) and (it_rasp.doc=n_doc.doc) 
   and (n_doc.mpp=n_mpp.mpp) and (n_doc.pv=1) and np_otd.notd is not Null"""
 
+
 sql_all_podr = """Select distinct
  (select SNLPU from n_lpu where ter=5 and N_LPU.LPU=N_DOC.LPU) as SNLPU
 From it_rasp,np_otd,n_doc,n_mpp 

@@ -1,3 +1,4 @@
+"""SQL запросы"""
 # Выборка для отчета
 sql_select = """SELECT  (
 SELECT  SNLPU
