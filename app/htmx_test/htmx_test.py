@@ -62,7 +62,6 @@ def index():
   menu = session['menu']
   return render_template("htmx_test.html", items=data, menu=menu)
 
-
 # функция формирования заголовка таблицы
 def create_th(cur_year,cur_month):
    all_day = calendar.monthrange(int(cur_year), int(cur_month))[1] 
@@ -100,6 +99,20 @@ def table_view():
     current_date = date.today()                     #текущая дата
     current_year = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%Y")  #текущий год
     current_month = parser.parse(current_date.strftime('%m/%d/%y')).strftime("%m") #текущий месяц
+    all_month = {}
+    all_month['01'] = 'Январь'
+    all_month['02'] = 'Февраль'
+    all_month['03'] = 'Март'
+    all_month['04'] = 'Апрель'
+    all_month['05'] = 'Май'
+    all_month['06'] = 'Июнь'
+    all_month['07'] = 'Июль'
+    all_month['08'] = 'Август'
+    all_month['09'] = 'Сентябрь'
+    all_month['10'] = 'Октябрь'
+    all_month['11'] = 'Ноябрь'
+    all_month['12'] = 'Декабрь'
+    
     last_day = calendar.monthrange(int(current_year), int(current_month))[1]
     result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd))           #список отделений доступных пользователю
     otd = request.args.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
@@ -163,6 +176,7 @@ def table_view():
                            result_otd=result_otd,
                            year = current_year,
                            month = current_month,
+                           all_month = all_month,
                            notd = notd,
                            otd = otd,
                            menu = menu,
