@@ -262,26 +262,27 @@ def zn_modal_close_btn():
         if re.fullmatch(r"\d{4}-\d\d-\d\d", dzr):
             date_time_obj = datetime.strptime(dzr, '%Y-%m-%d')
             dzr = date_time_obj.strftime('%d.%m.%Y')
+            dzr = f"'{dzr}'"
             check_dzr = 2
-        if dzr is None:
+        if dzr is None or dzr == "" or dzr == " ":
             dzr = "null"
             check_dzr = 1
+        print(dzr)
 # Проверка даты----------------------------------------------------------------------------------
         if check_dzr == 1 or 2:
             check_zn = db.select(sql.sql_zn_naryad_select_info_isp.format(idkv=idkv))
             if check_zn == []:
-                print(idkv + "1233312312312312312")
-                db.write(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
-                # # если дата формата дд.мм.гг то запись на отправку---------------------------------
+                print(sql.sql_zn_naryad_insert_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
+                # если дата формата дд.мм.гг то запись на отправку---------------------------------
+                if check_dzr == 2:
+                    print(sql.sql_zn_naryad_update_uslk.format(idkv=idkv, status=3, dzr=dzr))
+                    # api.zn_close(idkv)
+                return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
+            else:
+                print("-")
+                print(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
                 # if check_dzr == 2:
                 #     db.write(sql.sql_zn_naryad_update_uslk.format(idkv=idkv, status=3, dzr=dzr))
-                    # api.zn_close(idkv)
-                # return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
-            else:
-                print(idkv)
-                db.write(sql.sql_zn_naryad_update_isp.format(idkv=idkv, nom_teh=nom_teh, nom_lit=nom_lit, nom_pol=nom_pol, nom_var=nom_var, dzr=dzr))
-                if check_dzr == 2:
-                    db.write(sql.sql_zn_naryad_update_uslk.format(idkv=idkv, status=3, dzr=dzr))
                     # api.zn_close(idkv)
         return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
 
