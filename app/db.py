@@ -2,14 +2,18 @@
 from collections import defaultdict
 import firebirdsql
 from app.utils import date_color
-# import app.utils
-# from app import utils
 import config
 
 
-
-
 def select(sql):
+    """Выборка из бд firebird
+
+    Args:
+        sql (str): sql запрос на выборку
+
+    Returns:
+        tuple: tuple с list внутри
+    """
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,
@@ -23,6 +27,11 @@ def select(sql):
 
 
 def write(sql):
+    """Запись данных в бд firebird
+
+    Args:
+        sql (str): sql запрос для записи данных в бд
+    """
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,
@@ -35,6 +44,14 @@ def write(sql):
 
 
 def proc(proc_name):
+    """Выполнение процедуры fb
+
+    Args:
+        proc_name (_type_): _description_
+
+    Returns:
+        tuple: возвращает результат выполнения процедуры
+    """
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,
@@ -47,6 +64,14 @@ def proc(proc_name):
 
 
 def select_dicts_in_turple(sql):
+    """_summary_
+
+    Args:
+        sql (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """    
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,
@@ -93,6 +118,14 @@ def select_dicts_in_turple(sql):
 
 
 def select_dicts_in_turple2(sql):
+    """Выборка данных из бд fb словарями и объединение в tuple
+
+    Args:
+        sql (str): sql запрос на выборку
+
+    Returns:
+        tuple: dicts in tuple
+    """
     con = firebirdsql.connect(dsn=config.dsn,
                               user=config.user,
                               password=config.password,
@@ -114,7 +147,7 @@ def select_dicts_in_turple2(sql):
     return result2
 
 
-def select_dicts_in_turple_with_description(sql):
+def sel_dict_in_turple_desc(sql):
     """
     Формирование кортежа из словарей 
         вида ключ:значение, где ключ берется из название столбца в запросе

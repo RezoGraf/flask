@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import app.vaccine.sql_vaccine as sql_vaccine
 from app import db_pg
 
+
 vaccine = Blueprint('vaccine', __name__)
 
 
@@ -18,28 +19,45 @@ def sinc():
     """Синхронизация справочников fb - pg
     Returns:
         render_template: vaccine_loader.html
-    """	
+    """
     menu = session['menu']
-    data = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-    print(data[0])
+    data = firebird.sel_dict_in_turple_desc(sql_vaccine.select_all_mpp)
+    # print(data[0])
     option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
-    print(option)
-    s_str = ''
-    print(s_str)
-    # for i in range(len(data)):
-    #   print(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-    #   db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'], fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'], otd = data[i]['OTD'], dolj = data[i]['DOLJ']))
-    vaccine_fb = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
-    print(vaccine_fb[0])
+    # print(option)
+    # for i, _ in enumerate(data):
+    #     db_pg.write(sql_vaccine.sinc_worker.format(mpp = data[i]['MPP'],
+    # fam = data[i]['FAM'], im = data[i]['IM'], ot = data[i]['OT'], lpu = data[i]['LPU'],
+    # otd = data[i]['OTD'], dolj = data[i]['DOLJ'], spz=data[i]['SPZ'], sdl=data[i]['SDL']))
+    # spz_fb = firebird.sel_dict_in_turple_desc(sql_vaccine.select_spz)
+    # for i, _ in enumerate(spz_fb):
+    #     db_pg.write(sql_vaccine.sinc_spz.format(id=spz_fb[i]['SPZ'],nspz=spz_fb[i]['NSPZ']))
+    # otd_fb = firebird.sel_dict_in_turple_desc(sql_vaccine.select_otd)
+    # for i, _ in enumerate(otd_fb):
+    #     db_pg.write(sql_vaccine.sinc_otd.format(id=otd_fb[i]['OTD'],notd=otd_fb[i]['NOTD'],
+    #                                     notd_kr=otd_fb[i]['NOTD_KR'],lpu=otd_fb[i]['LPU']))
+    # sdl_fb = firebird.sel_dict_in_turple_desc(sql_vaccine.select_sdl)
+    # for i, _ in enumerate(sdl_fb):
+    #     db_pg.write(sql_vaccine.sinc_sdl.format(id=sdl_fb[i]['SDL'],nsdl=sdl_fb[i]['NSDL']))
+    # dolj_fb = firebird.sel_dict_in_turple_desc(sql_vaccine.select_dolj)
+    # for i, _ in enumerate(dolj_fb):
+    #     print(dolj_fb)
+    #     db_pg.write(sql_vaccine.sinc_dolj.format(id=dolj_fb[i]['DLJ'],ndlj=dolj_fb[i]['NDLJ']))
+    # podr_fb = firebird.sel_dict_in_turple_desc(sql_vaccine.select_podr)
+    # for i, _ in enumerate(podr_fb):
+    #     db_pg.write(sql_vaccine.sinc_podr.format(id=podr_fb[i]['LPU'],npodr=podr_fb[i]['SNLPU']))
+    #     print(podr_fb[i])
+    # vaccine_fb = firebird.sel_dict_in_turple_desc(sql_vaccine.select_vaccine)
     # for x in range(len(vc)):
     #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
     #   x += 1
     if request.method == 'POST':
         as_list = request.form.getlist('exampleFormControlSelect2')
-        data = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-
-        for x in as_list:
-            one_worker = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_one_mpp.format(mpp=int(x)))
+        data = firebird.sel_dict_in_turple_desc(sql_vaccine.select_all_mpp)
+        for worker in as_list:
+            one_worker = firebird.sel_dict_in_turple_desc(
+                sql_vaccine.select_one_mpp.format(mpp=int(worker)))
+            # print(one_worker)
         return redirect(url_for('vaccine.sinc'))
     else:
         return render_template('vaccine_loader.html', menu=menu)
@@ -66,21 +84,83 @@ def load_from_fb():
 @login_required
 @logger.catch
 def vaccine_main():
-	"""Главная страница "Вакцинация"
+    """Главная страница "Вакцинация"
 
 	Returns:
 		render_template: vaccine.html
 	"""
-	# all_otd = db.select(sql_vaccine.)
-	# select_otd = """<option selected></option>"""
-	# for x in all_otd:
-	#     select_string = f"""<option style="font-size:15px">{x[0]}</option>"""
-	#     select_otd += select_string
-	# all_select_otd = f"""<select style="font-size:15px" class="form-select"
-    # name="reason_filter" id="myInputReason"
-	# name="select_otd">{select_otd}</select>"""
-	menu = session['menu']
-	return render_template('vaccine.html', menu=menu)
+    menu = session['menu']
+    return render_template('vaccine.html', menu=menu)
+
+
+@vaccine.route('/vaccine_select', methods=['GET','POST'])
+@login_required
+@logger.catch
+def vaccine_select():
+    """Загрузка фильтров для сортировки и поиска
+
+    Args:
+        podr (int, optional): подразделение. Defaults to 0.
+        otd (int, optional): отделение. Defaults to 0.
+
+    Returns:
+        response: html с двумя select
+    """
+    # if request.method == 'POST':
+    #     search = ''
+    #     if request.form.get('search') != '':
+    #         search = request.form.get('search')
+    #     if request.form.get('podr_select') != (0, '0' ,None):
+    #         podr = request.form.get('podr_select')
+    #     else:
+    #         podr = 0
+    #     if request.form.get('otd_select') != (0, '0' ,None):
+    #         otd = request.form.get('otd_select')
+    #     else:
+    #         podr = 0
+    #     return redirect(url_for('vaccine.vaccine_select',
+    #                             podr=podr,
+    #                             otd=otd,
+    #                             search=search))
+    search = ''
+    if request.args.get('search') != (0, '0', None):
+        search = request.args.get('search')
+    if request.args.get('podr') != (0, '0' ,None):
+        podr = request.args.get('podr')
+    else:
+        podr = 0
+    if request.args.get('otd') != (0, '0' ,None):
+        otd = request.args.get('otd_select')
+    else:
+        podr = 0
+    response = """<div id="search_results>
+        <form>
+            <div class="container">
+                <div class="row">
+                    <input class="form-control" type="search"
+                        name="search" placeholder="Искать..."
+                        hx-post="/vaccine_select"
+                        hx-trigger="keyup changed delay:500ms, search"
+                        hx-target="#search-results"
+                        hx-indicator=".htmx-indicator">
+                    <label class="col" for="podr_select">Подразделение</label>
+                    <div class="col">
+                        <select id="podr_select" name="podr_select" class="form-control">
+                            <option value="1" selected>Все</option>
+                        </select>
+                    </div>
+                    <label class="col" for="otd_select">Отделение</label>
+                    <div class="col">
+                        <select id="otd_select" name="otd_select" class="form-control">
+                            <option value="1" selected>Все</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>"""
+    return response
+
 
 
 @vaccine.route('/vaccine_table')
@@ -92,37 +172,21 @@ def vaccine_table():
     Returns:
         response: html <tbody> </tbody>
     """
-    data = db_pg.select_dicts_in_list_with_description(sql_vaccine.select_workers)
-    string8 = db_to_html_table(data, tr=['IDW',''],
-                                        nulls=['Отсутствует'],
-                                        cols=['FAM_WORKER','PODR','OTD','DLJ','CERT']
-                                        )
-    print(string8)
-    table_tr = """<thead>
+    data = db_pg.sel_dict_in_list_desc(sql_vaccine.select_workers_main)
+    table_head = """
+    <table>
+    <thead>
     <th>ФИО</th>
     <th>Подразделение</th>
     <th>Отделение</th>
     <th>Должность</th>
     <th>Сертификат</th>
-    </thead>
-    <tbody>"""
-    # x = 0
-    for i in range(data):
-        if data[i]['CERT'] is None:
-            data[i]['CERT'] = 'Отсутствует'
-            table_row = f"""<tr id="{data[i]['IDW']}">
-            <td>{data[i]['FAM_WORKER']} {data[i]['IM_WORKER']} {data[i]['OT_WORKER']}</td>
-            <td>{data[i]['PODR']}</td>
-            <td>{data[i]['OTD']}</td>
-            <td>{data[i]['DLJ']}</td>
-            <td>{data[i]['CERT']}</td>
-            </tr>"""
-        table_tr += table_row
-        table_row = ''
-        # x += 1
-    response = f"""{table_tr}
-    </tbody>"""
-    # response = {table_tr}
+    </thead>"""
+    table_body = db_to_html_table(data, tr=['IDW','s'],
+                                        nulls=['Отсутствует'],
+                                        cols=['FIO','NPODR','NOTD','NDLJ','CERT']
+                                        )
+    response = f"""{table_head} {table_body} </table"""
     return response
 
 
@@ -136,17 +200,17 @@ def loaf_from_fb_data():
         response: возвращает окно с выбором людей для загрузки
     """
     time.sleep(1)
-    data = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
+    data = firebird.sel_dict_in_turple_desc(sql_vaccine.select_all_mpp)
     option = '<option selected value={mpp}>{fam} {im} {ot}</option>'
     strings = ''
     for i in range(data):
         # db_pg.write(sql_vaccine.sinc_worker.format(mpp=data[i]['MPP'], fam=data[i]['FAM'],
-        # im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'], dolj=data[i]['DOLJ']))
+        # im = data[i]['IM'], ot = data[i]['OT'], lpu=data[i]['LPU'], otd=data[i]['OTD'],
+        # dolj=data[i]['DOLJ']))
         strings += option.format(mpp=data[i]['MPP'], fam = data[i]['FAM'],
                                 im = data[i]['IM'], ot = data[i]['OT'])
-
-    vaccine2 = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_vaccine)
-    print(vaccine2[0])
+    vaccine2 = firebird.sel_dict_in_turple_desc(sql_vaccine.select_vaccine)
+    # print(vaccine2[0])
     # for x in range(len(vc)):
     #   db_pg.write(sql_vaccine.sinc_vaccine.format(nvc=vc[x]['NVVC'], vcid=vc[x]['VVC']))
     #   x += 1
@@ -172,8 +236,8 @@ def load_from_fb_to_pg():
     Returns:
         response: html код htmx load для загрузки окно загрузки данных из fb
     """
-    workers = request.form.get['workers_for_load']
-    print(workers)
+    # workers = request.form.get['workers_for_load']
+    # print(workers)
     response = """<div id="loading_to_pg" hx-get="/vaccine/load_to_pg_data" hx-trigger="load">
             <img  alt="Result loading..." class="htmx-indicator" width="150" src="/static/img/bars.svg"/>
             </div>"""
@@ -188,8 +252,7 @@ def load_to_pg_data():
 
     Returns: response: Any"""
     time.sleep(1)
-    data = firebird.select_dicts_in_turple_with_description(sql_vaccine.select_all_mpp)
-	# utils.db_to_html_table(data, {'col':['CERT', 'пусто'],['FAM_WORKER', 'пусто']})
+    data = firebird.sel_dict_in_turple_desc(sql_vaccine.select_all_mpp)
     option = '<option selected value="{var}">{var}</option>'
     sets = ''
     for i in range(data):

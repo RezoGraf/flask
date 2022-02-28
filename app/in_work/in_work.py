@@ -19,7 +19,7 @@ in_work = Blueprint('in_work', __name__)
 def main():
     menu = session['menu']
     today = datetime.today().strftime('%d.%m.%Y')
-    all_today = db.select_dicts_in_turple_with_description(sql_in_work.sql_all_today.format(today = today))
+    all_today = db.sel_dict_in_turple_desc(sql_in_work.sql_all_today.format(today = today))
     
     all_otd = db.select(sql_in_work.sql_all_otd)
     select_otd = """<option selected></option>"""
@@ -45,4 +45,4 @@ def main():
 # @login_required
 # @logger.catch
 # def search_podr():
-#     table = db.select_dicts_in_turple_with_description(sql_in_work.sql)
+#     table = db.sel_dict_in_turple_desc(sql_in_work.sql)
