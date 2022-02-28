@@ -14,26 +14,40 @@
 {% block content %}
 
 <div class="container">
-  <h4 class="text-primary">График учета рабочего времени</h4>
+
+
   <div class="row">
     <form method="POST">
-      <label for="year_" class="form-label">Год</label>
-      <input id="year_" type="number" name="year" min=2020 max=3000 value={{ year }} step=1 required=true/>
-
-      <label for="month_" class="form-label">Месяц</label>
-      <input id="month_" type="number" name="month" min=1 max=31 value={{ month }} step=1 required=true/>
-      <label for="otd" class="form-label">Отделение</label>
-      <select hx-get="grf_NewWork" hx-target="#NewWork" hx-swap="innerHTML" name="otd" value={{ otd }} class="form-select" style="height: 30px;">
-        {% for otd, notd, lpu in result_otd %}
-          <option value="{{ otd }}"{% if loop.first %} SELECTED {% endif %}>{{ notd }}</option>
-        {% endfor %}
-        <option value = {{ otd }} selected>{{ notd }}</option>
-      </select> 
-      
-      <div class="form-group">
-        <button type="button submit" name="btn" value="selectNew" class="btn btn-outline-primary btn-sm">Найти</button>
+      <div class="row">
+        <h4 class="text-primary">График работы</h4>
+        <label for="otd" class="form-label"></label>
+        <select hx-get="grf_NewWork" hx-target="#NewWork" hx-swap="innerHTML" name="otd" value={{ otd }} class="form-select" style="height: 30px;">
+          {% for otd, notd, lpu in result_otd %}
+            <option value="{{ otd }}"{% if loop.first %} SELECTED {% endif %}>{{ notd }}</option>
+          {% endfor %}
+          <option value = {{ otd }} selected>{{ notd }}</option>
+        </select>
       </div>
-    </div>  
+      <div class="row">
+        <label for="month_" class="form-label">на</label>
+
+         <select id = "month_" name="month_" class="form-select" style="height: 30px;">
+          {% for value in all_month.items()  %}
+            <option> {{ value[1][1] }} </option>
+          {% endfor %}
+         </select>
+
+
+
+          <label for="year_" class="form-label">Год</label>
+          <input id="year_" type="number" name="year" min=2020 max=3000 value={{ year }} step=1 required=true/>
+
+          <div class="form-group">
+            <button type="button submit" name="btn" value="selectNew" class="btn btn-outline-primary btn-sm">Найти</button>
+          </div>
+      </div>  
+    </div>
+
     <div class="row">
      <div id="NewGrf" class="form-group">
        <button 
@@ -61,6 +75,7 @@
 
     </div>
    </form>
+
   </div>
 </div>
 

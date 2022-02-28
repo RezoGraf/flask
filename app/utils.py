@@ -1,7 +1,9 @@
 """Набор функций упрощающий жизнь"""
+
 from dateutil import parser
-import app.db as db
-import app.sql as sql
+from app import db, sql
+# import app.db as db
+# import app.sql as sql
 
 
 def list_to_int(list_result) -> int:
@@ -126,18 +128,38 @@ def db_to_html_table(data=None, **params) -> str:
         str: _description_
     """
     print(params)
-    table_tr = """<tbody>"""
+
+    tbody_open = '<tbody>'
+    tbody_close = '</tbody>'
+    table_body = ''
+    table_tr_open = ''
+    table_tr_close = '</tr>'
     for i in range(data):
-        if data[i]['CERT'] is None:
-            data[i]['CERT'] = 'Отсутствует'
-            table_row = f"""<tr id="{data[i]['IDW']}">
-                <td>{data[i]['FAM_WORKER']} {data[i]['IM_WORKER']} {data[i]['OT_WORKER']}</td>
-                <td>{data[i]['PODR']}</td>
-                <td>{data[i]['OTD']}</td>
-                <td>{data[i]['DLJ']}</td>
-                <td>{data[i]['CERT']}</td>
-                </tr>"""
-            table_tr += table_row
-            table_row = ''
-    table_tr += """</tbody"""
-    return table_tr
+        for key, param in params.items():
+            if key == 'tr':
+                table_tr_open = f"""<tr id={param[0]} {param[1]}>"""
+            else:
+                pass
+        for key, param in params.items():
+            if key == 'cols':
+                table_row = ''
+                for j in range(param):
+                    table_row += f"""<td>{data[i][param[j]]}</td>"""
+                table_body += table_row
+        table_body += table_tr_close
+    for key, param in params.items():
+        if key == 'nulls':
+            table_body.replace('None', param)
+            # if data[i]['CERT'] is None:
+            #     data[i]['CERT'] = 'Отсутствует'
+            #     table_row = f"""<tr id="{data[i]['IDW']}">
+            #         <td>{data[i]['FAM_WORKER']} {data[i]['IM_WORKER']} {data[i]['OT_WORKER']}</td>
+            #         <td>{data[i]['PODR']}</td>
+            #         <td>{data[i]['OTD']}</td>
+            #         <td>{data[i]['DLJ']}</td>
+            #         <td>{data[i]['CERT']}</td>
+            #         </tr>"""
+            #     table_body += table_row
+    # table_tr += """</tbody>"""
+    table_done = f"""{tbody_open}{table_body}{tbody_close}"""
+    return table_done

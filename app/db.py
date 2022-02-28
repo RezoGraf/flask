@@ -1,7 +1,12 @@
-import firebirdsql
-import config
-import app.utils as utils
+"""Функции для работы с бд Firebird"""
 from collections import defaultdict
+import firebirdsql
+from app.utils import date_color
+# import app.utils
+# from app import utils
+import config
+
+
 
 
 def select(sql):
@@ -72,7 +77,7 @@ def select_dicts_in_turple(sql):
             if 'DAY' in selectFields[fieldIndex]:
                 d = (selectFields[fieldIndex])[3:5]
                 dc = f'{d}.{m}.{y}'
-                color_ = utils.date_color(dc)
+                color_ = date_color(dc)
                 if row[fieldIndex] == None:
                     color_ = 'table-warning'
             key = f'{id}'
@@ -107,7 +112,6 @@ def select_dicts_in_turple2(sql):
     cur.close()
     del cur
     return result2
-
 
 
 def select_dicts_in_turple_with_description(sql):
