@@ -100,7 +100,7 @@ def test_api():
 
 # @api.route('/zn_close', methods=['GET', 'POST'])
 @logger.catch
-def zn_close(idkv):
+def zn_close():
     """_summary_
 
     Args:
@@ -108,7 +108,7 @@ def zn_close(idkv):
 
     Returns:
         _type_: _description_
-    """ 
+    """
     url = 'http://127.0.0.1:5000/api/test_api'
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
@@ -129,17 +129,17 @@ def zn_close(idkv):
             print(val)
             list_isp = []
             # Техник
-            if val[0] != "0" or 0 or not None:
+            if val[0] != ("0", 0,  None):
                 isp_vol = {"ISP_STAT":"5",
                            "ISP_CODE":str(val[0])}
                 list_isp.append(isp_vol)
             # Литейщик
-            if val[1] != "0" or 0 or not None:
+            if val[1] != ("0", 0,  None):
                 isp_vol = {"ISP_STAT":"6",
                            "ISP_CODE":str(val[1])}
                 list_isp.append(isp_vol)
             # Полир
-            if val[2] != 0 and not None and " " and "0":
+            if val[2] != ("0", 0,  None):
                 isp_vol = {"ISP_STAT":"7",
                            "ISP_CODE":str(val[2])}
                 list_isp.append(isp_vol)
