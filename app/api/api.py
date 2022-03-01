@@ -118,7 +118,7 @@ def zn_close():
     print(result)
     data = {}
     volue = []
-    for i in range(result):
+    for i, _ in enumerate(result):
         dzr = result[i]['DZR']
         if dzr is not None:
             dzr = dzr.strftime('%d.%m.%Y')
@@ -152,13 +152,12 @@ def zn_close():
             volue.append(data_vol)
     data["DOC"] = volue
     answer = requests.post(url, data=json.dumps(data), headers=headers)
-    print(answer)
-    print(type(answer))
-    if answer:
-        print('200')
-    else:
-        print("хз")
-        return "OK", 200
     response = answer.json()
+    if answer.status_code in range(200, 300):
+        print(answer.status_code)
+    else:
+        print("Не то пальто")
+        print(answer.status_code)
+    
     print(response)
     return response
