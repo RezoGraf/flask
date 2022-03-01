@@ -16,29 +16,12 @@
 <title>Вакцинация</title>
 
 <body>
-    <form>
-        <div class="container">
-            <div class="row">
-                <label class="col" for="podr_select">Подразделение</label>
-                <div class="col">
-                    <select id="podr_select" name="podr_select" class="form-control">
-                        <option value="1" selected>Все</option>
-                    </select>
-                </div>
+    
+    <div id="load_select" hx-get="/vaccine/vaccine_select" hx-target="#load_select" hx-swap="outerHTML" hx-trigger="load">
+        <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
+    </div>
 
-                <label class="col" for="otd_select">Отделение</label>
-                <div class="col">
-                    <select id="otd_select" name="otd_select" class="form-control">
-                        <option value="1" selected>Все</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </form>
-    <table id="table" class="table">
-
-    </table>
-    <div id="loading_from_firebird" hx-get="/vaccine/vaccine_table" hx-target="#table" hx-trigger="load">
+    <div id="load_table" hx-get="/vaccine/vaccine_table" hx-target="#load_table" hx-swap="outerHTML" hx-trigger="load">
         <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
     </div>
         

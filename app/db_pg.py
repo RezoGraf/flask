@@ -55,7 +55,7 @@ def proc(proc_name):
     return output_params
 
 
-def select_dicts_in_list_with_description(sql) -> list:
+def sel_dict_in_list_desc(sql) -> list:
     """Выборка в словари вида название столбца:значение в списке
 
     Args:
@@ -74,5 +74,5 @@ def select_dicts_in_list_with_description(sql) -> list:
         row_dict = {}
         for i, col in enumerate(columns):
             row_dict[col.name] = row[i]
-            results.append(row_dict)
+        results.append(row_dict)
     return results

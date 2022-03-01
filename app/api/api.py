@@ -114,7 +114,7 @@ def zn_close():
                'Accept': 'text/plain',
                'Content-Encoding': 'utf-8'}
     # поиск документов на отправку со статусом 3-------
-    result = db.select_dicts_in_turple_with_description(sql.sql_api_select_check)
+    result = db.sel_dict_in_turple_desc(sql.sql_api_select_check)
     print(result)
     data = {}
     volue = []
@@ -122,7 +122,7 @@ def zn_close():
         dzr = result[i]['DZR']
         if dzr is not None:
             dzr = dzr.strftime('%d.%m.%Y')
-            result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
+            result_isp = db.sel_dict_in_turple_desc(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
             te = result_isp[0]
             print(te)
             val = list(te.values())

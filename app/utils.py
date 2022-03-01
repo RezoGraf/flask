@@ -127,39 +127,33 @@ def db_to_html_table(data=None, **params) -> str:
     Returns:
         str: _description_
     """
-    print(params)
+    # print(params)
 
     tbody_open = '<tbody>'
     tbody_close = '</tbody>'
     table_body = ''
     table_tr_open = ''
     table_tr_close = '</tr>'
-    for i in range(data):
+    for i, _ in enumerate(data):
         for key, param in params.items():
             if key == 'tr':
-                table_tr_open = f"""<tr id={param[0]} {param[1]}>"""
-            else:
-                pass
+                table_tr_open = f"""<tr id={data[i][param[0]]} {param[1]}>"""
+                # print(table_tr_open)
+                break
+            # else:
+            #     pass
+        table_body += table_tr_open
+        # table_rows = ''
         for key, param in params.items():
             if key == 'cols':
                 table_row = ''
-                for j in range(param):
+                for j, _ in enumerate(param):
                     table_row += f"""<td>{data[i][param[j]]}</td>"""
-                table_body += table_row
+                # table_rows += table_row
+        table_body += table_row
         table_body += table_tr_close
     for key, param in params.items():
         if key == 'nulls':
-            table_body.replace('None', param)
-            # if data[i]['CERT'] is None:
-            #     data[i]['CERT'] = 'Отсутствует'
-            #     table_row = f"""<tr id="{data[i]['IDW']}">
-            #         <td>{data[i]['FAM_WORKER']} {data[i]['IM_WORKER']} {data[i]['OT_WORKER']}</td>
-            #         <td>{data[i]['PODR']}</td>
-            #         <td>{data[i]['OTD']}</td>
-            #         <td>{data[i]['DLJ']}</td>
-            #         <td>{data[i]['CERT']}</td>
-            #         </tr>"""
-            #     table_body += table_row
-    # table_tr += """</tbody>"""
+            table_body = table_body.replace('None', param[0])
     table_done = f"""{tbody_open}{table_body}{tbody_close}"""
     return table_done
