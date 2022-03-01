@@ -99,10 +99,6 @@ def vaccine_main():
 def vaccine_select():
     """Загрузка фильтров для сортировки и поиска
 
-    Args:
-        podr (int, optional): подразделение. Defaults to 0.
-        otd (int, optional): отделение. Defaults to 0.
-
     Returns:
         response: html с двумя select
     """
@@ -122,26 +118,20 @@ def vaccine_select():
     #                             podr=podr,
     #                             otd=otd,
     #                             search=search))
-    search = ''
-    if request.args.get('search') != (0, '0', None):
-        search = request.args.get('search')
-    if request.args.get('podr') != (0, '0' ,None):
-        podr = request.args.get('podr')
-    else:
-        podr = 0
-    if request.args.get('otd') != (0, '0' ,None):
-        otd = request.args.get('otd_select')
-    else:
-        podr = 0
-    response = """<div id="search_results>
+    search = request.args.get('search')
+    podr = request.args.get('podr')
+    otd = request.args.get('otd_select')
+    print(f'search={search},podr={podr},otd{otd}')
+    response = """
+    <div id="search_results">
         <form>
             <div class="container">
                 <div class="row">
-                    <input class="form-control" type="search"
+                    <input class="form-control" autocomplete="off" type="search"
                         name="search" placeholder="Искать..."
-                        hx-post="/vaccine_select"
+                        hx-post="/vaccine_table"
                         hx-trigger="keyup changed delay:500ms, search"
-                        hx-target="#search-results"
+                        hx-target="#table_main"
                         hx-indicator=".htmx-indicator">
                     <label class="col" for="podr_select">Подразделение</label>
                     <div class="col">
@@ -162,8 +152,7 @@ def vaccine_select():
     return response
 
 
-
-@vaccine.route('/vaccine_table')
+@vaccine.route('/vaccine_table', methods=['GET','POST'])
 @login_required
 @logger.catch
 def vaccine_table():
@@ -174,7 +163,7 @@ def vaccine_table():
     """
     data = db_pg.sel_dict_in_list_desc(sql_vaccine.select_workers_main)
     table_head = """
-    <table>
+    <table id="table_main" class="table table-striped">
     <thead>
     <th>ФИО</th>
     <th>Подразделение</th>
