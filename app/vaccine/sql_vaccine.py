@@ -113,4 +113,23 @@ select_workers_main = """SELECT public."epid_WORKER"."IDW", concat(public."epid_
   FROM public."epid_WORKER" 
   	left join public."epid_S_PODR" on public."epid_WORKER"."PODR"=public."epid_S_PODR"."ID"
 	left join public."epid_S_OTD" on public."epid_WORKER"."OTD"=public."epid_S_OTD"."ID"
-	left join public."epid_S_DOLJ" on public."epid_WORKER"."DLJ"=public."epid_S_DOLJ"."ID" """
+	left join public."epid_S_DOLJ" on public."epid_WORKER"."DLJ"=public."epid_S_DOLJ"."ID";"""
+
+
+select_workers_search = """SELECT public."epid_WORKER"."IDW", concat(public."epid_WORKER"."FAM_WORKER", ' ',
+ public."epid_WORKER"."IM_WORKER", ' ', public."epid_WORKER"."OT_WORKER") as "FIO", 
+ public."epid_S_PODR"."NPODR", public."epid_S_OTD"."NOTD", public."epid_S_DOLJ"."NDLJ", 
+ public."epid_WORKER"."CERT"
+ 
+  FROM public."epid_WORKER" 
+  	left join public."epid_S_PODR" on public."epid_WORKER"."PODR"=public."epid_S_PODR"."ID"
+	left join public."epid_S_OTD" on public."epid_WORKER"."OTD"=public."epid_S_OTD"."ID"
+	left join public."epid_S_DOLJ" on public."epid_WORKER"."DLJ"=public."epid_S_DOLJ"."ID"
+	WHERE public."epid_WORKER"."FAM_WORKER" like '%{search}%';"""
+
+select_workers_fam = """SELECT public."epid_WORKER"."FAM_WORKER"
+ 
+  FROM public."epid_WORKER" 
+  	left join public."epid_S_PODR" on public."epid_WORKER"."PODR"=public."epid_S_PODR"."ID"
+	left join public."epid_S_OTD" on public."epid_WORKER"."OTD"=public."epid_S_OTD"."ID"
+	left join public."epid_S_DOLJ" on public."epid_WORKER"."DLJ"=public."epid_S_DOLJ"."ID";"""

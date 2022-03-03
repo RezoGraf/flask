@@ -1,10 +1,8 @@
+"""Отчеты по отсутствующим на рабочем месте"""
 from datetime import datetime
-from flask import render_template, request, url_for, redirect, Blueprint, session, g
-# from loguru import logger
-from logging import Logger
-import logging
 from loguru import logger
 import pandas as pd
+from flask import render_template, request, url_for, redirect, Blueprint, session
 from app.auth import login_required
 import app.db as db
 import app.sql as sql
@@ -22,7 +20,7 @@ def main():
 
     Returns:
         render_template: report.html
-    """    
+    """
     # if 'arena_mpp' not in session:
     #     return redirect(url_for("login"))
     # else:
@@ -95,8 +93,8 @@ def main():
             podr_select = db.select(sql.sql_select_podr_one.format(
                                         lpu=podr_select))
             i = 0
-            for x in podr_all:
-                if x[0] != podr_select[0][0]:
+            for podr in podr_all:
+                if podr[0] != podr_select[0][0]:
                     i = i+1
             _ = podr_all.pop(i)
             podr_all.insert(0, (0, "Все подразделения"))
@@ -139,16 +137,17 @@ def otd_by_lpu_list():
 
     Returns:
         response: html option
-    """    
+    """
     lpu = request.args.get('podr_select')
     list_of_otd = db.select(sql.sql_allOtd_for_lpu.format(lpu=lpu))
     select_string = """<option value="{id}" > {name} </option>"""
     selected_string = """<option value="{id}" selected> {name} </option>"""
     select_strings = ''
-    for x in list_of_otd:
-        string = select_string.format(id=x[0],name=x[1])
+    for one_of_list in list_of_otd:
+        string = select_string.format(id=one_of_list[0],name=one_of_list[1])
         select_strings += string
     selected_strings = selected_string.format(id=0,name="Все отделения")
     response = f"""<select class="form-select" id="select_otd"
     name="select_otd">{select_strings}{selected_strings}</select>"""
     return response
+    
