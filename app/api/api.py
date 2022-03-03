@@ -100,7 +100,7 @@ def test_api():
 
 # @api.route('/zn_close', methods=['GET', 'POST'])
 @logger.catch
-def zn_close(idkv):
+def zn_close():
     """_summary_
 
     Args:
@@ -108,38 +108,38 @@ def zn_close(idkv):
 
     Returns:
         _type_: _description_
-    """ 
+    """
     url = 'http://127.0.0.1:5000/api/test_api'
     headers = {'Content-type': 'application/json',
                'Accept': 'text/plain',
                'Content-Encoding': 'utf-8'}
     # поиск документов на отправку со статусом 3-------
-    result = db.select_dicts_in_turple_with_description(sql.sql_api_select_check)
+    result = db.sel_dict_in_turple_desc(sql.sql_api_select_check)
     print(result)
     data = {}
     volue = []
-    for i in range(result):
+    for i, _ in enumerate(result):
         dzr = result[i]['DZR']
         if dzr is not None:
             dzr = dzr.strftime('%d.%m.%Y')
-            result_isp = db.select_dicts_in_turple_with_description(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
+            result_isp = db.sel_dict_in_turple_desc(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
             te = result_isp[0]
             print(te)
             val = list(te.values())
             print(val)
             list_isp = []
             # Техник
-            if val[0] != "0" or 0 or not None:
+            if val[0] != ("0", 0,  None):
                 isp_vol = {"ISP_STAT":"5",
                            "ISP_CODE":str(val[0])}
                 list_isp.append(isp_vol)
             # Литейщик
-            if val[1] != "0" or 0 or not None:
+            if val[1] != ("0", 0,  None):
                 isp_vol = {"ISP_STAT":"6",
                            "ISP_CODE":str(val[1])}
                 list_isp.append(isp_vol)
             # Полир
-            if val[2] != 0 and not None and " " and "0":
+            if val[2] != ("0", 0,  None):
                 isp_vol = {"ISP_STAT":"7",
                            "ISP_CODE":str(val[2])}
                 list_isp.append(isp_vol)
@@ -152,13 +152,12 @@ def zn_close(idkv):
             volue.append(data_vol)
     data["DOC"] = volue
     answer = requests.post(url, data=json.dumps(data), headers=headers)
-    print(answer)
-    print(type(answer))
-    if answer:
-        print('200')
-    else:
-        print("хз")
-        return "OK", 200
     response = answer.json()
+    if answer.status_code in range(200, 300):
+        print(answer.status_code)
+    else:
+        print("Не то пальто")
+        print(answer.status_code)
+    
     print(response)
     return response

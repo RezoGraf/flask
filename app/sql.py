@@ -196,16 +196,16 @@ sql_zn_naryad_select_var = """Select distinct mpp, ndoc
                               order by ndoc"""
 sql_zn_naryad_select_check = """Select idkv from pl_uslt where idkv={idkv}"""
 sql_zn_naryad_insert_isp = """INSERT INTO PL_USLT (idkv,teh,lit,varh,polir,dzr) values({idkv},{nom_teh},{nom_lit},{nom_var},{nom_pol},{dzr})"""
-sql_zn_naryad_update_isp = """Update pl_uslt 
-                              set teh={nom_teh}, 
-                                  lit={nom_lit},                                   
+sql_zn_naryad_update_isp = """Update pl_uslt
+                              set teh={nom_teh},
+                                  lit={nom_lit},
                                   varh={nom_var},
-                                  polir={nom_pol}, 
-                                  dzr='{dzr}'
+                                  polir={nom_pol},
+                                  dzr={dzr}
                               where idkv={idkv}"""
-sql_zn_naryad_update_uslk = """Update pl_uslk 
-                              set  
-                                  dzr='{dzr}',
+sql_zn_naryad_update_uslk = """Update pl_uslk
+                              set
+                                  dzr={dzr},
                                   status={status}
                               where idkv={idkv}"""
 #api.zn_close закрытие наряда, отправка в 1с-------------------------------------------------------------------------------------------------------- 
