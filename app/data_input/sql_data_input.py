@@ -29,3 +29,5 @@ sql_upd_pspo_s = """ UPDATE PSPO_S SET BLC=0 WHERE (UID=0) AND (BLC=1)
 sql_del_sms_send = """DELETE FROM SMS_SEND WHERE STATUS=0 and 
                         UIP IN (SELECT DISTINCT UIP FROM PSPO WHERE PSPO.MPP={doc} 
                         AND (PSPO.DV>='{dtn}' AND PSPO.DV<='{dtk}'))"""
+# удалить запись из таблицы график работы
+SQL_DELETE_GRF = """DELETE FROM IT_RASP_GRF WHERE ID_GRF={id_grf}"""

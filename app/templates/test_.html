@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <script src="/static/js/bootstrap.bundle.js"></script>
+    <script src="/static/js/htmx.js"></script>
+    <script src="/static/js/htmx.min.js"></script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Переключатель навигации">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-link text-primary" href="/menu">Главная</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" >Сотрудники</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/data_input/wtf_template3">График работы</a>
+          <a class="dropdown-item text-primary" href="/htmx_test/table_view">График учета рабочего времени</a>  
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Отчеты</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/in_work">Информация о работе сотрудников</a>
+          <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
+          <a class="dropdown-item text-primary" href="/zakaz_naryad">Заказ Наряды</a>
+        </div>
+        <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/report">Отчет по отсутствующим</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Вакцинация</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/vaccine/vaccine_main">Вакцинация</a>
+          <a class="dropdown-item text-primary" href="/vaccine">Заполнение карточек вакцинации</a>
+          <a class="dropdown-item text-primary" href="/vaccine/report">Отчет о вакцинации</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-primary" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Сервис</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item text-primary" href="/db_test">Тестирование БД Firebird</a>
+          <a class="dropdown-item text-primary" href="/htmx_test">Тест HTMX</a>
+          <a class="dropdown-item text-primary" href="/htmx_test/table_view">Таблица HTMX</a>
+          <a class="dropdown-item text-primary" href="/vaccine/sinc">Вакцинация синхр справочников (НЕ ВХОДТЬ)</a>
+          <a class="dropdown-item text-primary" href="/aalksdhl28kdhalu8">Авторизация от лица пользователя</a>
+          
+        </div>
+      </li>
+    </ul>
+    <form align="right" class="form-inline my-2 my-lg-0">
+      <label>Нишанова Ольга Владимировна<pre>  </pre></label>
+      <a href="/logout" class="btn btn-danger" role="button">Выход</a>
+    </form>
+  </div>
+</nav>
+  </head>
+
+
+<div class="container">
+  <div class="row">
+    <form method="POST">
+      <div class="row">
+
+      </div>
+      <div class="row">
+
+        <h4 class="text-primary">График работы</h4>
+        <label for="otd" class="form-label"></label>
+        <select hx-get="grf_NewWork" hx-target="#NewWork" hx-swap="innerHTML" name="otd" value="9" class="form-select" style="height: 30px;">
+          
+            <option value="9" SELECTED >Хирургическое отделение №2</option>
+          
+            <option value="12">Терапевтическое отделение №3</option>
+          
+            <option value="13">Хирургическое отделение №3</option>
+          
+            <option value="14">Ортодонтический кабинет (Ленинградский 41)</option>
+          
+            <option value="15">Ортопедическое отделение №3</option>
+          
+            <option value="34">ИТ отдел</option>
+          
+          <option value = "9" selected>Хирургическое отделение №2</option>
+        </select>
+
+        <label for="month_" class="form-label">на  </label>
+       
+        <select id = "month" name="month" class="form-select" style="height: 30px;">
+          
+            <option value="01" SELECTED >Январь</option>
+          
+            <option value="02">Февраль</option>
+          
+            <option value="03">Март</option>
+          
+            <option value="04">Апрель</option>
+          
+            <option value="05">Май</option>
+          
+            <option value="06">Июнь</option>
+          
+            <option value="07">Июль</option>
+          
+            <option value="08">Август</option>
+          
+            <option value="09">Сентябрь</option>
+          
+            <option value="10">Октябрь</option>
+          
+            <option value="11">Ноябрь</option>
+          
+            <option value="12">Декабрь</option>
+          
+          <option value = "03" selected>Март</option>
+         </select>
+        
+          <label for="year_" class="form-label">Год</label>
+          <input id="year_" type="number" name="year" min=2020 max=3000 value=2022 step=1 style="height:32px;" required=true>
+
+          <div class="form-group">
+            <button type="button submit" name="btn" value="selectNew" class="btn btn-outline-primary btn-sm">Найти</button>
+          </div>
+      </div>  
+    </div>
+
+    <div class="row">
+     <div id="NewGrf" class="form-group">
+       <button 
+       hx-get="grf_addGrf?otd=9" 
+        hx-target="#modals-here" 
+        hx-trigger="click"
+       class="btn btn-outline-primary btn-block">Создать график</button>
+     </div>
+
+     <div id="NewWork" class="form-group">
+         <button 
+          hx-get="grf_addWorker?otd=9&year=2022&month=03" 
+          hx-target="#modals-here" 
+          hx-trigger="click"
+          class="btn btn-outline-primary btn-block">Добавить сотрудника</button>
+      </div>
+
+    </div>
+   </form>
+
+  </div>
+</div>
+
+<div id="modals-here"></div>
+
+<div class="col px-md-3">
+
+<table class="table table-sm table-hover table-bordered" id="myTable">
+    <thead style="font-size:10px;"> 
+        <th></th>
+        <th>ФИО Сотрудника</th>
+        <th>Специалист</th>
+        <th>№ каб.</th>
+        <th>Норма часов в месяц</th>
+        <th>Дней</th>
+        
+          <th class=table-light> 01  Вт. </th>
+        
+          <th class=table-light> 02  Ср. </th>
+        
+          <th class=table-light> 03  Чт. </th>
+        
+          <th class=table-light> 04  Пт. </th>
+        
+          <th class=table-success> 05  Сб. </th>
+        
+          <th class=table-success> 06  Вс. </th>
+        
+          <th class=table-light> 07  Пн. </th>
+        
+          <th class=table-light> 08  Вт. </th>
+        
+          <th class=table-light> 09  Ср. </th>
+        
+          <th class=table-light> 10  Чт. </th>
+        
+          <th class=table-light> 11  Пт. </th>
+        
+          <th class=table-success> 12  Сб. </th>
+        
+          <th class=table-success> 13  Вс. </th>
+        
+          <th class=table-light> 14  Пн. </th>
+        
+          <th class=table-light> 15  Вт. </th>
+        
+          <th class=table-light> 16  Ср. </th>
+        
+          <th class=table-light> 17  Чт. </th>
+        
+          <th class=table-light> 18  Пт. </th>
+        
+          <th class=table-success> 19  Сб. </th>
+        
+          <th class=table-success> 20  Вс. </th>
+        
+          <th class=table-light> 21  Пн. </th>
+        
+          <th class=table-light> 22  Вт. </th>
+        
+          <th class=table-light> 23  Ср. </th>
+        
+          <th class=table-light> 24  Чт. </th>
+        
+          <th class=table-light> 25  Пт. </th>
+        
+          <th class=table-success> 26  Сб. </th>
+        
+          <th class=table-success> 27  Вс. </th>
+        
+          <th class=table-light> 28  Пн. </th>
+        
+          <th class=table-light> 29  Вт. </th>
+        
+          <th class=table-light> 30  Ср. </th>
+        
+          <th class=table-light> 31  Чт. </th>
+        
+    </thead>
+
+    <tbody style="font-size:10px;">
+        
+    </tbody>
+</table>
+<div id="DelWorkModal"></div>  
+
+</div>
+
+<script>
+  
+function closeModal() {
+    var container = document.getElementById("modals-here")
+    var backdrop = document.getElementById("modal-backdrop")
+    var modal = document.getElementById("modal")
+
+    modal.classList.remove("show")
+    backdrop.classList.remove("show")
+
+    setTimeout(function() {
+        container.removeChild(backdrop)
+        container.removeChild(modal)
+        window.location = 'table_view?otd=9&year=2022&month=03'
+    }, 200)
+}
+
+function closeModal_DelRowNo() {
+    var container = document.getElementById("DelWorkModal")
+    var backdrop = document.getElementById("modal-backdrop_del_work")
+    var modal = document.getElementById("modal_delete_work")
+
+    modal.classList.remove("show")
+    backdrop.classList.remove("show")
+
+    setTimeout(function() {
+        container.removeChild(backdrop)
+        container.removeChild(modal)
+    }, 200)
+}
+
+function closeModal_DelRowYes() {
+    var container = document.getElementById("DelWorkModal")
+    var backdrop = document.getElementById("modal-backdrop_del_work")
+    var modal = document.getElementById("modal_delete_work")
+
+    modal.classList.remove("show")
+    backdrop.classList.remove("show")
+
+    setTimeout(function() {
+        container.removeChild(backdrop)
+        container.removeChild(modal)
+        
+    }, 200)
+}
+</script>
