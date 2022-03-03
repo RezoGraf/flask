@@ -6,10 +6,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
     <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sweetalert2.js') }}"></script>
     {{ menu|safe  }}
   </head>
 {% block content %}
@@ -48,6 +50,7 @@
           </div>
       </div>  
     </div>
+</form>
 
     <div class="row">
      <div id="NewGrf" class="form-group">
@@ -67,7 +70,7 @@
       </div>
 
     </div>
-   </form>
+   
 
   </div>
 </div>
@@ -95,9 +98,11 @@
             <td style ="width:50px;">
                 <button 
                 id="DelWork{{ value[1][1] }}" class="btn btn-outline-secondary" title="Удалить запись"
+                hx-trigger='confirmed'
                 hx-post="grf_deleteRowTableGrf?otd={{ otd }}&year={{ year }}&month={{ month }}&idz={{ value[1][1] }}" 
-                hx-prompt="Удалить запись?"
-                hx-trigger="click"
+                
+                _="on click  call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
+                   if result.isConfirmed trigger confirmed">
                 <i class="bi bi-trash" style="color:#0069D9"></i>
                 </button>
             </td>
@@ -301,21 +306,21 @@
 </div>
 
 <script>
-  
-function closeModal() {
-    var container = document.getElementById("modals-here")
-    var backdrop = document.getElementById("modal-backdrop")
-    var modal = document.getElementById("modal")
 
-    modal.classList.remove("show")
-    backdrop.classList.remove("show")
-
-    setTimeout(function() {
-        container.removeChild(backdrop)
-        container.removeChild(modal)
-        window.location = 'table_view?otd={{otd}}&year={{year}}&month={{month}}'
-    }, 200)
-}
+    function closeModal() {
+        var container = document.getElementById("modals-here")
+        var backdrop = document.getElementById("modal-backdrop")
+        var modal = document.getElementById("modal")
+    
+        modal.classList.remove("show")
+        backdrop.classList.remove("show")
+    
+        setTimeout(function() {
+            container.removeChild(backdrop)
+            container.removeChild(modal)
+            window.location = 'table_view?otd={{otd}}&year={{year}}&month={{month}}'
+        }, 200)
+    }
 
 function closeModal_DelRowNo() {
     var container = document.getElementById("DelWorkModal")

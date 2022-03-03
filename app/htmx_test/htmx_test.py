@@ -264,14 +264,13 @@ def table_edit():
 def NewWork():
     otd = request.args.get('otd')
     y = request.args.get('year') #год
-    m = request.args.get('month') #месяц   
-    response = f"""
-     <button 
-      hx-get="grf_addWorker?otd={otd}&year={y}&month={m}" 
-      hx-target="#modals-here" 
-      hx-trigger="click"
-      class="btn btn-primary btn-block">Добавить сотрудника</button>
-      </div>"""
+    m = request.args.get('month') #месяц
+    response = f"""<button
+                    hx-get="grf_addWorker?otd={otd}&year={y}&month={m}" 
+                    hx-target="#modals-here" 
+                    hx-trigger="click"
+                    class="btn btn-primary btn-block">Добавить сотрудника</button>
+                    </div>"""
     return response
 
 @htmx_test.route('/grf_deleteRowTableModal', methods=['GET', 'POST'])
@@ -329,7 +328,7 @@ def DeleteWork():
 @htmx_test.route('/grf_deleteRowTableGrf', methods=['POST'])
 @logger.catch
 def deleteRowTableGrf():
-    """удаление из таблицы  (график работы) сотрудника
+    """удаление из таблицы (график работы) сотрудника
     Returns:
         _type_: _description_
     """
@@ -344,115 +343,99 @@ def deleteRowTableGrf():
 
 @htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
 @logger.catch
-def modal_addWorker():     
-    if request.method == 'POST':
-        id_td = request.args.get('id_td')
-        s_id_td = id_td[2:4]
-        s_id_td = f'day{s_id_td}'    
-        id_grf = request.args.get('id_grf')
-        rasp_id = request.form.get('rasp_id')
-        rasp_id_visible =db.select( sql.sql_interval_time_current.format(id=rasp_id))
-        rasp_id_visible = rasp_id_visible[0][0] 
-        response = f"""
-            <div name="id_grf" 
-                hx-target="#{id_td}" 
-                hx-swap="innerHTML" hx-get="table_view/edit?id_td={id_td}&id_grf={id_grf}">{rasp_id_visible}
-            </div>
-        """
-        return response  
+def modal_addWorker():
+    """Добавление сотрудника в график работы
+
+    Returns:
+        _type_: _description_
+    """       
+    if 'arena_user' in session:
+        arena_user = session.get('arena_user')
     else:
-        if 'arena_user' in session:
-            arena_user = session.get('arena_user')
-        else:
-            arena_user = 0
-             
-        if 'arena_mpp' in session:
-            arena_mpp = session.get('arena_mpp')
-        else:
-            arena_mpp = 0
+        arena_user = 0
             
-        select_sdl = utils.access_user_sdl(arena_user = arena_user)
+    if 'arena_mpp' in session:
+        arena_mpp = session.get('arena_mpp')
+    else:
+        arena_mpp = 0
         
-        otd = request.args.get('otd')
-        
-        y = request.args.get('year') #год
-        m = request.args.get('month') #месяц
-        current_otd=f' and otd={ otd }'
-        result_alldoc = db.select(sql.sql_allDoc.format(current_otd=current_otd,select_sdl=select_sdl)) #список врачей
-        result_time = db.select(sql.sql_interval_time) #интервал времени
-        
-        sql_room = db.select(sql.sql_room_mpp.format(mpp = arena_mpp)) #кабинеты
+    select_sdl = utils.access_user_sdl(arena_user = arena_user)
+    otd = request.args.get('otd')
+    y = request.args.get('year') #год
+    m = request.args.get('month') #месяц
+    current_otd=f' and otd={ otd }'
+    result_alldoc = db.select(sql.sql_allDoc.format(current_otd=current_otd,select_sdl=select_sdl)) #список врачей
+    result_time = db.select(sql.sql_interval_time) #интервал времени
+    sql_room = db.select(sql.sql_room_mpp.format(mpp = arena_mpp)) #кабинеты
 
-        sel_doc = ['<option value="0">Не назначен</option>', ] 
-        for i in range(1, len(result_alldoc)):
-            sel_vol = f"""<option value="{result_alldoc[i][0]}">{result_alldoc[i][1]}</option>"""
-            sel_doc.append(sel_vol)
+    sel_doc = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_alldoc)):
+        sel_vol = f"""<option value="{result_alldoc[i][0]}">{result_alldoc[i][1]}</option>"""
+        sel_doc.append(sel_vol)
 
-        sel_room = ['<option value="0">Не назначен</option>', ] 
-        for i in range(1, len(sql_room)):
-            sel1_vol = f"""<option value="{sql_room[i][0]}">{sql_room[i][1]}</option>"""
-            sel_room.append(sel1_vol)
-            
-        sel_noeven = ['<option value="0">Не назначен</option>', ] 
-        for i in range(1, len(result_time)):
-            sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
-            sel_noeven.append(sel2_vol)
-            
-        sel_even = ['<option value="0">Не назначен</option>', ] 
-        for i in range(1, len(result_time)):
-            sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
-            sel_even.append(sel2_vol)
-                
-        response = f"""<div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
+    sel_room = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(sql_room)):
+        sel1_vol = f"""<option value="{sql_room[i][0]}">{sql_room[i][1]}</option>"""
+        sel_room.append(sel1_vol)
+        
+    sel_noeven = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_time)):
+        sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+        sel_noeven.append(sel2_vol)
+        
+    sel_even = ['<option value="0">Не назначен</option>', ] 
+    for i in range(1, len(result_time)):
+        sel2_vol = f"""<option value="{result_time[i][0]}">{result_time[i][1]}</option>"""
+        sel_even.append(sel2_vol)
+        
+                                        
+    response = f"""<!--html--> <div id="modal-backdrop" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal" class="modal fade show" tabindex="-1" style="display:block;">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Добавить сотрудника</h5>
-                                    <button type="button" class="btn-close btn btn-light" data-dismiss="modal" aria-label="Close" onclick="closeModal()">X</button>
-                                </div>
-                                <form hx-post="grf_insWorkerTable?otd={otd}&year={y}&month={m}" action=""> 
-                                <div class="modal-body">
-                            
-                                                <td style="text-align: center; width:50%;">
-                                                    <div class="input-group mb-3">
-                                                      <label class="col-form-label input-group-text" for="worker_select" style = "width:188px;">Сотрудник</label> 
-                                                      <select class="custom-select form-control" id="worker_select"  name = "worker_select">                                                
-                                                         {sel_doc}
-                                                      </select>
-                                                    </div>
-                                                    
-                                                    <div class="input-group mb-3">
-                                                        <label class="custom-select-label input-group-text" for="room_select" style = "width:188px;">№ кабинета</label> 
-                                                        <select class="custom-select" id="room_select"  name = "room_select">                                                
-                                                            {sel_room}
-                                                        </select>
-                                                    </div>
-                                                    
-                                                    <div class="input-group mb-3">
-                                                        <label class="col-form-label input-group-text">Норма часов в месяц:</label>
-                                                        <input type="number" class="form-control" name="UpdNclock">
-                                                    </div>    
-                                                    
-                                                    <div class="input-group mb-3">
-                                                        <label class="custom-select-label input-group-text" for="noeven_select" style = "width:188px;">Не четное</label> 
-                                                        <select class="custom-select" id="noeven_select"  name = "noeven_select">                                                
-                                                            {sel_noeven}
-                                                        </select>
-                                                    </div>
-                                                    
-                                                    <div class="input-group mb-3">
-                                                        <label class="custom-select-label input-group-text" for="even_select" style = "width:188px;">Четное</label> 
-                                                        <select class="custom-select" id="even_select"  name = "even_select">                                                
-                                                            {sel_even}
-                                                        </select>
-                                                    </div>                                                                                                       
-
-                                                </td>                                                
-                                
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Добавить сотрудника</h5>
+                                        
+                                    </div>
+                                    
+                                    <form hx-post="grf_insWorkerTable?otd={otd}&year={y}&month={m}"> 
+                                        <div class="modal-body">                                        
+                                            <div class="input-group mb-3">
+                                                <label class="col-form-label input-group-text" for="worker_select" style = "width:188px;">Сотрудник</label> 
+                                                <select class="custom-select form-control" id="worker_select"  name = "worker_select">                                                
+                                                    {sel_doc}
+                                                </select>
+                                            </div>
+                                                                               
+                                            <div class="input-group mb-3">
+                                                <label class="custom-select-label input-group-text" for="room_select" style = "width:188px;">№ кабинета</label> 
+                                                <select class="custom-select" id="room_select"  name = "room_select">                                                
+                                                    {sel_room}
+                                                </select>
+                                            </div>
+                                                
+                                            <div class="input-group mb-3">
+                                                <label class="col-form-label input-group-text">Норма часов в месяц:</label>
+                                                <input type="number" class="form-control" name="UpdNclock">
+                                            </div>    
+                                                
+                                            <div class="input-group mb-3">
+                                                <label class="custom-select-label input-group-text" for="noeven_select" style = "width:188px;">Не четное</label> 
+                                                <select class="custom-select" id="noeven_select"  name = "noeven_select">                                                
+                                                    {sel_noeven}
+                                                </select>
+                                            </div>
+                                                
+                                            <div class="input-group mb-3">
+                                                <label class="custom-select-label input-group-text" for="even_select" style = "width:188px;">Четное</label> 
+                                                <select class="custom-select" id="even_select"  name = "even_select">                                                
+                                                    {sel_even}
+                                                </select>
+                                            </div>                                                                          
                                         </div>
+                        
                                         <div class="modal-footer">
-                                            <table class="table table-borderless">
+                                           <table class="table table-borderless">
                                                 <tr>
                                                     <td style="text-align: left;">
                                                         <button class="btn btn-primary btn-success" type="submit" style = "width:185px;" onclick="closeModal()">Сохранить</button>  
@@ -461,15 +444,14 @@ def modal_addWorker():
                                                         <button class="btn btn-danger" type="button" style = "width:185px;" onclick="closeModal()">&nbsp;Отмена&nbsp;</button> 
                                                     </td>                                            
                                                 </tr>
-                                        </div>
-                                         
-                                </div>                                  
+                                           </table>     
+                                        </div>                                
+                                    </form>  
+                                </div>
                             </div>
-                        </div>
-                     </div>
-                     </form>
-                     </div>"""
-        return response
+                        </div>   
+                     <!--!html-->"""
+    return response
 
 
 @htmx_test.route('/grf_insWorkerTable', methods=['GET', 'POST'])
