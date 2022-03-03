@@ -13,7 +13,7 @@ WHERE (RSP_BLC.DOC=N_DOC.DOC)
 AND (RSP_BLC.DTK>='{dtn}' AND RSP_BLC.DTK<='{dtk}')"""
 
 # Выбор списка доступных отделений
-sql_allOtd = "select otd, notd, lpu from np_otd where otd>=0 {select_otd} order by ps"
+SQL_ALLOTD = "select otd, notd, lpu from np_otd where otd>=0 {select_otd} order by ps"
 # Выбор текущего отделения
 sql_currentOtd = "select otd, notd, lpu from np_otd where otd='{otd}'"
 # Выборка первого попавшегося отделения
