@@ -97,15 +97,9 @@
         {% for value in table_view_all.items() %}
         <tr>
             <td style ="width:50px;">
-                <button 
-                id="DelWork{{ value[1][1] }}" class="btn btn-outline-secondary" title="Удалить запись"
-                hx-trigger='confirmed'
-                hx-post="grf_deleteRowTableGrf?otd={{ otd }}&year={{ year }}&month={{ month }}&idz={{ value[1][1] }}" 
-                
-                _="on click  call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
-                   if result.isConfirmed trigger confirmed">
-                <i class="bi bi-trash" style="color:#0069D9"></i>
-                </button>
+                <button hx-trigger="confirmed" hx-get="/confirmed" _="on click
+                call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
+                if result.isConfirmed trigger confirmed" class="">Confirmed</button>
             </td>
             <td class={{ value[1][12] }}> {{ value[1][13] }} </td> 
             <td class={{ value[1][10] }}> {{ value[1][11] }} </td>
