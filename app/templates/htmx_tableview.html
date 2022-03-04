@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sweetalert2.min.css') }}">
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
@@ -16,7 +17,6 @@
     
     {{ menu|safe  }}
   </head>
-{% block content %}
 
 <div class="container">
   <div class="row">
@@ -82,7 +82,7 @@
 
 <div class="col px-md-3">
 
-<table class="table table-sm table-hover table-bordered" id="myTable">
+<table id="htmx_table" class="table table-sm table-hover table-bordered" id="myTable">
     <thead style="font-size:10px;"> 
         <th></th>
         <th>ФИО Сотрудника</th>
@@ -99,18 +99,19 @@
         {% for value in table_view_all.items() %}
         <tr>
             <td style ="width:50px;">
-                
-                <button 
-                id="DelWork{{ value[1][1] }}" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись"
-                hx-get="grf_deleteRowTableModal?otd={{ otd }}&year={{ year }}&month={{ month }}&idz={{ value[1][1] }}"
-                
-                hx-target="#DelWorkModal" 
+                <button hx-trigger="confirmed" hx-post="grf_deleteRowTableGrf?otd={{ otd }}&year={{ year }}&month={{ month }}&idz={{ value[1][1] }}"
                 hx-swap="outerHTML"
-                hx-trigger="click"
-                class="btn btn-outline-primary btn-block">
-                <i class="bi bi-trash" style="color:#0069D9"></i>
-                </button>
-
+                hx-select="#htmx_table"
+                hx-target="#htmx_table"
+                _="on click call Swal.fire({
+                    title: 'Are you sure?', 
+                    text: 'You wont be able to revert this!', 
+                    icon: 'warning', 
+                    showCancelButton: true, 
+                    confirmButtonColor: '#3085d6', 
+                    cancelButtonColor: '#d33000', 
+                    confirmButtonText: 'Yes, delete it!'}) 
+                    if result.isConfirmed trigger confirmed">Warning</button>
             </td>
             <td class={{ value[1][12] }}> {{ value[1][13] }} </td> 
             <td class={{ value[1][10] }}> {{ value[1][11] }} </td>
@@ -344,5 +345,4 @@ function closeModal_DelRow() {
 }
 </script>
 
-{% endblock %}
-
+</html>

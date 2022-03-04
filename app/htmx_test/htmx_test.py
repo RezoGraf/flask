@@ -481,10 +481,9 @@ def grf_insWorkerTable():
     select_period = f''' and (dtn>='{current_data}' and dtk<='{current_data}')'''
     result_rsp_blc=db.select(sql.sql_noWork.format(doc=doc,period=select_period))    
     if result_rsp_blc == []:
-        if (i % 2) ==0: 
+        if (i % 2) ==0:
             new_data = f'{new_data},{nf}={even_day}'
         else:   
             new_data = f'{new_data},{nf}={noeven_day}'       
     db.write(sql_upd_it_rasp_grf_.format(new_data=new_data, id_grf=output_params))
     return redirect(url_for("htmx_test.table_view", otd=otd, year=cur_year, month=cur_month))
-    
