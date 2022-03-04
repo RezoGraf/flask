@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="sweetalert2.min.css">
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
@@ -35,15 +35,16 @@
           <option value = "{{ otd }}" selected>{{ notd }}</option>
         </select>
 
-        <label for="month_" class="form-label">на  </label>
+        <label for="month" class="form-label">на  </label>
+
        
-        <select id = "month" name="month" class="form-select" style="height: 30px;">
+        <select id = "month" name="month"  class="form-select" style="height: 30px;">
           {% for value in all_month.items()|sort(attribute='rating')%}
             <option value="{{ value[0] }}"{% if loop.first %} SELECTED {% endif %}>{{ value[1] }}</option>
           {% endfor %}
           <option value = "{{ month }}" selected>{{nmonth}}</option>
          </select>
-        
+       
           <label for="year_" class="form-label">Год</label>
           <input id="year_" type="number" name="year" min=2020 max=3000 value={{ year }} step=1 style="height:32px;" required=true>
 
@@ -98,9 +99,18 @@
         {% for value in table_view_all.items() %}
         <tr>
             <td style ="width:50px;">
-                <button hx-trigger="confirmed" hx-get="/confirmed" _="on click
-                call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
-                if result.isConfirmed trigger confirmed" class="">Confirmed</button>
+                
+                <button 
+                id="DelWork{{ value[1][1] }}" class="btn btn-outline-secondary" data-toggle="modal" title="Удалить запись"
+                hx-get="grf_deleteRowTableModal?otd={{ otd }}&year={{ year }}&month={{ month }}&idz={{ value[1][1] }}"
+                
+                hx-target="#DelWorkModal" 
+                hx-swap="outerHTML"
+                hx-trigger="click"
+                class="btn btn-outline-primary btn-block">
+                <i class="bi bi-trash" style="color:#0069D9"></i>
+                </button>
+
             </td>
             <td class={{ value[1][12] }}> {{ value[1][13] }} </td> 
             <td class={{ value[1][10] }}> {{ value[1][11] }} </td>
@@ -318,32 +328,18 @@
         }, 200)
     }
 
-function closeModal_DelRowNo() {
+
+function closeModal_DelRow() {
     var container = document.getElementById("DelWorkModal")
     var backdrop = document.getElementById("modal-backdrop_del_work")
     var modal = document.getElementById("modal_delete_work")
+    var month_ = document.getElementById("month")
 
     modal.classList.remove("show")
     backdrop.classList.remove("show")
 
     setTimeout(function() {
-        container.removeChild(backdrop)
-        container.removeChild(modal)
-    }, 200)
-}
-
-function closeModal_DelRowYes() {
-    var container = document.getElementById("DelWorkModal")
-    var backdrop = document.getElementById("modal-backdrop_del_work")
-    var modal = document.getElementById("modal_delete_work")
-
-    modal.classList.remove("show")
-    backdrop.classList.remove("show")
-
-    setTimeout(function() {
-        container.removeChild(backdrop)
-        container.removeChild(modal)
-        
+        window.location = 'table_view?otd={{otd}}&year={{year}}&month={{month}}'
     }, 200)
 }
 </script>

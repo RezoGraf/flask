@@ -275,15 +275,15 @@ def NewWork():
 
 @htmx_test.route('/grf_deleteRowTableModal', methods=['GET', 'POST'])
 @logger.catch
-def DeleteWork(): 
+def delete_rowtablemodal(): 
     """вызов модального окна для удаления сотрудника из таблицы график работы
 
     Returns:
         _type_: _description_
     """          
     otd = request.args.get('otd')
-    y = request.args.get('year') #год
-    m = request.args.get('month') #месяц 
+    year = request.args.get('year') #год
+    month = request.args.get('month') #месяц 
     idz = request.args.get('idz') #ун.код записи   
     response = f"""<div id="modal-backdrop_del_work" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal_delete_work" class="modal fade show" tabindex="-1" style="display:block;">
@@ -292,32 +292,28 @@ def DeleteWork():
                                         <div class="modal-header">
                                             <div class="row" style="text-align: center;">
                                                 <div class="col mx-auto">
-                                                    <h5 class="modal-title" >Вы действительно хотите удалить сотрудника из графика?</h5>
+                                                    <h5 class="modal-title">Вы действительно хотите удалить сотрудника из графика?</h5>
                                                 </div>
-                                            </div>                             
+                                            </div>
                                         </div>
-                                        
-                                        
-                                        
-                                        <form hx-post="grf_deleteRowTableGrf?idz={idz}&otd={otd}&year={y}&month={m}" method="GET">                               
+                                        <form hx-post="grf_deleteRowTableGrf?idz={idz}&otd={otd}&year={year}&month={month}" 
+                                              hx-select="#myTable"
+                                              hx-swap="outerHTML"
+                                              hx-target="#myTable">
                                             <div class="modal-footer">
                                                 <div class="container-fluid">
                                                     <div class="row">
                                                         <div class="col-md-4">
-                                                            <button class="btn btn-primary btn-block btn-success " type="submit" onclick="closeModal_DelRowNo()">Да</button>
+                                                            <button class="btn btn-primary btn-block btn-success" type="submit" onclick="closeModal_DelRow()">Да</button>
                                                         </div>
                                                         <div class="col-md-4">
                                                         </div>
                                                         <div class="col-md-4">
-                                                            <button type="button" class="btn btn-danger btn-block" onclick="closeModal_DelRowNo()">Нет</button>  
+                                                            <button type="button" class="btn btn-danger btn-block" onclick="closeModal_DelRow()">Нет</button>
                                                         </div>
                                                     </div>
-                                                </div>                                       
-                                            </div>
+                                                </div>
                                         </form>
-                                        
-                                        
-                                        
                                     </div>
                                 </div>
                             </div>
@@ -327,7 +323,7 @@ def DeleteWork():
 
 @htmx_test.route('/grf_deleteRowTableGrf', methods=['POST'])
 @logger.catch
-def deleteRowTableGrf():
+def delete_rowtablegrf():
     """удаление из таблицы (график работы) сотрудника
     Returns:
         _type_: _description_
@@ -343,7 +339,7 @@ def deleteRowTableGrf():
 
 @htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
 @logger.catch
-def modal_addWorker():
+def modal_addworker():
     """Добавление сотрудника в график работы
 
     Returns:
