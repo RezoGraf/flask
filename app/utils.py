@@ -118,7 +118,7 @@ def access_user_sdl(arena_user) -> str:
     return select_sdl
 
 
-def db_to_html_table(data=None, **params) -> str:
+def db_to_html_table(data, tbody_id=None, **params) -> str:
     """Формирование tbody из результата запроса
 
     Args:
@@ -128,8 +128,11 @@ def db_to_html_table(data=None, **params) -> str:
         str: _description_
     """
     # print(params)
-
-    tbody_open = '<tbody>'
+    tbody_id_tag = ''
+    if tbody_id is not None:
+        tbody_id_tag = f"""id="{tbody_id}" """
+    else: tbody_id_tag = ''
+    tbody_open = f"""<tbody {tbody_id_tag}>"""
     tbody_close = '</tbody>'
     table_body = ''
     table_tr_open = ''
@@ -137,7 +140,8 @@ def db_to_html_table(data=None, **params) -> str:
     for i, _ in enumerate(data):
         for key, param in params.items():
             if key == 'tr':
-                table_tr_open = f"""<tr id={data[i][param[0]]} {param[1]}>"""
+                param1 = f""" {param[1]}{data[i][param[0]]}" """
+                table_tr_open = f"""<tr id={data[i][param[0]]} {param1}>"""
                 # print(table_tr_open)
                 break
             # else:

@@ -181,10 +181,12 @@ def vaccine_table():
         </thead>
         <!--!html-->
         """
-        table_body = db_to_html_table(data, tr=['IDW','s'],
-                                            nulls=['Отсутствует'],
-                                            cols=['FIO','NPODR','NOTD','NDLJ','CERT']
-                                            )
+        table_body = db_to_html_table(data,
+            tbody_id='workers_tbody',
+            tr=['IDW','hx-target="#fullscreen_modal_worker" _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker" hx-get="worker_modal_load?idw='],
+            nulls=['Отсутствует'],
+            cols=['FIO','NPODR','NOTD','NDLJ','CERT']
+            )
         response = f"""{table_head} {table_body} </table>"""
         return response
 
@@ -201,10 +203,12 @@ def vaccine_table():
     </thead>
     <!--!html-->
     """
-    table_body = db_to_html_table(data, tr=['IDW','s'],
-                                        nulls=['Отсутствует'],
-                                        cols=['FIO','NPODR','NOTD','NDLJ','CERT']
-                                        )
+    table_body = db_to_html_table(data,
+        tbody_id='workers_tbody',
+        tr=['IDW','hx-target="#fullscreen_modal_worker" _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker" hx-get="worker_modal_load?idw='],
+        nulls=['Отсутствует'],
+        cols=['FIO','NPODR','NOTD','NDLJ','CERT']
+        )
     response = f"""{table_head} {table_body} </table>"""
     return response
 
@@ -247,6 +251,26 @@ def loaf_from_fb_data():
     <br>
     <button class="btn btn-primary" type="submit">
     Загрузить сотрудников в БД Хелиос</button>
+    </div>
+    <!--!html-->
+    """
+    return response
+
+
+@vaccine.route('worker_modal_load')
+@login_required
+@logger.catch
+def worker_modal_load():
+    """Модальное окно с сертификатами сотрудника
+
+    Returns:
+        response: html
+    """
+    idw = request.args.get('idw')
+    response = f"""
+    <!--html-->
+    <div id="fullscreen_modal_worker"
+    class="modal-dialog modal-fullscreen-sm-down" "{idw}">
     </div>
     <!--!html-->
     """

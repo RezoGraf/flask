@@ -16,7 +16,8 @@
 <title>Вакцинация</title>
 
 <body>
-    
+    <!-- Full screen modal -->
+    <div id="fullscreen_modal_worker" class="modal-dialog modal-fullscreen-sm-down"></div>
     <div id="load_select" hx-get="/vaccine/vaccine_select" hx-target="#load_select" hx-swap="outerHTML" hx-trigger="load">
         <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
     </div>

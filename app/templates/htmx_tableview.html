@@ -101,9 +101,15 @@
                 hx-swap="outerHTML"
                 hx-select="#htmx_table"
                 hx-target="#htmx_table"
-                _="on click
-                call Swal.fire({title: 'Удалить', text:'Вы уверены что хотите удалить?'})
-                if result.isConfirmed trigger confirmed">Warning</button>
+                _="on click call Swal.fire({
+                    title: 'Are you sure?', 
+                    text: 'You wont be able to revert this!', 
+                    icon: 'warning', 
+                    showCancelButton: true, 
+                    confirmButtonColor: '#3085d6', 
+                    cancelButtonColor: '#d33000', 
+                    confirmButtonText: 'Yes, delete it!'}) 
+                    if result.isConfirmed trigger confirmed">Warning</button>
             </td>
             <td class={{ value[1][12] }}> {{ value[1][13] }} </td> 
             <td class={{ value[1][10] }}> {{ value[1][11] }} </td>
