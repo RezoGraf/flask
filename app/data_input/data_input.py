@@ -2,10 +2,10 @@ from flask import Blueprint, render_template, abort, redirect, url_for, request,
 from loguru import logger
 import logging
 # регистрируем схему `Blueprint`
-from app.data_input.models import SignupForm, WtfTemplate, WtfTemplate2, WtfTemplate3
-from app.data_input.sql_data_input import sql_ins_rsp_blc, sql_del_rsp_blc, sql_upd_rsp_blc
-from app.data_input.sql_data_input import sql_ins_it_rasp_duty, sql_upd_it_rasp_duty, sql_del_it_rasp_duty
-from app.data_input.sql_data_input import sql_ins_it_rasp, sql_del_it_rasp,sql_del_sms_send,sql_upd_pspo_s
+from app.data_input.models import WtfTemplate, WtfTemplate3
+from app.data_input.sql_data_input import SQL_INS_RSP_BLC, SQL_DEL_RSP_BLC, SQL_UPD_RSP_BLC
+from app.data_input.sql_data_input import SQL_UPD_IT_RASP_DUTY, SQL_DEL_IT_RASP_DUTY
+from app.data_input.sql_data_input import SQL_INS_IT_RASP, SQL_DEL_IT_RASP, SQL_DEL_SMS_SEND, SQL_UPD_PSPO_S
 from . import data_input
 import app.db as db
 import app.sql as sql
@@ -17,9 +17,7 @@ from datetime import date
 from app.menu_script import generate_menu
 
 
-
 data_input = Blueprint('data_input', __name__)
-
 # теперь в этой схеме, вместо экземпляра приложения
 # 'app' используем экземпляр `Blueprint` с именем `data_input`.
 # Связываем URL со схемой `data_input`
@@ -28,10 +26,15 @@ data_input = Blueprint('data_input', __name__)
 @data_input.route('/', methods=('GET', 'POST'))
 @logger.catch
 def wtf_template():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """    
     if request.method == 'POST':
         otd = request.form.get('otd')
         return redirect(url_for('data_input.wtf_template2', otd=otd))
-    result_podr = db.select(sql.sql_allOtd)
+    result_podr = db.select(sql.SQL_ALLOTD)
     form = WtfTemplate()
     #Если метод запроса - POST и если поля формы валидны
     # if form.validate_on_submit():
@@ -50,6 +53,11 @@ def wtf_template():
 @data_input.route('/wtf_template3/', methods=['GET', 'POST'])
 @logger.catch
 def wtf_template3():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
     if 'arena_mpp' not in session:
         return redirect(url_for("login"))
     else:
@@ -57,10 +65,9 @@ def wtf_template3():
             arena_user = session.get('arena_user')
         else:
             arena_user = 0
-            
         select_otd = utils.access_user_otd(arena_user)  #доступные отделения
         select_sdl = utils.access_user_sdl(arena_user)  #доступные должности
-        result_otd = db.select(sql.sql_allOtd.format(select_otd=select_otd)) 
+        result_otd = db.select(sql.SQL_ALLOTD.format(select_otd=select_otd)) 
         if select_otd != '':
             otd = request.args.get('otd') or result_otd[0][0] #первое в списке или выбранное отделение
         else :   
@@ -84,7 +91,6 @@ def wtf_template3():
         result_fio = db.select(sql.sql_allDoc.format(current_otd = select_current_otd, select_sdl=select_sdl))#все сотрудники выбранного отделения
         doc = request.args.get('doc') or result_fio[0][0]      #код выбранного сотрудника со wtf_template3 или первый из запроса       
         fioSotrudnika = db.select(sql.sql_fio_sotrudnika.format(doc=doc))[0][0]
-        print(sql.sql_allDoc.format(current_otd = select_current_otd, select_sdl=select_sdl))
         result_rasp = db.select(sql.sql_it_rasp.format(doc=doc)) #режим работы сотрудника
         visible_ = ''
         if result_rasp == []:
@@ -120,9 +126,9 @@ def wtf_template3():
                 dtn = request.form.get('DelDtn')
                 dtk =request.form.get('DelDtk')
                 
-                db.write(sql_del_rsp_blc.format(DelIblc=DelIblc))
-                db.write(sql_upd_pspo_s.format(dtn=dtn, dtk=dtk, doc=doc))
-                db.write(sql_del_sms_send.format(dtn=dtn, dtk=dtk, doc=doc))
+                db.write(SQL_DEL_RSP_BLC.format(DelIblc=DelIblc))
+                db.write(SQL_UPD_PSPO_S.format(dtn=dtn, dtk=dtk, doc=doc))
+                db.write(SQL_DEL_SMS_SEND.format(dtn=dtn, dtk=dtk, doc=doc))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'UpdRspBlc':
@@ -130,7 +136,7 @@ def wtf_template3():
                 UpdDtn = request.form.get('UpdDtn')
                 UpdDtk = request.form.get('UpdDtk')
                 UpdRsn = request.form.get('UpdRsn')
-                db.write(sql_upd_rsp_blc.format(UpdIblc=UpdIblc, UpdDtn=UpdDtn, UpdDtk=UpdDtk, UpdRsn=UpdRsn))
+                db.write(SQL_UPD_RSP_BLC.format(UpdIblc=UpdIblc, UpdDtn=UpdDtn, UpdDtk=UpdDtk, UpdRsn=UpdRsn))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'InsRspBlc':
@@ -140,7 +146,7 @@ def wtf_template3():
                 procedure_name = 'NEW_IBLC'
                 output_params = db.proc(procedure_name)
                 output_params = utils.list_to_int(output_params)
-                db.write(sql_ins_rsp_blc.format(output_params=output_params, doc=doc, InsDtn=InsDtn, InsDtk=InsDtk, InsRsn=InsRsn))
+                db.write(SQL_INS_RSP_BLC.format(output_params=output_params, doc=doc, InsDtn=InsDtn, InsDtk=InsDtk, InsRsn=InsRsn))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'InsDuty':
@@ -152,7 +158,7 @@ def wtf_template3():
                 output_params = utils.list_to_int(output_params)               
                 df = pd.Timestamp(InsDtnDuty)
                 InsNDay = df.dayofweek
-                db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=InsDtnDuty, UpdTimeDuty=InsTimeDuty, UpdNDay=InsNDay, UpdRoomDuty=InsRoomDuty, UpdId=output_params))   
+                db.write(SQL_UPD_IT_RASP_DUTY.format(doc=doc, UpdDtnDuty=InsDtnDuty, UpdTimeDuty=InsTimeDuty, UpdNDay=InsNDay, UpdRoomDuty=InsRoomDuty, UpdId=output_params))   
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'UpdDuty':
@@ -162,12 +168,12 @@ def wtf_template3():
                 UpdTimeDuty = request.form.get('UpdTimeDuty')
                 df = pd.Timestamp(UpdDtnDuty)
                 UpdNDay = df.dayofweek
-                db.write(sql_upd_it_rasp_duty.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdRoomDuty=UpdRoomDuty, UpdId=UpdId))
+                db.write(SQL_UPD_IT_RASP_DUTY.format(doc=doc, UpdDtnDuty=UpdDtnDuty, UpdTimeDuty=UpdTimeDuty, UpdNDay=UpdNDay, UpdRoomDuty=UpdRoomDuty, UpdId=UpdId))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'DelDuty':
                 DelId = request.form.get('DelIdDuty')
-                db.write(sql_del_it_rasp_duty.format(DelId=DelId))
+                db.write(SQL_DEL_IT_RASP_DUTY.format(DelId=DelId))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc))
 
             if request.form['btn'] == 'UpdRegimeWork':
@@ -189,14 +195,14 @@ def wtf_template3():
                 ntv = request.form.get('UpdNtv')
                 nlist = request.form.get('UpdNlist')
                 visible_ = 'style=display:none;'
-                db.write(sql_del_it_rasp.format(doc=doc))
+                db.write(SQL_DEL_IT_RASP.format(doc=doc))
                          
-                db.write(sql_ins_it_rasp.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
+                db.write(SQL_INS_IT_RASP.format(doc=doc, lpu=lpu, otd=otd, spz=spz, room=room, interval1=interval1, interval2=interval2, ntv=ntv, nlist=nlist))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_ ))
 
             if request.form['btn'] == 'DelRegimeWork':
                 visible_ = ''
-                db.write(sql_del_it_rasp.format(doc=doc))
+                db.write(SQL_DEL_IT_RASP.format(doc=doc))
                 return redirect(url_for("data_input.wtf_template3", otd=otd, doc=doc, visible_=visible_))
  
         result_room = db.select(sql.sql_room.format(doc=doc)) #номера кабинетов
@@ -208,7 +214,7 @@ def wtf_template3():
         # result_noWork = db.select(sql.sql_noWork.format(doc = doc, period = select_period)) #отсутствие на рабочем месте
                 
         result_podr = db.select(sql.sql_currentOtd.format(otd=otd)) #список отделений
-        result_podr2 = db.select(sql.sql_allOtd.format(select_otd=select_otd)) #список отделений
+        result_podr2 = db.select(sql.SQL_ALLOTD.format(select_otd=select_otd)) #список отделений
         
         idx = 0     
         for x in result_podr2 :            
