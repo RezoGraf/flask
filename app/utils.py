@@ -119,15 +119,15 @@ def access_user_sdl(arena_user) -> str:
 
 
 def db_to_html_table(data, tbody_id=None, **params) -> str:
-    """Формирование tbody из результата запроса
+    """Формирует tbody html
 
     Args:
-        data (_type_, optional): _description_. Defaults to None.
+        data (_type_): _description_
+        tbody_id (_type_, optional): _description_. Defaults to None.
 
     Returns:
-        str: _description_
+        response: html <tbody></tbody>
     """
-    # print(params)
     tbody_id_tag = ''
     if tbody_id is not None:
         tbody_id_tag = f"""id="{tbody_id}" """

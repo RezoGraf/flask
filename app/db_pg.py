@@ -76,3 +76,5 @@ def sel_dict_in_list_desc(sql) -> list:
             row_dict[col.name] = row[i]
         results.append(row_dict)
     return results
+
+    

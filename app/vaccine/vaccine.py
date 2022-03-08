@@ -205,7 +205,7 @@ def vaccine_table():
     """
     table_body = db_to_html_table(data,
         tbody_id='workers_tbody',
-        tr=['IDW','hx-target="#fullscreen_modal_worker" _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker" hx-get="worker_modal_load?idw='],
+        tr=['IDW','hx-target="#fullscreen_modal_worker" hx-swap=outerHTML _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker" data-toggle="modal" data-target="#fullscreen_modal_worker" hx-get="worker_modal_load?idw='],
         nulls=['Отсутствует'],
         cols=['FIO','NPODR','NOTD','NDLJ','CERT']
         )
@@ -269,8 +269,23 @@ def worker_modal_load():
     idw = request.args.get('idw')
     response = f"""
     <!--html-->
-    <div id="fullscreen_modal_worker"
-    class="modal-dialog modal-fullscreen-sm-down" "{idw}">
+    <div id="fullscreen_modal_worker" class="modal fade modal-fullscreen">
+      <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
     </div>
     <!--!html-->
     """
