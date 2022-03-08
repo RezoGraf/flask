@@ -261,7 +261,12 @@ def table_edit():
     
 @htmx_test.route('/grf_NewWork', methods=['GET', 'POST'])
 @logger.catch
-def NewWork():
+def new_work():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """    
     otd = request.args.get('otd')
     y = request.args.get('year') #год
     m = request.args.get('month') #месяц
@@ -273,69 +278,17 @@ def NewWork():
                     </div>"""
     return response
 
-@htmx_test.route('/grf_deleteRowTableModal', methods=['GET', 'POST'])
-@logger.catch
-def DeleteWork(): 
-    """вызов модального окна для удаления сотрудника из таблицы график работы
-
-    Returns:
-        _type_: _description_
-    """          
-    otd = request.args.get('otd')
-    y = request.args.get('year') #год
-    m = request.args.get('month') #месяц 
-    idz = request.args.get('idz') #ун.код записи   
-    response = f"""<div id="modal-backdrop_del_work" class="modal-backdrop fade show" style="display:block;"></div>
-                        <div id="modal_delete_work" class="modal fade show" tabindex="-1" style="display:block;">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <div class="row" style="text-align: center;">
-                                                <div class="col mx-auto">
-                                                    <h5 class="modal-title" >Вы действительно хотите удалить сотрудника из графика?</h5>
-                                                </div>
-                                            </div>                             
-                                        </div>
-                                        
-                                        
-                                        
-                                        <form hx-post="grf_deleteRowTableGrf?idz={idz}&otd={otd}&year={y}&month={m}" method="GET">                               
-                                            <div class="modal-footer">
-                                                <div class="container-fluid">
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <button class="btn btn-primary btn-block btn-success " type="submit" onclick="closeModal_DelRowNo()">Да</button>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <button type="button" class="btn btn-danger btn-block" onclick="closeModal_DelRowNo()">Нет</button>  
-                                                        </div>
-                                                    </div>
-                                                </div>                                       
-                                            </div>
-                                        </form>
-                                        
-                                        
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        """
-    return response
 
 @htmx_test.route('/grf_deleteRowTableGrf', methods=['POST'])
 @logger.catch
-def deleteRowTableGrf():
-    """удаление из таблицы (график работы) сотрудника
+def delete_rowtablegrf():
+    """удаление строки из таблицы (график работы) 
     Returns:
         _type_: _description_
     """
     if request.method == 'POST':
-        idz = request.args.get('idz')
+        idz = request.args.get('idz') #уникальный код записи
         otd = request.args.get('otd') #код отделения
-        lpu = int(db.select(sql.sql_currentOtd.format(otd=otd))[0][2])
         cur_year = request.args.get('year') #год
         cur_month = request.args.get('month') #месяц
         db.write(SQL_DELETE_GRF.format(id_grf=idz))
@@ -343,7 +296,7 @@ def deleteRowTableGrf():
 
 @htmx_test.route('/grf_addWorker', methods=['GET', 'POST'])
 @logger.catch
-def modal_addWorker():
+def modal_addworker():
     """Добавление сотрудника в график работы
 
     Returns:
@@ -456,7 +409,12 @@ def modal_addWorker():
 
 @htmx_test.route('/grf_insWorkerTable', methods=['GET', 'POST'])
 @logger.catch
-def grf_insWorkerTable():
+def grf_insworkertable():
+    """Добавление новой записи в таблицу график работы
+
+    Returns:
+        _type_: _description_
+    """    
     #добавить новую запись в таблицу IT_RASP_GRF
     procedure_name = 'NEW_GEN_IT_RASP_GRF_ID'
     output_params = db.proc(procedure_name)[0]
@@ -480,14 +438,14 @@ def grf_insWorkerTable():
            p=f'0{i}'
         else:
            p=str(i)  
-    nf = f'day{p}'  #название колонки day01 .. day31
-    current_data = f'{p}.{str(cur_month)}.{str(cur_year)}'
-    select_period = f''' and (dtn>='{current_data}' and dtk<='{current_data}')'''
-    result_rsp_blc=db.select(sql.sql_noWork.format(doc=doc,period=select_period))    
-    if result_rsp_blc == []:
-        if (i % 2) ==0:
-            new_data = f'{new_data},{nf}={even_day}'
-        else:   
-            new_data = f'{new_data},{nf}={noeven_day}'       
+        nf = f'day{p}'  #название колонки day01 .. day31
+        current_data = f'{p}.{str(cur_month)}.{str(cur_year)}'
+        select_period = f''' and (dtn>='{current_data}' and dtk<='{current_data}')'''
+        result_rsp_blc=db.select(sql.sql_noWork.format(doc=doc,period=select_period))    
+        if result_rsp_blc == []:
+            if (i % 2) ==0:
+                new_data = f'{new_data},{nf}={even_day}'
+            else:   
+                new_data = f'{new_data},{nf}={noeven_day}'       
     db.write(sql_upd_it_rasp_grf_.format(new_data=new_data, id_grf=output_params))
     return redirect(url_for("htmx_test.table_view", otd=otd, year=cur_year, month=cur_month))
