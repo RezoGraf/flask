@@ -118,7 +118,7 @@ def access_user_sdl(arena_user) -> str:
     return select_sdl
 
 
-def db_to_html_table(data, tbody_id=None, **params) -> str:
+def db_to_html_tbody(data, tbody_id=None, **params) -> str:
     """Формирует tbody html
 
     Args:

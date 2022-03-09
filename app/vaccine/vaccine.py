@@ -1,6 +1,6 @@
 """Модуль Вакцинация"""
 from loguru import logger
-from app.utils import db_to_html_table
+from app.utils import db_to_html_tbody
 import app.vaccine.sql_vaccine as sql_vaccine
 import app.db as firebird
 from app.auth import login_required
@@ -203,7 +203,7 @@ def vaccine_table():
     </thead>
     <!--!html-->
     """
-    table_body = db_to_html_table(data,
+    table_body = db_to_html_tbody(data,
         tbody_id='workers_tbody',
         tr=['IDW','hx-target="#fullscreen_modal_worker" hx-swap=outerHTML _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker" data-toggle="modal" data-target="#fullscreen_modal_worker" hx-get="worker_modal_load?idw='],
         nulls=['Отсутствует'],
