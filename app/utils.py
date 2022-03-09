@@ -2,8 +2,6 @@
 
 from dateutil import parser
 from app import db, sql
-# import app.db as db
-# import app.sql as sql
 
 
 def list_to_int(list_result) -> int:
@@ -31,7 +29,7 @@ def list_to_str(list_result) -> int:
 
     Returns:
         str: строка
-    """    
+    """
     string_result = ''.join(str(e) for e in list_result)
     string_result = string_result.replace('(', '')
     string_result = string_result.replace(')', '')
@@ -40,7 +38,7 @@ def list_to_str(list_result) -> int:
     return string_result
 
 
-def russianNameDayWeek(day_week):
+def russian_name_day_week(day_week):
     """Принимает день недели на английском и возвращает на русском
 
     Args:
@@ -49,9 +47,17 @@ def russianNameDayWeek(day_week):
     Returns:
         str: название дня недели на русском (краткое)
     """
-    russianDayWeek = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
+    russian_day_week = {
+        'Mon':'Пн.',
+        'Tue':'Вт.',
+        'Wed':'Ср.',
+        'Thu':'Чт.',
+        'Fri':'Пт.',
+        'Sat':'Сб.',
+        'Sun':'Вс.'
+        }
     latin_name_dayweek = parser.parse(day_week).strftime("%a")
-    result = russianDayWeek[latin_name_dayweek]
+    result = russian_day_week[latin_name_dayweek]
     return result
 
 
@@ -68,7 +74,15 @@ def date_color(current_date):
     current_day = parser.parse(dat.strftime('%m/%d/%y')).strftime("%d")
     current_year = parser.parse(dat.strftime('%m/%d/%y')).strftime("%Y")
     current_month = parser.parse(dat.strftime('%m/%d/%y')).strftime("%m")
-    russian_day_week = {'Mon':'Пн.' , 'Tue':'Вт.' , 'Wed':'Ср.' , 'Thu':'Чт.' , 'Fri':'Пт.' , 'Sat':'Сб.' , 'Sun':'Вс.'}
+    russian_day_week = {
+        'Mon':'Пн.',
+        'Tue':'Вт.',
+        'Wed':'Ср.',
+        'Thu':'Чт.',
+        'Fri':'Пт.',
+        'Sat':'Сб.',
+        'Sun':'Вс.'
+        }
     dat = f'{str(current_day)}.{str(current_month)}.{str(current_year)}'
     ans = parser.parse(dat).strftime("%a")
     pas = russian_day_week[ans]
@@ -118,12 +132,15 @@ def access_user_sdl(arena_user) -> str:
     return select_sdl
 
 
-def db_to_html_tbody(data, tbody_id=None, **params) -> str:
+def db_to_html_tbody(data, tbody_id=None, htmx_func=None, **params) -> str:
     """Формирует tbody html
 
     Args:
-        data (_type_): _description_
-        tbody_id (_type_, optional): _description_. Defaults to None.
+        data (list): Выборка таблицы с заголовками
+        tbody_id (str, optional): ID для таблицы. Defaults to None.
+        tr=['ID', htmx=ID]: Список с параметрами для tr, ID - имя столбца БД
+        nulls=['Отсутствует'],
+        cols=['FIO','NPODR','NOTD','NDLJ','CERT']
 
     Returns:
         response: html <tbody></tbody>
@@ -140,7 +157,7 @@ def db_to_html_tbody(data, tbody_id=None, **params) -> str:
     for i, _ in enumerate(data):
         for key, param in params.items():
             if key == 'tr':
-                param1 = f""" {param[1]}{data[i][param[0]]}" """
+                param1 = f""" hx-get="{htmx_func}?idw={data[i][param[0]]}" {param[1]}" """
                 table_tr_open = f"""<tr id={data[i][param[0]]} {param1}>"""
                 # print(table_tr_open)
                 break

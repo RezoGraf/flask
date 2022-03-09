@@ -164,6 +164,15 @@ def vaccine_table():
     Returns:
         response: html <tbody> </tbody>
     """
+
+    tr_htmx = """
+    hx-target="#fullscreen_modal_worker"
+    hx-swap=outerHTML
+    data-toggle="modal"
+    data-target="#fullscreen_modal_worker"
+    _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker"
+    """
+
     if request.method == 'POST':
         search = request.form.get('search')
         print(search)
@@ -181,15 +190,15 @@ def vaccine_table():
         </thead>
         <!--!html-->
         """
-        table_body = db_to_html_table(data,
+        table_body = db_to_html_tbody(data,
             tbody_id='workers_tbody',
-            tr=['IDW','hx-target="#fullscreen_modal_worker" _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker" hx-get="worker_modal_load?idw='],
+            htmx_func = 'worker_modal_load',
+            tr=['IDW',tr_htmx],
             nulls=['Отсутствует'],
             cols=['FIO','NPODR','NOTD','NDLJ','CERT']
             )
         response = f"""{table_head} {table_body} </table>"""
         return response
-
     data = db_pg.sel_dict_in_list_desc(sql_vaccine.select_workers_main)
     table_head = """
     <!--html-->
@@ -205,7 +214,8 @@ def vaccine_table():
     """
     table_body = db_to_html_tbody(data,
         tbody_id='workers_tbody',
-        tr=['IDW','hx-target="#fullscreen_modal_worker" hx-swap=outerHTML _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker" data-toggle="modal" data-target="#fullscreen_modal_worker" hx-get="worker_modal_load?idw='],
+        htmx_func = 'worker_modal_load',
+        tr=['IDW',tr_htmx],
         nulls=['Отсутствует'],
         cols=['FIO','NPODR','NOTD','NDLJ','CERT']
         )
@@ -273,7 +283,7 @@ def worker_modal_load():
       <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">IDW = {idw}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
