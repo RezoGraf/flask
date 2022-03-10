@@ -115,7 +115,7 @@ def zn_close():
                'Content-Encoding': 'utf-8'}
     # поиск документов на отправку со статусом 3-------
     result = db.sel_dict_in_turple_desc(sql.sql_api_select_check)
-    print(result)
+    # print(result)
     data = {}
     volue = []
     for i, _ in enumerate(result):
@@ -124,9 +124,9 @@ def zn_close():
             dzr = dzr.strftime('%d.%m.%Y')
             result_isp = db.sel_dict_in_turple_desc(sql.sql_api_select_isp.format(idkv=result[i]['IDKV']))
             te = result_isp[0]
-            print(te)
+            # print(te)
             val = list(te.values())
-            print(val)
+            # print(val)
             list_isp = []
             # Техник
             if val[0] != ("0", 0,  None):
@@ -143,7 +143,7 @@ def zn_close():
                 isp_vol = {"ISP_STAT":"7",
                            "ISP_CODE":str(val[2])}
                 list_isp.append(isp_vol)
-            print(list_isp)
+            # print(list_isp)
             data_vol = {"DOC_ID":str(result[i]['IDKV']),
                         "DOC_TYPE":"3",
                         "DOC_DZR":dzr,
@@ -153,11 +153,21 @@ def zn_close():
     data["DOC"] = volue
     answer = requests.post(url, data=json.dumps(data), headers=headers)
     response = answer.json()
+    date_now = datetime.datetime.now()
+    err = str(answer.status_code)
+    date_otpr = date_now.strftime("%d.%m.%Y-%H:%M:%S")
+    json_str = json.dumps(response)
     if answer.status_code in range(200, 300):
-        print(answer.status_code)
+        # a = data['DOC']
+        for _, doc_id in enumerate(data['DOC']):
+            idkv = doc_id['DOC_ID']
+            
+        # print(data['DOC']['DOC_ID'])
+            print(sql.sql_api_insert_log.format(idkv=idkv , err=err, date=date_otpr, json=json_str, json_otv=1))
+        # print(answer.status_code)
     else:
         print("Не то пальто")
         print(answer.status_code)
     
-    print(response)
+    # print(response)
     return response
