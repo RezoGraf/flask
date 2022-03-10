@@ -1,6 +1,6 @@
 """Модуль Вакцинация"""
 from loguru import logger
-from app.utils import db_to_html_table
+from app.utils import db_to_html_tbody
 import app.vaccine.sql_vaccine as sql_vaccine
 import app.db as firebird
 from app.auth import login_required
@@ -164,6 +164,15 @@ def vaccine_table():
     Returns:
         response: html <tbody> </tbody>
     """
+
+    tr_htmx = """
+    hx-target="#fullscreen_modal_worker"
+    hx-swap=outerHTML
+    data-toggle="modal"
+    data-target="#fullscreen_modal_worker"
+    _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker"
+    """
+
     if request.method == 'POST':
         search = request.form.get('search')
         print(search)
@@ -181,13 +190,15 @@ def vaccine_table():
         </thead>
         <!--!html-->
         """
-        table_body = db_to_html_table(data, tr=['IDW','s'],
-                                            nulls=['Отсутствует'],
-                                            cols=['FIO','NPODR','NOTD','NDLJ','CERT']
-                                            )
+        table_body = db_to_html_tbody(data,
+            tbody_id='workers_tbody',
+            htmx_func = 'worker_modal_load',
+            tr=['IDW',tr_htmx],
+            nulls=['Отсутствует'],
+            cols=['FIO','NPODR','NOTD','NDLJ','CERT']
+            )
         response = f"""{table_head} {table_body} </table>"""
         return response
-
     data = db_pg.sel_dict_in_list_desc(sql_vaccine.select_workers_main)
     table_head = """
     <!--html-->
@@ -201,10 +212,13 @@ def vaccine_table():
     </thead>
     <!--!html-->
     """
-    table_body = db_to_html_table(data, tr=['IDW','s'],
-                                        nulls=['Отсутствует'],
-                                        cols=['FIO','NPODR','NOTD','NDLJ','CERT']
-                                        )
+    table_body = db_to_html_tbody(data,
+        tbody_id='workers_tbody',
+        htmx_func = 'worker_modal_load',
+        tr=['IDW',tr_htmx],
+        nulls=['Отсутствует'],
+        cols=['FIO','NPODR','NOTD','NDLJ','CERT']
+        )
     response = f"""{table_head} {table_body} </table>"""
     return response
 
@@ -247,6 +261,41 @@ def loaf_from_fb_data():
     <br>
     <button class="btn btn-primary" type="submit">
     Загрузить сотрудников в БД Хелиос</button>
+    </div>
+    <!--!html-->
+    """
+    return response
+
+
+@vaccine.route('worker_modal_load')
+@login_required
+@logger.catch
+def worker_modal_load():
+    """Модальное окно с сертификатами сотрудника
+
+    Returns:
+        response: html
+    """
+    idw = request.args.get('idw')
+    response = f"""
+    <!--html-->
+    <div id="fullscreen_modal_worker" class="modal fade modal-fullscreen">
+      <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">IDW = {idw}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
     </div>
     <!--!html-->
     """

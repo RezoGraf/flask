@@ -1,12 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="sweetalert2.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sweetalert2.min.css') }}">
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
@@ -16,7 +17,6 @@
     
     {{ menu|safe  }}
   </head>
-{% block content %}
 
 <div class="container">
   <div class="row">
@@ -35,15 +35,15 @@
           <option value = "{{ otd }}" selected>{{ notd }}</option>
         </select>
 
-        <label for="month_" class="form-label">на  </label>
-       
-        <select id = "month" name="month" class="form-select" style="height: 30px;">
+        <label for="month" class="form-label">на  </label>
+
+        <select id = "month" name="month"  class="form-select" style="height: 30px;">
           {% for value in all_month.items()|sort(attribute='rating')%}
             <option value="{{ value[0] }}"{% if loop.first %} SELECTED {% endif %}>{{ value[1] }}</option>
           {% endfor %}
           <option value = "{{ month }}" selected>{{nmonth}}</option>
          </select>
-        
+       
           <label for="year_" class="form-label">Год</label>
           <input id="year_" type="number" name="year" min=2020 max=3000 value={{ year }} step=1 style="height:32px;" required=true>
 
@@ -81,7 +81,7 @@
 
 <div class="col px-md-3">
 
-<table class="table table-sm table-hover table-bordered" id="myTable">
+<table id="htmx_table" class="table table-sm table-hover table-bordered">
     <thead style="font-size:10px;"> 
         <th></th>
         <th>ФИО Сотрудника</th>
@@ -98,9 +98,25 @@
         {% for value in table_view_all.items() %}
         <tr>
             <td style ="width:50px;">
-                <button hx-trigger="confirmed" hx-get="/confirmed" _="on click
-                call Swal.fire({title: 'Confirm', text:'Do you want to continue?'})
-                if result.isConfirmed trigger confirmed" class="">Confirmed</button>
+                <button 
+                class="btn btn-outline-primary btn-block"
+                hx-trigger="confirmed"
+                hx-post="grf_deleteRowTableGrf?otd={{ otd }}&year={{ year }}&month={{ month }}&idz={{ value[1][1] }}"
+                hx-swap="outerHTML"
+                hx-select="#htmx_table"
+                hx-target="#htmx_table"
+                _="on click call Swal.fire({
+                    title: 'Удалить запись?', 
+                    text: ' ', 
+                    icon: 'warning', 
+                    showCancelButton: true, 
+                    confirmButtonColor: '#3085d6', 
+                    cancelButtonColor: '#d33000', 
+                    cancelButtonText: 'Отмена',
+                    confirmButtonText: 'Да'}) 
+                    if result.isConfirmed trigger confirmed">
+                    <i class="bi bi-trash" style="color:#0069D9">
+                </i></button>
             </td>
             <td class={{ value[1][12] }}> {{ value[1][13] }} </td> 
             <td class={{ value[1][10] }}> {{ value[1][11] }} </td>
@@ -164,7 +180,7 @@
             <td class={{ value[1][36] }}> 
                 <form id="td10{{ value[1][1] }}">
                     <div hx-target="#td10{{ value[1][1] }}" hx-swap="innerHTML"
-                        hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td10{{ value[1][1] }}">{{ value[1][37] or "нет приема"}} </div>
+                        hx-get="table_view/edit?id_grf={{ value[1][1] }}&id_td=td10{{ value[1][1] }}">{{ value[1][37] or "НП"}} </div>
                 </form>
             </td> 
             <td class={{ value[1][38] }}>  
@@ -318,35 +334,6 @@
         }, 200)
     }
 
-function closeModal_DelRowNo() {
-    var container = document.getElementById("DelWorkModal")
-    var backdrop = document.getElementById("modal-backdrop_del_work")
-    var modal = document.getElementById("modal_delete_work")
-
-    modal.classList.remove("show")
-    backdrop.classList.remove("show")
-
-    setTimeout(function() {
-        container.removeChild(backdrop)
-        container.removeChild(modal)
-    }, 200)
-}
-
-function closeModal_DelRowYes() {
-    var container = document.getElementById("DelWorkModal")
-    var backdrop = document.getElementById("modal-backdrop_del_work")
-    var modal = document.getElementById("modal_delete_work")
-
-    modal.classList.remove("show")
-    backdrop.classList.remove("show")
-
-    setTimeout(function() {
-        container.removeChild(backdrop)
-        container.removeChild(modal)
-        
-    }, 200)
-}
 </script>
 
-{% endblock %}
-
+</html>
