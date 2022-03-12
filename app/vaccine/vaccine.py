@@ -1,6 +1,7 @@
 """Модуль Вакцинация"""
 from loguru import logger
 from app.utils import db_to_html_tbody
+from time import sleep
 import app.vaccine.sql_vaccine as sql_vaccine
 import app.db as firebird
 from app.auth import login_required
@@ -166,11 +167,8 @@ def vaccine_table():
     """
 
     tr_htmx = """
-    hx-target="#fullscreen_modal_worker"
-    hx-swap=outerHTML
-    data-toggle="modal"
-    data-target="#fullscreen_modal_worker"
-    _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker"
+    hx-target="#place_for_modal"
+    hx-trigger="click"
     """
 
     if request.method == 'POST':
@@ -192,7 +190,7 @@ def vaccine_table():
         """
         table_body = db_to_html_tbody(data,
             tbody_id='workers_tbody',
-            htmx_func = 'worker_modal_load',
+            htmx_func = 'load_modal_worker',
             tr=['IDW',tr_htmx],
             nulls=['Отсутствует'],
             cols=['FIO','NPODR','NOTD','NDLJ','CERT']
@@ -214,7 +212,7 @@ def vaccine_table():
     """
     table_body = db_to_html_tbody(data,
         tbody_id='workers_tbody',
-        htmx_func = 'worker_modal_load',
+        htmx_func = 'load_modal_worker',
         tr=['IDW',tr_htmx],
         nulls=['Отсутствует'],
         cols=['FIO','NPODR','NOTD','NDLJ','CERT']
@@ -271,27 +269,79 @@ def loaf_from_fb_data():
 @login_required
 @logger.catch
 def worker_modal_load():
+    """Загрузка для модального окна
+
+    Returns:
+        response: html
+    """
+    idw = request.args.get('idw')
+    sleep(3)
+    response = f"""
+    <!--html-->
+        <div
+        id="load_select"
+        hx-get="/vaccine/load_modal_worker?idw={idw}"
+        hx-target="#fullscreen_modal_worker"
+        hx-swap="outerHTML"
+        data-target="#fullscreen_modal_worker"
+        _="on htmx:afterOnLoad wait 10ms then add .show to #fullscreen_modal_worker and set #fullscreen_modal_worker *display to block">
+        
+            <img 
+            alt="Загрузка данных..." 
+            class="htmx-indicator mx-auto"
+            width="150"
+            src="/static/img/bars.svg"/>
+        </div>
+    <!--!html-->
+    """
+    return response
+    
+
+
+@vaccine.route('/load_modal_worker')
+@login_required
+@logger.catch
+def load_modal_worker():
     """Модальное окно с сертификатами сотрудника
 
     Returns:
         response: html
     """
     idw = request.args.get('idw')
+    worker = db_pg.sel_dict_with_desc(sql_vaccine.select_worker_by_id.format(idw=idw))
+    print(worker)
     response = f"""
     <!--html-->
-    <div id="fullscreen_modal_worker" class="modal fade modal-fullscreen">
+    <div id="fullscreen_modal_workers" class="modal fade modal-fullscreen show" style="display:block">
       <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">IDW = {idw}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{worker['FAM_WORKER']} {worker['IM_WORKER']} {worker['OT_WORKER']}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
+                  <table class="table table-hover">
+                <tr>
+                    <td>Подразделение:</td><td>{worker['NPODR']}</td>
+                </tr>
+                <tr>
+                    <td>Отделение:</td><td>{worker['NOTD']}</td>
+                </tr>
+                <tr>
+                    <td>Должность:</td><td>{worker['NDLJ']}</td>
+                </tr>
+                <tr>
+                    <td>Специальность:</td><td>{worker['NSPZ']}</td>
+                </tr>
+                <tr>
+                    <td>Формализованная должность:</td><td>{worker['NSDL']}</td>
+                </tr>
+                </table>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" _="on click remove #fullscreen_modal_workers" class="btn btn-secondary">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
               </div>
             </div>
@@ -300,6 +350,7 @@ def worker_modal_load():
     <!--!html-->
     """
     return response
+
 
 
 @vaccine.route('/load_from_fb_to_pg', methods=['GET', 'POST'])
