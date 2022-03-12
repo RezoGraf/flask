@@ -209,9 +209,10 @@ sql_zn_naryad_update_uslk = """Update pl_uslk
                                   status={status}
                               where idkv={idkv}"""
 #api.zn_close закрытие наряда, отправка в 1с-------------------------------------------------------------------------------------------------------- 
-sql_api_select_check = """Select idkv, dzr, opl from pl_uslk where status=3 and dou>='01.01.2021'"""
+sql_api_select_check = """select idkv, dzr, opl from pl_uslk where status=3 and dou>='01.01.2021'"""
 sql_api_select_isp = """Select teh, lit, polir from pl_uslt where idkv={idkv}"""
 sql_api_upd_otpr = """Update set status=2 from pl_uslk where idkv={idkv}"""
+sql_api_insert_log = """INSERT INTO PL_USLK_EXP (IDKV, ERR,DATE_EXP,JSON_,JSON_OTV) VALUES ({idkv},{err},{date},{json},{json_otv}"""
 # Открытие наряда \ удаление даты закрытия----------------------------------------------------------------------------------------------------------
 sql_zn_naryad_update_dzr_uslk = """Update pl_uslk set dzr=null where idkv={idkv}"""
 sql_zn_naryad_update_dzr_uslt = """Update pl_uslk set dzr=null where idkv={idkv}"""
