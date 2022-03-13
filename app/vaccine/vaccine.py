@@ -427,11 +427,14 @@ def multiselect_vaccine():
     """
     response = """
         <!--html-->
-        <select class="selectpicker">
+        <select class="vaccine-select"  multiple data-live-search="true">
             <option>Mustard</option>
             <option>Ketchup</option>
             <option>Barbecue</option>
         </select>
+        <script>
+            $('.vaccine-select').selectpicker();
+        </script>
         <!--!html-->
         """
     return response
