@@ -295,7 +295,6 @@ def worker_modal_load():
     <!--!html-->
     """
     return response
-    
 
 
 @vaccine.route('/load_modal_worker')
@@ -313,39 +312,56 @@ def load_modal_worker():
     response = f"""
     <!--html-->
     <div id="fullscreen_modal_workers" class="modal fade modal-fullscreen show" style="display:block">
-      <div class="modal-dialog">
+        <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">{worker['FAM_WORKER']} {worker['IM_WORKER']} {worker['OT_WORKER']}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                  <table class="table table-hover">
-                <tr>
-                    <td>Подразделение:</td><td>{worker['NPODR']}</td>
-                </tr>
-                <tr>
-                    <td>Отделение:</td><td>{worker['NOTD']}</td>
-                </tr>
-                <tr>
-                    <td>Должность:</td><td>{worker['NDLJ']}</td>
-                </tr>
-                <tr>
-                    <td>Специальность:</td><td>{worker['NSPZ']}</td>
-                </tr>
-                <tr>
-                    <td>Формализованная должность:</td><td>{worker['NSDL']}</td>
-                </tr>
-                </table>
-              </div>
-              <div class="modal-footer">
-                <button type="button" _="on click remove #fullscreen_modal_workers" class="btn btn-secondary">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{worker['FAM_WORKER']} {worker['IM_WORKER']} {worker['OT_WORKER']}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">Подразделение:</div>
+                            <div class="col">{worker['NPODR']}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col">Отделение:</div>
+                            <div class="col">{worker['NOTD']}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col">Должность:</div>
+                            <div class="col">{worker['NDLJ']}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col">Специальность:</div>
+                            <div class="col">{worker['NSPZ']}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col">Формализованная должность:</div>
+                            <div class="col">{worker['NSDL']}</div>
+                        </div>
+                    </div>
+                    <br>
+                    <H5>
+                        Информация о вакцинации
+                    </H5>
+                    <div class="container">
+                        <div class="row">
+                            <div id="load_vaccine_multiselect" hx-get="/vaccine/multiselect_vaccine" hx-target="#load_vaccine_multiselect" hx-swap="outerHTML" hx-trigger="load">
+                                <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" _="on click remove #fullscreen_modal_workers" class="btn btn-secondary">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
             </div>
-          </div>
+        </div>
     </div>
     <!--!html-->
     """
@@ -400,4 +416,22 @@ def load_to_pg_data():
     </div>
     <!--!html-->
     """
+    return response
+
+
+@vaccine.route('/multiselect_vaccine')
+@login_required
+@logger.catch
+def multiselect_vaccine():
+    """функция для генерации списка вакцины доступных сотруднику
+    """
+    response = """
+        <!--html-->
+        <select class="selectpicker">
+            <option>Mustard</option>
+            <option>Ketchup</option>
+            <option>Barbecue</option>
+        </select>
+        <!--!html-->
+        """
     return response
