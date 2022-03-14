@@ -149,3 +149,7 @@ SELECT public."epid_WORKER"."IDW", public."epid_WORKER"."FAM_WORKER",
   left join public."epid_S_SDL" on public."epid_WORKER"."SDL"=public."epid_S_SDL"."ID"
   
   WHERE public."epid_WORKER"."IDW"='{idw}';"""
+
+sel_all_vaccine = """
+SELECT "VACCINE", "NVACCINE"
+	FROM public."epid_S_VACCINE";"""

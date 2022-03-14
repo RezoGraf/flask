@@ -425,16 +425,34 @@ def load_to_pg_data():
 def multiselect_vaccine():
     """функция для генерации списка вакцины доступных сотруднику
     """
-    response = """
+    vaccine_list = db_pg.select(sql_vaccine.sel_all_vaccine)
+    options = ''
+    for vaccine_item in vaccine_list:
+        options += f"""<option value="{vaccine_item[0]}">{vaccine_item[1]}</option>"""
+    response = f"""
         <!--html-->
-        <select class="vaccine-select"  multiple data-live-search="true">
-            <option>Mustard</option>
-            <option>Ketchup</option>
-            <option>Barbecue</option>
-        </select>
+        <form  hx-post="/vaccine/add_vaccine_to_worker">
+            <select class="vaccine-select" name="vaccine_select" multiple data-live-search="true">
+                {options}
+            </select>
+            <button type="submit" class="primary-btn">
+                Добавить
+            </button>
+        </form>
         <script>
             $('.vaccine-select').selectpicker();
         </script>
         <!--!html-->
         """
     return response
+
+
+@vaccine.route('/add_vaccine_to_worker', methods=['POST'])
+@login_required
+@logger.catch
+def add_vaccine_to_worker():
+    """Добавление работнику вакцин
+    """
+    vaccine_list_to_add = request.form.getlist('vaccine_select')
+    print(vaccine_list_to_add)
+    return f"{vaccine_list_to_add}"
