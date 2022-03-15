@@ -347,7 +347,7 @@ def load_modal_worker():
                     </H5>
                     <div class="container">
                         <div class="row">
-                            <div id="load_vaccine_multiselect" hx-get="/vaccine/multiselect_vaccine" hx-target="#load_vaccine_multiselect" hx-swap="outerHTML" hx-trigger="load">
+                            <div id="load_vaccine_multiselect" hx-get="/vaccine/multiselect_vaccine?idw={idw}" hx-target="#load_vaccine_multiselect" hx-swap="outerHTML" hx-trigger="load">
                                 <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
                             </div>
                         </div>
@@ -423,6 +423,7 @@ def load_to_pg_data():
 def multiselect_vaccine():
     """функция для генерации списка вакцины доступных сотруднику
     """
+    idw = request.args.get('idw')
     vaccine_list = db_pg.select(sql_vaccine.sel_all_vaccine)
     options = ''
     for vaccine_item in vaccine_list:
@@ -430,6 +431,8 @@ def multiselect_vaccine():
     response = f"""
         <!--html-->
         <form  hx-post="/vaccine/add_vaccine_to_worker">
+            <input style="display:none;" name="idw" value="{idw}">
+            </input>
             <select class="vaccine-select" name="vaccine_select" multiple data-live-search="true">
                 {options}
             </select>
@@ -451,5 +454,6 @@ def multiselect_vaccine():
 def add_vaccine_to_worker():
     """Добавление работнику вакцин
     """
+    idw = request.form.get('idw')
     vaccine_list_to_add = request.form.getlist('vaccine_select')
-    return f"{vaccine_list_to_add}"
+    return f"{vaccine_list_to_add}, idw={idw}"
