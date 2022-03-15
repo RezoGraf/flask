@@ -347,10 +347,18 @@ def load_modal_worker():
                     </H5>
                     <div class="container">
                         <div class="row">
-                            <div id="load_vaccine_multiselect" hx-get="/vaccine/multiselect_vaccine?idw={idw}" hx-target="#load_vaccine_multiselect" hx-swap="outerHTML" hx-trigger="load">
-                                <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
+                            <div class="col">
+                                <div id="load_vaccine_multiselect" hx-get="/vaccine/multiselect_vaccine?idw={idw}" hx-target="#load_vaccine_multiselect" hx-swap="innerHTML" hx-trigger="load">
+                                    <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div id="vaccine_select_result">
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="container" id="vaccine_container">
                     </div>
 
                 </div>
@@ -430,7 +438,7 @@ def multiselect_vaccine():
         options += f"""<option value="{vaccine_item[0]}">{vaccine_item[1]}</option>"""
     response = f"""
         <!--html-->
-        <form  hx-post="/vaccine/add_vaccine_to_worker">
+        <form  hx-post="/vaccine/add_vaccine_to_worker" hx-target="#vaccine_select_result">
             <input style="display:none;" name="idw" value="{idw}">
             </input>
             <select class="vaccine-select" name="vaccine_select" multiple data-live-search="true">
@@ -456,4 +464,8 @@ def add_vaccine_to_worker():
     """
     idw = request.form.get('idw')
     vaccine_list_to_add = request.form.getlist('vaccine_select')
+    print(vaccine_list_to_add)
+    print(idw)
+    for vaccine_one in vaccine_list_to_add:
+        db_pg.write(sql_vaccine.ins_new_vaccine.format(worker=idw,vaccine=vaccine_one))
     return f"{vaccine_list_to_add}, idw={idw}"
