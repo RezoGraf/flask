@@ -173,7 +173,6 @@ def vaccine_table():
 
     if request.method == 'POST':
         search = request.form.get('search')
-        print(search)
         data = db_pg.sel_dict_in_list_desc(
             sql_vaccine.select_workers_search.format(search=search))
         table_head = """
@@ -308,7 +307,6 @@ def load_modal_worker():
     """
     idw = request.args.get('idw')
     worker = db_pg.sel_dict_with_desc(sql_vaccine.select_worker_by_id.format(idw=idw))
-    print(worker)
     response = f"""
     <!--html-->
     <div id="fullscreen_modal_workers" class="modal fade modal-fullscreen show" style="display:block">
@@ -454,5 +452,4 @@ def add_vaccine_to_worker():
     """Добавление работнику вакцин
     """
     vaccine_list_to_add = request.form.getlist('vaccine_select')
-    print(vaccine_list_to_add)
     return f"{vaccine_list_to_add}"
