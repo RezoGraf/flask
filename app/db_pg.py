@@ -77,4 +77,23 @@ def sel_dict_in_list_desc(sql) -> list:
         results.append(row_dict)
     return results
 
-    
+
+def sel_dict_with_desc(sql) -> dict:
+    """Выборка в словари вида название столбца:значение в списке
+
+    Args:
+        sql (str): строка sql запроса на выборку данных из бд pg
+
+    Returns:
+        dict: словарь, где ключи - название колонок
+    """
+    con = psycopg2.connect(dsn)
+    cur = con.cursor()
+    cur.execute(sql)
+    columns = list(cur.description)
+    result = cur.fetchall()
+    for row in result:
+        row_dict = {}
+        for i, col in enumerate(columns):
+            row_dict[col.name] = row[i]
+    return row_dict

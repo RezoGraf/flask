@@ -133,3 +133,23 @@ select_workers_fam = """SELECT public."epid_WORKER"."FAM_WORKER"
   	left join public."epid_S_PODR" on public."epid_WORKER"."PODR"=public."epid_S_PODR"."ID"
 	left join public."epid_S_OTD" on public."epid_WORKER"."OTD"=public."epid_S_OTD"."ID"
 	left join public."epid_S_DOLJ" on public."epid_WORKER"."DLJ"=public."epid_S_DOLJ"."ID";"""
+
+
+select_worker_by_id = """
+SELECT public."epid_WORKER"."IDW", public."epid_WORKER"."FAM_WORKER",
+ public."epid_WORKER"."IM_WORKER", public."epid_WORKER"."OT_WORKER", public."epid_WORKER"."DR", 
+ public."epid_S_PODR"."NPODR", public."epid_S_OTD"."NOTD", public."epid_S_DOLJ"."NDLJ", 
+ public."epid_S_SPZ"."NSPZ", public."epid_S_SDL"."NSDL", public."epid_WORKER"."CERT"
+ 
+  FROM public."epid_WORKER" 
+    left join public."epid_S_PODR" on public."epid_WORKER"."PODR"=public."epid_S_PODR"."ID"
+  left join public."epid_S_OTD" on public."epid_WORKER"."OTD"=public."epid_S_OTD"."ID"
+  left join public."epid_S_DOLJ" on public."epid_WORKER"."DLJ"=public."epid_S_DOLJ"."ID"
+  left join public."epid_S_SPZ" on public."epid_WORKER"."SPZ"=public."epid_S_SPZ"."ID"
+  left join public."epid_S_SDL" on public."epid_WORKER"."SDL"=public."epid_S_SDL"."ID"
+  
+  WHERE public."epid_WORKER"."IDW"='{idw}';"""
+
+sel_all_vaccine = """
+SELECT "VACCINE", "NVACCINE"
+	FROM public."epid_S_VACCINE";"""
