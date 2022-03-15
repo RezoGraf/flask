@@ -163,8 +163,11 @@ def zn_modal_edit():
                             <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                <h5 class="modal-title">{result}</h5>
-                                <h5 class="modal-title">{nom_teh} {nom_lit} {nom_pol} {nom_var}</h5>                                
+                                    <div class="row" style="text-align: center;">
+                                        <div class="col mx-auto">
+                                            <h5 class="modal-title" >Наряд № {result[0][1]}</h5>
+                                        </div>
+                                    </div>                                
                                 </div>
                                 <form hx-post="zn_modal_close_btn?idkv={idkv}">
                                 <div class="modal-body">
@@ -205,7 +208,6 @@ def zn_modal_edit():
                                                 <input type="date" value="{dzr}" name="dzr" id="dzr" />
                                             </div>
                                         </div>
-                                      
                                 </div>
                                 <div class="modal-footer">
                                     <table class="table table-borderless">
@@ -219,7 +221,6 @@ def zn_modal_edit():
                                             </td>                                            
                                         </tr>
                                 </div>
-                                
                             </div>
                             </div>
                         </div>
