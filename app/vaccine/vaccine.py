@@ -345,10 +345,10 @@ def load_modal_worker():
                     <H5>
                         Информация о вакцинации
                     </H5>
-                    <div class="container">
+                    <div class="container" id="vaccine_container">
                         <div class="row">
                             <div class="col">
-                                <div id="load_vaccine_multiselect" hx-get="/vaccine/multiselect_vaccine?idw={idw}" hx-target="#load_vaccine_multiselect" hx-swap="innerHTML" hx-trigger="load">
+                                <div id="load_vaccine_multiselect" hx-get="/vaccine/multiselect_vaccine?idw={idw}" hx-target="#vaccine_container" hx-swap="innerHTML" hx-trigger="load">
                                     <img  alt="Загрузка данных..."  class="htmx-indicator mx-auto" width="150" src="/static/img/bars.svg"/>
                                 </div>
                             </div>
@@ -434,11 +434,16 @@ def multiselect_vaccine():
     idw = request.args.get('idw')
     vaccine_list = db_pg.select(sql_vaccine.sel_all_vaccine)
     options = ''
+    added_vaccine = db_pg.sel_dict_in_list_desc(sql_vaccine.sel_added_vaccine.format(id_worker=idw))
+    print(added_vaccine[0])
     for vaccine_item in vaccine_list:
-        options += f"""<option value="{vaccine_item[0]}">{vaccine_item[1]}</option>"""
+        options += f"""
+        <option value="{vaccine_item[0]}">{vaccine_item[1]}</option>"""
     response = f"""
         <!--html-->
-        <form  hx-post="/vaccine/add_vaccine_to_worker" hx-target="#vaccine_select_result">
+<form  hx-post="/vaccine/add_vaccine_to_worker" hx-target="#vaccine_select_result">
+    <div class="row">
+        <div class="col">
             <input style="display:none;" name="idw" value="{idw}">
             </input>
             <select class="vaccine-select" name="vaccine_select" multiple data-live-search="true">
@@ -447,7 +452,29 @@ def multiselect_vaccine():
             <button type="submit" class="primary-btn">
                 Добавить
             </button>
-        </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            add
+        </div>
+        <div class="col">
+            vaccine
+        </div>
+        <div class="col">
+            Etap data
+        </div>
+        <div class="col">
+            Data plana
+        </div>
+        <div class="col">
+            Comment
+        </div>
+        <div class="col">
+            -
+        </div>
+    </div>
+</form>
         <script>
             $('.vaccine-select').selectpicker();
         </script>
@@ -464,7 +491,7 @@ def add_vaccine_to_worker():
     """
     idw = request.form.get('idw')
     vaccine_list_to_add = request.form.getlist('vaccine_select')
-    print(vaccine_list_to_add)
+    print('vaccine_list_to_add=',vaccine_list_to_add)
     print(idw)
     for vaccine_one in vaccine_list_to_add:
         db_pg.write(sql_vaccine.ins_new_vaccine.format(worker=idw,vaccine=vaccine_one))
