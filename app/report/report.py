@@ -83,7 +83,7 @@ def main():
                                         date_finish=dtk))
             else:
                 select_otd2=(f'and otd in({select_otd})')
-                select_current_ord = db.select(sql.sql_allOtd.format(
+                select_current_ord = db.select(sql.SQL_ALLOTD.format(
                                         select_otd=select_otd2))
                 result = db.select(sql.sql_select_otsut_otd.format(
                                         date_start=dtn,
@@ -106,7 +106,7 @@ def main():
                                         date_finish=dtk,lpu=lpu))
             else:
                 select_otd2=(f'and otd in({select_otd})')
-                select_current_ord = db.select(sql.sql_allOtd.format(
+                select_current_ord = db.select(sql.SQL_ALLOTD.format(
                                         select_otd=select_otd2))
                 result = db.select(sql.sql_select_otsut_otd_lpu.format(
                                         date_start=dtn,
@@ -116,7 +116,7 @@ def main():
 
         arena_user = session.get('arena_user')
         allow_otd = utils.access_user_otd(arena_user)
-        select_allow_otd = db.select(sql.sql_allOtd.format(
+        select_allow_otd = db.select(sql.SQL_ALLOTD.format(
                                         select_otd=allow_otd))
         menu = session['menu']
         return render_template("report.html",
