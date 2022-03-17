@@ -1,4 +1,3 @@
-import loguru
 from app.api.api import api
 from app.htmx_test.htmx_test import htmx_test
 from app.data_input.data_input import data_input
@@ -13,8 +12,9 @@ import datetime
 import app.auth as auth
 from app.menu.menu import menu
 import gc
-from loguru import logger
 import logging
+from loguru import logger
+
 
 
 

@@ -216,6 +216,10 @@ sql_api_insert_log = """INSERT INTO PL_USLK_EXP (IDKV, ERR,DATE_EXP,JSON_,JSON_O
 # Открытие наряда \ удаление даты закрытия----------------------------------------------------------------------------------------------------------
 sql_zn_naryad_update_dzr_uslk = """Update pl_uslk set dzr=null where idkv={idkv}"""
 sql_zn_naryad_update_dzr_uslt = """Update pl_uslk set dzr=null where idkv={idkv}"""
+# Модальное типы работ----------------------------------------------------------------------------------------------------------
+sql_zn_naryad_sel_sris = """select sris, nsris from pl_n_sris where sris>=10 order by sris"""
+# tip_etap 1 - клинический 2- лабораторный
+sql_zn_naryad_sel_stage = """select id_etap, n_etap, t_etap from it_lab_setap where sris={sris_id} and tip_etap=2 order by ps"""
 # ---------------------------------------------------------------------------------------------------------------------------------------------------
 sql_ad_arena_username = """select app_user from users_app where com='{}'"""
 sql_ad_arena_mpp = """select mpp from users_app where com='{}'"""
