@@ -358,9 +358,6 @@ def load_modal_worker():
                             </div>
                         </div>
                     </div>
-                    <div class="container" id="vaccine_container">
-                    </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" _="on click remove #fullscreen_modal_workers" class="btn btn-secondary">Close</button>
