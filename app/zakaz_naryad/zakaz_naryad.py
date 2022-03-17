@@ -300,7 +300,7 @@ def zn_modal_open_btn():
     else:
         idkv = request.args.get('idkv')
         nkv = request.args.get('nkv')
-        response = f"""<div id="modal-backdrop_zn_open" class="modal-backdrop fade show" style="display:block;"></div>
+        response = f"""<!--html--><div id="modal-backdrop_zn_open" class="modal-backdrop fade show" style="display:block;"></div>
                         <div id="modal_zn_modal" class="modal fade show" tabindex="-1" style="display:block;">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
@@ -331,7 +331,7 @@ def zn_modal_open_btn():
                                 </div>
                             </div>
                         </div>
-                          """
+                          <!--!html-->"""
         return response
 
 @zakaz_naryad.route('/zn_modal_open', methods=['GET', 'POST'])
@@ -349,3 +349,78 @@ def zn_modal_open():
         db.write(sql.sql_zn_naryad_update_dzr_uslk.format(idkv=idkv))
         db.write(sql.sql_zn_naryad_update_dzr_uslt.format(idkv=idkv))
     return redirect(url_for('zakaz_naryad.zn_naryad', idkv=idkv))
+
+@zakaz_naryad.route('/zn_modal_fullwin_btn', methods=['GET', 'POST'])
+@logger.catch
+def zn_modal_fullwin_btn():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
+    idkv = request.args.get('idkv')
+    nkv = request.args.get('nkv')
+    all_sris = db.select(sql.sql_zn_naryad_sel_sris)
+    sel_sris = '<option disabled selected>Выберити тип рыбот</option>'
+    print(all_sris)
+    for i, _ in enumerate(all_sris):
+        sel_sris_vol = f"""<option value="{all_sris[i][0]}">{all_sris[i][1]}</option>"""
+        sel_sris = sel_sris + sel_sris_vol
+    response = f"""<!--html-->
+        <div id="fullscreen_modal_workers" class="modal fade modal-fullscreen show" style="display:block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Наряд № {nkv}</h5>
+                        <button type="button" class="close" _="on click remove #fullscreen_modal_workers" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <select select class="custom-select" name="sris_id" hx-post="zn_modal_fullwin_tab1" hx-target="#models" hx-indicator=".htmx-indicator">
+                                        {sel_sris}
+                                    </select>
+                                    <hr/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="models"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" _="on click remove #fullscreen_modal_workers" class="btn btn-secondary">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--!html-->"""
+    return response
+
+@zakaz_naryad.route('/zn_modal_fullwin_tab1', methods=['GET', 'POST'])
+@logger.catch
+def zn_modal_fullwin_tab1():
+    """_summary_
+
+    Returns:
+        _type_: _description_
+    """
+    sris_id = request.form.get('sris_id')
+    all_stage = db.select(sql.sql_zn_naryad_sel_stage.format(sris_id=sris_id))
+    sel_stage = ''
+    for i, _ in enumerate(all_stage):
+        sel_stage_vol = f"""<div class="form-check" onmouseover="this.style.backgroundColor='#BADAFF';" onmouseout="this.style.backgroundColor='#fff';">
+                                <input class="form-check-input" type="checkbox" value="{all_stage[i][0]}" id="chek_stage{i}" checked>
+                                <label class="form-check-label" for="chek_stage{i}">{all_stage[i][2]}</label>
+                            </div><hr/>"""
+        sel_stage = sel_stage + sel_stage_vol
+    response = f"""{sel_stage}"""
+    return response

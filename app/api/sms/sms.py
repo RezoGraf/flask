@@ -16,11 +16,16 @@ def sms(tsms):
         _type_: _description_
     """
     date = datetime.datetime.now()
+    date_tom = date + datetime.timedelta(days=1)
     date = date.strftime('%d.%m.%Y')
+    date_tom = date_tom.strftime('%d.%m.%Y')
     if tsms == 2:
         nosend_sms = db_sms.select(sql_sms.sql_sms_sel_cancel.format(date=date))
-    else:
-        nosend_sms = db_sms.select(sql_sms.sql_sms_select.format(date=date, tsms=tsms))
+    if tsms == 1:
+        nosend_sms = db_sms.select(sql_sms.sql_sms_select_1.format(date_tom=date_tom))
+    if tsms == 0:
+        nosend_sms = db_sms.select(sql_sms.sql_sms_select_0.format(date=date))
+    print(nosend_sms)
     if nosend_sms != []:
         for i, _ in enumerate(nosend_sms):
             date = datetime.datetime.now()
@@ -39,7 +44,6 @@ def sms(tsms):
                     &sender=oksp42ru
                     &target={tel}
                     &HTTP_ACCEPT_LANGUAGE=ru-ru,ru;q=0.8,en-us;q=0.5,en;q=0.3"""
-            print(url)
             response = requests.post(url)
             xml_dict = jxmlease.parse(response.content)
             xml_str = str(xml_dict)

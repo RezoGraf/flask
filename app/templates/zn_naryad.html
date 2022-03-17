@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap4-modal-fullscreen.min.css') }}">
+    <script src="{{ url_for('static', filename='js/hyperscript_web.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.bundle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/htmx.js') }}"></script>
     <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
     {{ menu|safe  }}
@@ -19,6 +21,7 @@
 </head>
 
 <body>
+    <div id="place_for_modal"></div>
     <table class="table table-borderless table-sm">
 {% for idkv, nkv, dou, stu, dzr, nopl, uid, fam, im, ot, dr, nmpp, nteh, nom_teh, nlit, nom_lit, npolir, nom_pol, nvarh, nom_var,nlpu in zn_naryad_list %}
         <tr>
@@ -108,7 +111,14 @@
                         class="btn btn-primary btn-block"{{'disabled' if dzr == None else ''}}
                         _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">Открыть наряд
                     </button>
-                    
+                    <br/>
+                    <button 
+                        hx-get="zn_modal_fullwin_btn?idkv={{idkv}}&nkv={{nkv}}" 
+                        hx-target="#place_for_modal" 
+                        hx-trigger="click"
+                        class="btn btn-primary btn-block">Типы работ
+                    </button>
+
                     <hr/>
                     
                     <a href="{% if ub != None %} {{ub}} {% else %} {{"/zakaz_naryad/"}} {%endif %}"><button class="btn btn-primary btn-block">Назад</button></a>
