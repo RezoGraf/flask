@@ -153,3 +153,12 @@ SELECT public."epid_WORKER"."IDW", public."epid_WORKER"."FAM_WORKER",
 sel_all_vaccine = """
 SELECT "VACCINE", "NVACCINE"
 	FROM public."epid_S_VACCINE";"""
+
+ins_new_vaccine = """
+INSERT INTO public."epid_VACCINE"(
+	"ID_WORKER", "VACCINE")
+	VALUES ('{worker}', '{vaccine}');"""
+
+sel_added_vaccine = """
+SELECT "ID_ZAP", "ID_WORKER", "VACCINE", "DATA_VACCINE", "ETAP_VACCINE", "DATA_PLAN", "REZ_ISSL", "DATA_ISSL", "KOMMENT"
+	FROM public."epid_VACCINE" where public."epid_VACCINE"."ID_WORKER"='{id_worker}';"""
