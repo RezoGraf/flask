@@ -4,9 +4,7 @@ from flask import session, flash, redirect, url_for
 import app.db as db
 import app.sql as sql
 from app.menu_script import generate_menu
-import functools
 from loguru import logger
-import logging
 
 
 def login_required(f):

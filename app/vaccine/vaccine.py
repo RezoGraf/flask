@@ -342,6 +342,8 @@ def load_modal_worker():
                         </div>
                     </div>
                     <br>
+                    <div>
+                    </div>
                     <H5>
                         Информация о вакцинации
                     </H5>
